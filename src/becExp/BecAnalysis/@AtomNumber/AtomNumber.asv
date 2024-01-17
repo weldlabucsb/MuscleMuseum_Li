@@ -1,0 +1,101 @@
+classdef AtomNumber < BecAnalysis
+    %OD Summary of this class goes here
+    %   Detailed explanation goes here
+    
+    properties (SetAccess = protected)
+       Raw
+       Thermal
+       Condensate
+       Total
+    end
+
+    properties
+        Unit = 10^6;
+        YLim = [0,30];
+    end
+    
+    methods
+        function obj = AtomNumber(becExp)
+            %OD Construct an instance of this class
+            %   Detailed explanation goes here
+            obj@BecAnalysis(becExp)
+            obj.Chart(1) = Chart(...
+                name = "Atom number",...
+                num = 29, ...
+                fpath = fullfile(becExp.DataAnalysisPath,"AtomNumber"),...
+                loc = "northeast",...
+                size = [0.3069,0.3995]...
+                );
+        end
+        
+        function initialize(obj)
+            fig = obj.Chart(1).initialize;
+            obj.Raw = 0;
+            obj.Thermal = 0;
+            obj.Condensate = 0;
+            obj.Total = 0;
+
+            if ~ishandle(fig)
+                return
+            end
+
+            ax = gca;
+            ax.Box = "on";
+            ax.XGrid = "on";
+            ax.YGrid = "on";
+            ax.XLabel.String = obj.BecExp.XLabel;
+            ax.XLabel.Interpreter = "latex";
+            ax.YLabel.String = "${N}_{\mathrm{atom}}~[\times 10^{" + string(log(obj.Unit)/log(10)) + "}]$";
+            ax.YLabel.Interpreter = "latex";
+            ax.FontSize = 12;
+            ax.YLim = obj.YLim;
+            co = ax.ColorOrder;
+
+            lRaw = plot(ax,1,1);
+            lRaw.Marker = "o";
+            lRaw.MarkerFaceColor = co(1,:);
+            lRaw.MarkerEdgeColor = co(1,:)*.5;
+            lRaw.MarkerSize = 8;
+            
+            if isprop(obj.BecExp,"DensityFit")
+                hold(ax,'on')
+                switch obj.BecExp.DensityFit.FitMethod
+                    case "GaussianFit1D"
+                        lThermal = plot(ax,1,1);
+                        lThermal.Marker = "o";
+                        lThermal.MarkerFaceColor = co(2,:);
+                        lThermal.MarkerEdgeColor = co(2,:)*.5;
+                        lThermal.MarkerSize = 8;
+                        legend(ax,"Raw","Thermal")
+                end
+                hold(ax,'off')
+            end           
+
+        end
+
+        function updateData(obj,runIdx)
+            obj.Raw(runIdx) = sum(obj.BecExp.Ad.AdData(:,:,runIdx),"all") * (obj.BecExp.Acquisition.PixelSizeReal)^2;
+            if isprop(obj.BecExp,"DensityFit")
+                switch obj.BecExp.DensityFit.FitMethod
+                    case "GaussianFit1D"
+                        obj.Thermal = 2*pi*
+                end
+            end
+        end
+
+        function updateFigure(obj,~)
+            if ishandle(obj.Chart(1).Figure)
+                fig = figure(obj.Chart(1).Figure);
+            else
+                return
+            end
+
+            paraList = obj.BecExp.ScannedParameterList;
+            l = findobj(fig,'Type','Line');
+            l.XData = paraList;
+            l.YData = obj.Raw / obj.Unit;
+        end
+
+    end
+end
+
