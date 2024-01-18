@@ -10,3 +10,13 @@ MuscleMuseum is a MATLAB package designed for Atomic, Molecular, and Optical (AM
 
 - **User-Friendly GUIs:** The package offers intuitive Graphical User Interfaces (GUIs) developed using [MATLAB App Designer](https://www.mathworks.com/products/matlab/app-designer.html).
 
+Right now, I have implemented:
+
+- A BEC experimental control and data analysis system (the BecExp class)
+- Atomic data and atomic structure handling (the Atom class)
+- A single-atom master equation simulation tool (the MeSim class)
+
+Still under construction:
+
+- Gross-Pitaevskii equation simulation
+- Lattice simulation
