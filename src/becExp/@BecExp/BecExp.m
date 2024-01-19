@@ -89,7 +89,7 @@ classdef BecExp < Trial
         function paraList = get.ScannedParameterList(obj)
             switch obj.ScannedParameter
                 case "RunIndex"
-                    paraList = 1:obj.NCompletedRun;
+                    paraList = double(1:obj.NCompletedRun);
                 case "CiceroLogTime"
                     if ~isempty(obj.CiceroLogTime)
                         paraList = obj.CiceroLogTime;

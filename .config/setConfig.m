@@ -67,9 +67,10 @@ BadRow = {
     [];
     []
 };
+BitsPerSample = [16;8;8;8;8]; % How many bits per pixel
 AcquisitionConfig = table(Name,CameraType,AdaptorName,DeviceID,...
     SerialNumber,ExposureTime,IsExternalTriggered,PixelSize,...
-    ImageSize,BadRow,Magnification,ImageGroupSize,ConfigFun,QuantumEfficiencyData);
+    ImageSize,BadRow,Magnification,ImageGroupSize,ConfigFun,QuantumEfficiencyData,BitsPerSample);
 save(configName,"AcquisitionConfig",'-mat')
 
 %% Set the ROI configuration
