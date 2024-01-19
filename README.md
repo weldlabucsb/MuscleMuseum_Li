@@ -20,3 +20,7 @@ Still under construction:
 
 - Gross-Pitaevskii equation simulation
 - Lattice simulation
+
+Know issues
+
+- The database functions I wrote are not compatible with MATLAB 2023b. Need to fix this in the future
