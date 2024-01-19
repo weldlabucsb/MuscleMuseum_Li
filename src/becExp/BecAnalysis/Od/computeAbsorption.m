@@ -17,8 +17,8 @@ elseif size(imageData,4) == 2
 end
 % atomData( abs(atomData) <= abs(min(atomData(:))) ) = 0;
 % lightData( abs(lightData) <= abs(min(lightData(:))) ) = eps;
-% atomData(atomData<0)=0;
-% lightData(lightData<=0)=eps;
+atomData(atomData<0)=0;
+lightData(lightData<=0)=eps;
 absorp = atomData./lightData;
 % absorp(absorp<absorpMin|absorp>1)=1; %Remove points with unreasonably high or low aborption.
 end

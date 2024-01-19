@@ -161,14 +161,16 @@ classdef CenterFit < BecAnalysis
                 paraList = paraList - paraList(1);
                 paraList = seconds(paraList);
             end
-
-            switch obj.FitMethod
-                case "LinearFit1D"
-                    obj.FitDataX = LinearFit1D([paraList,becExp.DensityFit.ThermalCloudCenter(1,:).']);
-                    obj.FitDataX.do;
-                    obj.FitDataY = LinearFit1D([paraList,becExp.DensityFit.ThermalCloudCenter(2,:).']);
-                    obj.FitDataY.do;
-                    obj.ThermalCloudCenterSlope = [obj.FitDataX.Coefficient(1);obj.FitDataY.Coefficient(1)];
+            
+            if becExp.NCompletedRun >= 2
+                switch obj.FitMethod
+                    case "LinearFit1D"
+                        obj.FitDataX = LinearFit1D([paraList,becExp.DensityFit.ThermalCloudCenter(1,:).']);
+                        obj.FitDataX.do;
+                        obj.FitDataY = LinearFit1D([paraList,becExp.DensityFit.ThermalCloudCenter(2,:).']);
+                        obj.FitDataY.do;
+                        obj.ThermalCloudCenterSlope = [obj.FitDataX.Coefficient(1);obj.FitDataY.Coefficient(1)];
+                end
             end
 
         end
@@ -182,26 +184,37 @@ classdef CenterFit < BecAnalysis
 
             px = obj.BecExp.Acquisition.PixelSizeReal;
 
-            rawXT = obj.FitDataX.RawData;
-            fitXT = obj.FitDataX.FitPlotData;
-            rawYT = obj.FitDataY.RawData;
-            fitYT = obj.FitDataY.FitPlotData;
-            obj.ThermalXLine.XData = rawXT(:,1);
-            obj.ThermalXLine.YData = rawXT(:,2) / px;
-            obj.ThermalXFitLine.XData = fitXT(:,1);
-            obj.ThermalXFitLine.YData = fitXT(:,2) / px;
-            obj.ThermalYLine.XData = rawYT(:,1);
-            obj.ThermalYLine.YData = rawYT(:,2) / px;
-            obj.ThermalYFitLine.XData = fitYT(:,1);
-            obj.ThermalYFitLine.YData = fitYT(:,2) / px;
+            if obj.BecExp.NCompletedRun >= 2
+                rawXT = obj.FitDataX.RawData;
+                rawYT = obj.FitDataY.RawData;
+                obj.ThermalXLine.XData = rawXT(:,1);
+                obj.ThermalXLine.YData = rawXT(:,2) / px;
+                obj.ThermalYLine.XData = rawYT(:,1);
+                obj.ThermalYLine.YData = rawYT(:,2) / px;
+
+                fitXT = obj.FitDataX.FitPlotData;
+                fitYT = obj.FitDataY.FitPlotData;
+                obj.ThermalXFitLine.XData = fitXT(:,1);
+                obj.ThermalXFitLine.YData = fitXT(:,2) / px;
+                obj.ThermalYFitLine.XData = fitYT(:,1);
+                obj.ThermalYFitLine.YData = fitYT(:,2) / px;
+            elseif obj.BecExp.NCompletedRun == 1
+                obj.ThermalXLine.XData = obj.BecExp.ScannedParameterList(1);
+                obj.ThermalXLine.YData = obj.BecExp.DensityFit.ThermalCloudCenter(1,1) / px;
+                obj.ThermalYLine.XData = obj.BecExp.ScannedParameterList(1);
+                obj.ThermalYLine.YData = obj.BecExp.DensityFit.ThermalCloudCenter(2,1) / px;
+            end
 
             
             obj.ParaTable.Data{1,2} = num2str(obj.ThermalCloudCenterMean(1)/px,'%.2f');
             obj.ParaTable.Data{2,2} = num2str(obj.ThermalCloudCenterMean(2)/px,'%.2f');
             obj.ParaTable.Data{3,2} = num2str(obj.ThermalCloudCenterRange(1)/px,'%.2f');
             obj.ParaTable.Data{4,2} = num2str(obj.ThermalCloudCenterRange(2)/px,'%.2f');
-            obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterSlope(1)/px);
-            obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterSlope(2)/px);
+
+            if obj.BecExp.NCompletedRun >= 2
+                obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterSlope(1)/px);
+                obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterSlope(2)/px);
+            end
 
             lg = findobj(fig,'Type','Legend');
             lg(1).Location = 'best';
