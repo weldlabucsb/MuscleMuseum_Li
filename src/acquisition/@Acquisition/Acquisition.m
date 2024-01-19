@@ -10,16 +10,20 @@ classdef Acquisition < handle & matlab.mixin.SetGetExactNames
         SerialNumber int32 %Camera serial number
         PixelSize double %In microns
         ImageSize uint32 % size x * size y
+        BitsPerSample int16 % How many bits per pixel
         BadRow uint32 % rows that have bad pixels
         BadColumn uint32 % columns that have bad pixels
         Magnification double
-        VideoInput %MATLAB camera connection
         ConfigFun function_handle %Configure the camera parameters. Must be pre-defined.
         QuantumEfficiencyData double = [] %Quantum efficiency data from the company. First column: wavelength. Second column: quantum efficiency.
     end
 
     properties (Constant, Hidden)
         BadWidth = 1
+    end
+
+    properties (SetAccess = private,Transient)
+        VideoInput %MATLAB camera connection
     end
 
     properties

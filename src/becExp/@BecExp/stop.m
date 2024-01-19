@@ -3,10 +3,13 @@ obj.displayLog(" ")
 obj.displayLog("Trial #" + string(obj.SerialNumber) + ": Stopping data acquisition and real-time analysis.")
 
 if obj.NCompletedRun == 0
-obj.displayLog("No run has been acquired. Deleting this trial.")
-deleteBecExp(obj.SerialNumber,true)
-obj.delete
-return
+    obj.displayLog("No run has been acquired. Deleting this trial.")
+    for ii = 1:numel(obj.AnalysisMethod)
+        obj.(obj.AnalysisMethod(ii)).close;
+    end
+    deleteBecExp(obj.SerialNumber,true)
+    obj.delete
+    return
 end
 
 if obj.IsAutoAcquire
