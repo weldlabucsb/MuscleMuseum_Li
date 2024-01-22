@@ -36,8 +36,8 @@ classdef BecExp < Trial
     end
 
     properties (Constant,Hidden)
-        AnalysisOrder = {"Od";"Imaging";"Ad";...
-            "DensityFit";["AtomNumber";"Tof";"CenterFit"]}
+        AnalysisOrder = ["Od";"Imaging";"Ad";...
+            "DensityFit";"AtomNumber";"Tof";"CenterFit"]
     end
 
     methods
@@ -152,15 +152,14 @@ classdef BecExp < Trial
 
     methods
         setAnalyzer(obj)
-        addAnalysis(obj,newAnalysisList)
-        removeAnalysis(obj,removeAnalysisList)
+        addAnalysis(obj)
         sortAnalysis(obj)
         start(obj)
         pause(obj)
         resume(obj)
         stop(obj)
         show(obj)
-        refresh(obj,anaylsisName)
+        refresh(obj)
         mData = readRun(obj,runIdx)
         deleteRun(obj,runIdx)
         sData = readCiceroLog(obj,runIdx)

@@ -262,6 +262,17 @@ classdef Roi < handle
                 fullCoord(2) >= yxBoundary(3) && fullCoord(2) <= yxBoundary(4);
         end
 
+        function logi = isNoRotationFullInRoi(obj,fullCoord)
+            imageCenterNoRotation = (1 + obj.ImageSize)/2;
+            imageCenter = (1 + obj.ImageSizeRotated)/2;
+            fullCoordRelative = fullCoord - imageCenterNoRotation;
+            rotationMatrix = [cosd(obj.Angle),-sind(obj.Angle);...
+                sind(obj.Angle),cosd(obj.Angle)];
+            fullCoordRotated = rotationMatrix * fullCoordRelative(:);
+            fullCoordRotated = fullCoordRotated.' + imageCenter;
+            logi = obj.isInRoi(fullCoordRotated);
+        end
+
         function rotate(obj,rotateAngle)
             % Rotate the ROI about the ROI center
             imageCenter = (1 + obj.ImageSizeRotated)/2;

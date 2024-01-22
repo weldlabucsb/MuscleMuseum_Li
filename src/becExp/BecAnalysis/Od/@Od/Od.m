@@ -97,6 +97,7 @@ classdef Od < BecAnalysis
         end
 
         function show(obj)
+            addlistener(obj,'CLim','PostSet',@obj.handlePropEvents);
             obj.Gui(1).initialize(obj.BecExp)
             obj.Chart(1).show
             obj.Chart(2).show
@@ -377,6 +378,15 @@ classdef Od < BecAnalysis
                             fig = obj.Chart(ii).Figure;
                             ax = fig.CurrentAxes;
                             ax.CLim = obj.CLim;
+                        end
+                    end
+                    if ~isempty(obj.Gui(1).App)
+                        if isvalid(obj.Gui(1).App)
+                            obj.Gui(1).App.OdAxes.CLim = obj.CLim;
+                            obj.Gui(1).App.OdYAxes.XLim = obj.CLim;
+                            obj.Gui(1).App.OdXAxes.YLim = obj.CLim;
+                            obj.Gui(1).App.ODMinEditField.Value = obj.CLim(1);
+                            obj.Gui(1).App.ODMaxEditField.Value = obj.CLim(2);
                         end
                     end
             end

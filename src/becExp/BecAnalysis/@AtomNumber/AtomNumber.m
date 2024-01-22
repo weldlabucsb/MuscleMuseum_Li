@@ -9,8 +9,11 @@ classdef AtomNumber < BecAnalysis
        Total
     end
 
-    properties
+    properties (Constant)
         Unit = 10^6;
+    end
+
+    properties (SetObservable)
         YLim = [0,30];
     end
 
@@ -46,6 +49,8 @@ classdef AtomNumber < BecAnalysis
                 return
             end
 
+            addlistener(obj,'YLim','PostSet',@obj.handlePropEvents);
+
             ax = gca;
             ax.Box = "on";
             ax.XGrid = "on";
@@ -66,7 +71,7 @@ classdef AtomNumber < BecAnalysis
             obj.RawLine.LineWidth = 2;
             obj.RawLine.Color = co(1,:);
             
-            if isprop(obj.BecExp,"DensityFit")
+            if ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 hold(ax,'on')
                 switch obj.BecExp.DensityFit.FitMethod
                     case {"GaussianFit1D","BosonicGaussianFit1D"}
@@ -87,7 +92,7 @@ classdef AtomNumber < BecAnalysis
         function updateData(obj,runIdx)
             becExp = obj.BecExp;
             obj.Raw(runIdx) = sum(becExp.Ad.AdData(:,:,runIdx),"all") * (becExp.Acquisition.PixelSizeReal)^2;
-            if isprop(obj.BecExp,"DensityFit")
+            if ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 switch obj.BecExp.DensityFit.FitMethod
                     case "GaussianFit1D"
                         obj.Thermal(runIdx) = 2 * pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx)) * ...
@@ -111,7 +116,7 @@ classdef AtomNumber < BecAnalysis
             obj.RawLine.XData = paraList;
             obj.RawLine.YData = obj.Raw / obj.Unit;
 
-            if isprop(obj.BecExp,"DensityFit")
+            if ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 switch obj.BecExp.DensityFit.FitMethod
                     case {"GaussianFit1D","BosonicGaussianFit1D"}
                         obj.ThermalLine.XData = paraList;
@@ -123,6 +128,22 @@ classdef AtomNumber < BecAnalysis
             lg.Location = "best";
         end
 
+    end
+
+    methods (Static)
+        function handlePropEvents(src,evnt)
+            switch src.Name
+                case 'YLim'
+                    obj = evnt.AffectedObject;
+                    for ii = 1:numel(obj.Chart)
+                        if ishandle(obj.Chart(ii).Figure)
+                            fig = obj.Chart(ii).Figure;
+                            ax = fig.CurrentAxes;
+                            ax.YLim = obj.YLim;
+                        end
+                    end
+            end
+        end
     end
 end
 

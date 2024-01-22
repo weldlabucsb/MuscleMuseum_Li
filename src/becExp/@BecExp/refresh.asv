@@ -41,19 +41,18 @@ else
         afterAnalysis = vertcat(afterAnalysis{:});
         if ~isempty(afterAnalysis)
             aMethodIdx = find(ismember(obj.AnalysisMethod,afterAnalysis),1);
-            if ~isempty(aMethodIdx)
-                for ii = aMethodIdx:nAnalysis
-                    obj.(obj.AnalysisMethod(ii)).refresh;
-                end
-            else
-                % Refresh everthing that are not in AanalysisOrder
-                extraAnalysis = obj.AnalysisMethod(~ismember(obj.AnalysisMethod,vertcat(obj.AnalysisOrder{:})));
-                for ii = 1:numel(extraAnalysis)
-                    obj.(extraAnalysis(ii)).refresh;
-                end
+            for ii = aMethodIdx:nAnalysis
+                obj.(obj.AnalysisMethod(ii)).refresh;
+            end
+        else
+            % Refresh everthing that are not in
+            extraAnalysis = obj.AnalysisMethod(~ismember(obj.AnalysisMethod,vertcat(obj.AnalysisOrder{:})));
+            for ii = 1:numel(extraAnalysis)
+                obj.(extraAnalysis(ii)).refresh;
             end
         end
     end
+end
 
 end
 

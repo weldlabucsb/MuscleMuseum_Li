@@ -138,6 +138,7 @@ classdef Chart < handle
                     warning off
                     copyobj(allchild(src),fig)
                     warning on
+                    % obj.Figure = fig;
                 end
             else
                 % gifPath = obj.Path + ".gif";

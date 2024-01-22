@@ -3,8 +3,10 @@ classdef Tof < BecAnalysis
     %   Detailed explanation goes here
 
     properties
-        FitDataX
-        FitDataY
+        FitDataThermalX
+        FitDataThermalY
+        FitDataCondensateX
+        FitDataCondensateY
     end
 
     properties (SetAccess = protected)
@@ -46,13 +48,13 @@ classdef Tof < BecAnalysis
             if obj.BecExp.ScannedParameter ~= "TOF"
                 warning("Scanned Parameter is not TOF. Can not do TOF analysis")
                 return
-            elseif ~isprop(obj.BecExp,"DensityFit")
+            elseif ~ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 warning("No DensityFit. Can not do TOF analysis")
                 return
             end
             fig = obj.Chart(1).initialize;
-            obj.FitDataX = SqrtParabolicFit1D([1,1]);
-            obj.FitDataY = SqrtParabolicFit1D([1,1]);
+            obj.FitDataThermalX = [];
+            obj.FitDataThermalY = [];
             obj.TofTime = 0;
             obj.kBoverM = Constants.SI("kB") / obj.BecExp.Atom.mass;
 
@@ -140,23 +142,23 @@ classdef Tof < BecAnalysis
 
         function updateData(obj,~)
             becExp = obj.BecExp;
-            if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 3 ||...
-                    ~isprop(obj.BecExp,"DensityFit")
+            if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 2 ||...
+                    ~ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 return
             end
             obj.TofTime = becExp.ScannedParameterList * unit2SI(becExp.ScannedParameterUnit);
             wt = obj.BecExp.DensityFit.ThermalCloudSize;
-            obj.FitDataX = LinearFit1D([(obj.TofTime.^2).',(wt(1,:).^2).']);
-            obj.FitDataX.do;
+            obj.FitDataThermalX = LinearFit1D([(obj.TofTime.^2).',(wt(1,:).^2).']);
+            obj.FitDataThermalX.do;
 
-            obj.FitDataY = LinearFit1D([(obj.TofTime.^2).',(wt(2,:).^2).']);
-            obj.FitDataY.do;
+            obj.FitDataThermalY = LinearFit1D([(obj.TofTime.^2).',(wt(2,:).^2).']);
+            obj.FitDataThermalY.do;
 
-            obj.Temperature = mean([obj.FitDataX.Coefficient(1),obj.FitDataY.Coefficient(1)]) / ...
+            obj.Temperature = mean([obj.FitDataThermalX.Coefficient(1),obj.FitDataThermalY.Coefficient(1)]) / ...
                 2 / obj.kBoverM;
-            obj.TrappingFrequency = sqrt(1 ./ ([obj.FitDataX.Coefficient(2);obj.FitDataY.Coefficient(2)] / ...
+            obj.TrappingFrequency = sqrt(1 ./ ([obj.FitDataThermalX.Coefficient(2);obj.FitDataThermalY.Coefficient(2)] / ...
                 2 / obj.kBoverM / obj.Temperature));
-            obj.ThermalCloudSizeInSitu = sqrt([obj.FitDataX.Coefficient(2);obj.FitDataY.Coefficient(2)]);
+            obj.ThermalCloudSizeInSitu = sqrt([obj.FitDataThermalX.Coefficient(2);obj.FitDataThermalY.Coefficient(2)]);
             obj.ThermalCloudCentralDensityInSitu = max(becExp.AtomNumber.Thermal) / ...
                 pi / prod(obj.ThermalCloudSizeInSitu) / boseFunction(1,3) * boseFunction(1,2);
         end
@@ -164,17 +166,17 @@ classdef Tof < BecAnalysis
         function updateFigure(obj,~)
             becExp = obj.BecExp;
             fig = obj.Chart(1).Figure;
-            if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 3 ...
-                    || ~ishandle(fig) || ~isprop(obj.BecExp,"DensityFit")
+            if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 2 ...
+                    || ~ishandle(fig) || ~ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 return
             end
             
             switch obj.BecExp.DensityFit.FitMethod
                 case {"GaussianFit1D","BosonicGaussianFit1D"}
-                    rawXT = obj.FitDataX.RawData;
-                    fitXT = obj.FitDataX.FitPlotData;
-                    rawYT = obj.FitDataY.RawData;
-                    fitYT = obj.FitDataY.FitPlotData;
+                    rawXT = obj.FitDataThermalX.RawData;
+                    fitXT = obj.FitDataThermalX.FitPlotData;
+                    rawYT = obj.FitDataThermalY.RawData;
+                    fitYT = obj.FitDataThermalY.FitPlotData;
                     obj.ThermalXLine.XData = rawXT(:,1) * 1e12;
                     obj.ThermalXLine.YData = rawXT(:,2) * 1e12;
                     obj.ThermalXFitLine.XData = fitXT(:,1) * 1e12;

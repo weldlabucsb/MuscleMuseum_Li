@@ -1,4 +1,4 @@
-function analysisListSorted = sortAnalysis(analysisList)
+function analysisListSorted = sortBecAnalysis(analysisList)
 %SORTANALYSIS Summary of this function goes here
 %   We need to run different analysis in certain order so we have to sort
 %   the analysis methods

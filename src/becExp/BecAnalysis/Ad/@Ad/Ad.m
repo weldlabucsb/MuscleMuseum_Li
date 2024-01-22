@@ -21,7 +21,7 @@ classdef Ad < BecAnalysis
 
     properties (Constant)
         Blur = 100
-        AdUnit = 1e13;
+        Unit = 1e13;
     end
 
     methods
@@ -112,6 +112,13 @@ classdef Ad < BecAnalysis
             obj.plotAdAnimation
         end
 
+        function show(obj)
+            addlistener(obj,'CLim','PostSet',@obj.handlePropEvents);
+            obj.Gui(1).initialize(obj.BecExp)
+            obj.Chart(1).show
+            obj.Chart(2).show
+        end
+
         function refresh(obj)
             becExp = obj.BecExp;
             nRun = becExp.NCompletedRun;
@@ -146,7 +153,7 @@ classdef Ad < BecAnalysis
             for ii = 1:nRun
                 cData{ii} = obj.AdData(:,:,ii);
             end
-            mData = horzcat(cData{:}) / obj.AdUnit;
+            mData = horzcat(cData{:}) / obj.Unit;
             img = imagesc(ax,mData);
 
             %% Render
@@ -155,7 +162,7 @@ classdef Ad < BecAnalysis
             colormap(ax,obj.Colormap)
             
             cb.Label.Interpreter = "Latex";
-            cb.Label.String = "AD [$\times 10^{" + string(log(obj.AdUnit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
+            cb.Label.String = "AD [$\times 10^{" + string(log(obj.Unit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
             cb.Label.FontSize = 14;
             roiSize = obj.BecExp.Roi.CenterSize(3:4);
             yxBoundary = obj.BecExp.Roi.YXBoundary;
@@ -250,7 +257,7 @@ classdef Ad < BecAnalysis
             imgAxes.Colormap = obj.Colormap;
             cb = colorbar(imgAxes,"eastoutside");
             cb.Label.Interpreter = "Latex";
-            cb.Label.String = "AD [$\times 10^{" + string(log(obj.AdUnit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
+            cb.Label.String = "AD [$\times 10^{" + string(log(obj.Unit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
             cb.Label.FontSize = 14;
             imgAxes.Position = [imgLeft,imgBottom,imgWidth,imgHeight];
             imgAxes.CLim = obj.CLim;
@@ -291,9 +298,9 @@ classdef Ad < BecAnalysis
                 for ii = 1:nRun
 
                     % Update plots
-                    img.CData = obj.AdData(:,:,ii) / obj.AdUnit;
-                    xLine.YData = squeeze(obj.AdData(round(roiSize(1)/2),:,ii)) / obj.AdUnit;
-                    yLine.XData = squeeze(obj.AdData(:,round(roiSize(2)/2),ii)) / obj.AdUnit;
+                    img.CData = obj.AdData(:,:,ii) / obj.Unit;
+                    xLine.YData = squeeze(obj.AdData(round(roiSize(1)/2),:,ii)) / obj.Unit;
+                    yLine.XData = squeeze(obj.AdData(:,round(roiSize(2)/2),ii)) / obj.Unit;
 
                     % Update title
                     if ismissing(paraUnit)
@@ -339,6 +346,15 @@ classdef Ad < BecAnalysis
                             fig = obj.Chart(ii).Figure;
                             ax = fig.CurrentAxes;
                             ax.CLim = obj.CLim;
+                        end
+                    end
+                    if ~isempty(obj.Gui(1).App)
+                        if isvalid(obj.Gui(1).App)
+                            obj.Gui(1).App.AdAxes.CLim = obj.CLim;
+                            obj.Gui(1).App.AdYAxes.XLim = obj.CLim;
+                            obj.Gui(1).App.AdXAxes.YLim = obj.CLim;
+                            obj.Gui(1).App.ADMinEditField.Value = obj.CLim(1);
+                            obj.Gui(1).App.ADMaxEditField.Value = obj.CLim(2);
                         end
                     end
             end

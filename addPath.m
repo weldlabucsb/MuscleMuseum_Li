@@ -1,2 +1,2 @@
-addpath(genpath_exclude(pwd,{'.git','testData','sampleData'}))
+addpath(genpath_exclude(pwd,{'.git','testData','sampleData','.gitignore'}))
 % savepath
