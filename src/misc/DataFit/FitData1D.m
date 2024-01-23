@@ -27,7 +27,7 @@ classdef (Abstract) FitData1D < FitData
             fpData = [xFit,yFit];
         end
 
-        function fitResult = do(obj)
+        function obj = do(obj)
             [fitResult,gof] = fit(obj.RawData(:,1),obj.RawData(:,2),obj.Func,obj.Option);
             obj.Result = fitResult;
             obj.Gof = gof;

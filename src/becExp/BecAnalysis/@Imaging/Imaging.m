@@ -48,7 +48,7 @@ classdef Imaging < BecAnalysis
             c = Constants.SI("c");
             omega = 2*pi*becExp.Atom.CyclerFrequency;
             lambda = 2*pi*c/omega;
-            load("Config.mat","BecExpParameterUnit")
+            BecExpParameterUnit = becExp.ParameterUnitConfig;
             obj.ImagingTimeUnit = BecExpParameterUnit(BecExpParameterUnit.ScannedParameter == "t_image",:).ScannedParameterUnit;
             mul = unit2SI(obj.ImagingTimeUnit);
             obj.Prefactor = hbar*omega/(pixelSize/mag)^2/Isat/mul;
@@ -139,6 +139,22 @@ classdef Imaging < BecAnalysis
 
         function sMean = get.SaturationParameterMeanOverall(obj)
             sMean = mean(obj.SaturationParameterMean(:));
+        end
+
+        function refresh(obj)
+            obj.initialize;
+            becExp = obj.BecExp;
+            roiData = becExp.Od.RoiData(:,:,:,:);
+            qe = obj.QuantumEfficiency;
+            pf = obj.Prefactor;
+            obj.LightMean = squeeze(mean(roiData(:,:,:,2)/qe,[1,2])).';
+            obj.DarkMean = squeeze(mean(roiData(:,:,:,3)/qe,[1,2])).';
+            t = becExp.CiceroData.t_image;
+            obj.ImagingTime = t;
+            obj.SaturationParameterMean = pf * (obj.LightMean - obj.DarkMean) ./ t;
+            t = reshape(t,1,1,becExp.NCompletedRun);
+            obj.SaturationParameterPropagation = pf * (roiData(:,:,:,1) / qe + becExp.Od.CameraLightData(:,:,:) / qe) / 2 ./ t;
+            obj.updateFigure(1);
         end
     end
 end

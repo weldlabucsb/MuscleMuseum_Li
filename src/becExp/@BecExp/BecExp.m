@@ -21,6 +21,7 @@ classdef BecExp < Trial
         CiceroLogPath string
         CiceroLogTime datetime
         DeletedRunParameterList
+        ParameterUnitConfig
     end
 
     properties(SetAccess = private)
@@ -54,6 +55,7 @@ classdef BecExp < Trial
                 becExpConfigName = "BecExpConfig";
             end
             obj@Trial(trialName,becExpConfigName);
+            obj.ParameterUnitConfig = loadVar("Config.mat","BecExpParameterUnit");
 
             % Atom setting
             try

@@ -18,12 +18,23 @@ else
     obj.Watcher.Enabled = false;
 end
 obj.Analyzer.Enabled = false;
+
+if obj.Od.FringeRemovalMethod == "None"
+    obj.displayLog("Saving the figures.")
+    for ii = 1:numel(obj.AnalysisMethod)
+        obj.(obj.AnalysisMethod(ii)).finalize;
+        obj.(obj.AnalysisMethod(ii)).save;
+        obj.(obj.AnalysisMethod(ii)).close;
+    end
+else
+    obj.displayLog("Refreshing and Saving the figures.")
+    for ii = 1:numel(obj.AnalysisMethod)
+        obj.(obj.AnalysisMethod(ii)).refresh;
+        obj.(obj.AnalysisMethod(ii)).save;
+        obj.(obj.AnalysisMethod(ii)).close;
+    end
+end
+
 obj.update;
 
-obj.displayLog("Saving the figures.")
-for ii = 1:numel(obj.AnalysisMethod)
-    obj.(obj.AnalysisMethod(ii)).finalize;
-    obj.(obj.AnalysisMethod(ii)).save;
-    obj.(obj.AnalysisMethod(ii)).close;
-end
 end

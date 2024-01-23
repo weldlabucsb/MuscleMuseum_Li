@@ -9,6 +9,17 @@ configName = fullfile(configPath,'Config.mat');
 % mainPath = fullfile(repoPath,'test','testData');
 mainPath = "C:\data";
 
+%% Set the computer configuration
+BecExpControlComputerName = "WOODHOUSE";
+BecExpParentPath = "B:\LithiumData";
+BecExpDatabaseName = "lithium_experiment";
+BecExpDatabaseTableName = "main";
+CiceroComputerName = "GOB";
+CiceroLogOrigin = "\\169.254.203.255\RunLogs";
+ComputerConfig = table(BecExpControlComputerName,BecExpParentPath,...
+    BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,CiceroLogOrigin);
+save(configName,"ComputerConfig",'-mat')
+
 %% Set the acquisition configuration
 Name = [
     "TOP";
@@ -71,7 +82,7 @@ BitsPerSample = [16;8;8;8;8]; % How many bits per pixel
 AcquisitionConfig = table(Name,CameraType,AdaptorName,DeviceID,...
     SerialNumber,ExposureTime,IsExternalTriggered,PixelSize,...
     ImageSize,BadRow,Magnification,ImageGroupSize,ConfigFun,QuantumEfficiencyData,BitsPerSample);
-save(configName,"AcquisitionConfig",'-mat')
+save(configName,"AcquisitionConfig",'-mat','-append')
 
 %% Set the ROI configuration
 RoiConfig = readtable("roi.csv.xlsx",'TextType','string');
@@ -90,13 +101,13 @@ if ~exist(dsLibPath,'file')
     end
 end
 
-BecExpConfig.ParentPath = fullfile(mainPath,"becExp"); % use test data path
+BecExpConfig.ParentPath = ComputerConfig.BecExpParentPath; % use test data path
 BecExpConfig.DataPrefix = "run";
 BecExpConfig.DataFormat = ".tif";
 BecExpConfig.IsAutoDelete = false;
-BecExpConfig.DatabaseName = "lithium_experiment";
-BecExpConfig.DatabaseTableName = "main";
-BecExpConfig.CiceroLogOrigin = "\\169.254.203.255\RunLogs";
+BecExpConfig.DatabaseName = ComputerConfig.BecExpDatabaseName;
+BecExpConfig.DatabaseTableName = ComputerConfig.BecExpDatabaseTableName;
+BecExpConfig.CiceroLogOrigin = ComputerConfig.CiceroLogOrigin;
 BecExpConfig.DataGroupSize = 3;
 BecExpConfig.IsAutoAcquire = true;
 BecExpConfig.OdColormap = {jet};
@@ -113,16 +124,6 @@ TrialName = BecExpConfig.TrialName(find(~ismember(BecExpConfig.TrialName,FringeR
 FringeRemovalMask = cell(numel(TrialName),1);
 FringeRemovalMaskConfig = [FringeRemovalMaskConfig;table(TrialName,FringeRemovalMask)];
 BecExpConfig = join(BecExpConfig,FringeRemovalMaskConfig);
-
-% % Construct the Acquisition objects
-% AcquisitionList = arrayfun(@(x) Acquisition(BecExpConfig(x,:).AcquisitionName),(1:size(BecExpConfig,1))');
-% BecExpConfig = addvars(BecExpConfig,AcquisitionList,'NewVariableNames',"Acquisition");
-% BecExpConfig.AcquisitionName = [];
-
-% % Construct the Roi objects
-% RoiList = arrayfun(@(x) Roi(BecExpConfig(x,:).RoiName,imagesize = BecExpConfig(x,:).Acquisition.ImageSize),(1:size(BecExpConfig,1))');
-% BecExpConfig = addvars(BecExpConfig,RoiList,'NewVariableNames',"Roi");
-% BecExpConfig.RoiName = [];
 
 save(configName,"BecExpConfig","BecExpParameterUnit",'-mat','-append')
 
