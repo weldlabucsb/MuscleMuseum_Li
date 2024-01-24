@@ -11,7 +11,7 @@ mainPath = "C:\data";
 
 %% Set the computer configuration
 BecExpControlComputerName = "WOODHOUSE";
-BecExpParentPath = "B:\LithiumData";
+BecExpParentPath = "B:\_Li\_LithiumData";
 BecExpDatabaseName = "lithium_experiment";
 BecExpDatabaseTableName = "main";
 CiceroComputerName = "GOB";
