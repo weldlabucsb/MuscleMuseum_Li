@@ -176,10 +176,15 @@ classdef CenterFit < BecAnalysis
                                 obj.MinimumFitNumber = 3;
                                 data{5,1} = 'Thermal Cloud Center Acceleration in x';
                                 data{5,2} = '';
-                                data{5,3} = 'Pixels/VarUnit^2';
                                 data{6,1} = 'Thermal Cloud Center Acceleration in y';
                                 data{6,2} = '';
-                                data{6,3} = 'Pixels/VarUnit^2';
+                                if isTimeUnit(becExp.ScannedParameterUnit)
+                                    data{5,3} = 'm/s^2';
+                                    data{6,3} = 'm/s^2';
+                                else
+                                    data{5,3} = 'Pixels/VarUnit^2';
+                                    data{6,3} = 'Pixels/VarUnit^2';
+                                end
                             case "SineFit1D"
                                 obj.MinimumFitNumber = 4;
                                 data{5,1} = 'Thermal Cloud Center Slosh Amplitude in x';
@@ -256,8 +261,14 @@ classdef CenterFit < BecAnalysis
                                         ParabolicFit1D([paraList,becExp.DensityFit.ThermalCloudCenter(2,:).']);
                                     obj.FitDataThermalX.do;
                                     obj.FitDataThermalY.do;
-                                    obj.ThermalCloudCenterAcceleration = ...
-                                        2 * [obj.FitDataThermalX.Coefficient(1);obj.FitDataThermalY.Coefficient(1)];
+                                    if isTimeUnit(becExp.ScannedParameterUnit)
+                                        tUnit = unit2SI(becExp.ScannedParameterUnit);
+                                        obj.ThermalCloudCenterAcceleration = ...
+                                            1 / (tUnit^2) * 2 * [obj.FitDataThermalX.Coefficient(1);obj.FitDataThermalY.Coefficient(1)];
+                                    else
+                                        obj.ThermalCloudCenterAcceleration = ...
+                                            2 * [obj.FitDataThermalX.Coefficient(1);obj.FitDataThermalY.Coefficient(1)];
+                                    end
                             case "SineFit1D"
                                 %% Sine Fit
                                     obj.FitDataThermalX = ...
@@ -320,8 +331,13 @@ classdef CenterFit < BecAnalysis
                                     obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterSlope(1)/px);
                                     obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterSlope(2)/px);
                             case "ParabolicFit1D"
+                                if isTimeUnit(becExp.ScannedParameterUnit)
+                                    obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterAcceleration(1));
+                                    obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterAcceleration(2));
+                                else
                                     obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterAcceleration(1)/px);
                                     obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterAcceleration(2)/px);
+                                end
                             case "SineFit1D"
                                     obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterSloshAmplitude(1)/px);
                                     obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterSloshAmplitude(2)/px);
