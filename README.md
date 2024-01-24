@@ -21,6 +21,21 @@ Still under construction:
 - Gross-Pitaevskii equation simulation
 - Lattice simulation
 
-Know issues
+Known issues
 
 - The database functions I wrote are not compatible with MATLAB 2023b. Need to fix this in the future
+
+To set up the environment:
+1. Install MATLAB. I only tested my code with MATLAB 2023a. MATLAB 2023b is not compatible. Required MATLAB packages:
+    * Data Acquisition Toolbox
+    * Curve Fitting Toolbox
+    * Parallel Computing Toolbox
+2. Install Python that is [compatible with your MATLAB version](https://www.mathworks.com/support/requirements/python-compatibility.html). Make sure the Python path is in your environment variable. Check if you can invoke Python in command line.  
+3. Install [ARC](https://arc-alkali-rydberg-calculator.readthedocs.io/en/latest/installation.html)
+4. Install [PostgreSQL](https://www.postgresql.org/)
+5. Set up database. You may use the setDatabase.m script in .config
+
+To use:
+1. Run init.m
+2. Run BecControlPanel
+
