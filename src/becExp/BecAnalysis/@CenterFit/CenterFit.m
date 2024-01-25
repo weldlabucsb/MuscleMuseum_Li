@@ -343,8 +343,8 @@ classdef CenterFit < BecAnalysis
                                     obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterSloshAmplitude(2)/px);
                                     obj.ParaTable.Data{7,2} = num2str(obj.ThermalCloudCenterSloshOffset(1)/px);
                                     obj.ParaTable.Data{8,2} = num2str(obj.ThermalCloudCenterSloshOffset(2)/px);
-                                    obj.ParaTable.Data{9,2} = num2str(obj.ThermalCloudCenterSloshFrequency(1)/px);
-                                    obj.ParaTable.Data{10,2} = num2str(obj.ThermalCloudCenterSloshFrequency(2)/px);
+                                    obj.ParaTable.Data{9,2} = num2str(obj.ThermalCloudCenterSloshFrequency(1));
+                                    obj.ParaTable.Data{10,2} = num2str(obj.ThermalCloudCenterSloshFrequency(2));
                         end
                     end
                 case "BimodalFit1D"

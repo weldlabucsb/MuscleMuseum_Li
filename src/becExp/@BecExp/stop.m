@@ -2,6 +2,13 @@ function stop(obj)
 obj.displayLog(" ")
 obj.displayLog("Trial #" + string(obj.SerialNumber) + ": Stopping data acquisition and real-time analysis.")
 
+if obj.IsAutoAcquire
+    obj.Acquisition.stopCamera;
+else
+    obj.Watcher.Enabled = false;
+end
+obj.Analyzer.Enabled = false;
+
 if obj.NCompletedRun == 0
     obj.displayLog("No run has been acquired. Deleting this trial.")
     for ii = 1:numel(obj.AnalysisMethod)
@@ -11,13 +18,6 @@ if obj.NCompletedRun == 0
     obj.delete
     return
 end
-
-if obj.IsAutoAcquire
-    obj.Acquisition.stopCamera;
-else
-    obj.Watcher.Enabled = false;
-end
-obj.Analyzer.Enabled = false;
 
 if obj.Od.FringeRemovalMethod == "None"
     obj.displayLog("Saving the figures.")
