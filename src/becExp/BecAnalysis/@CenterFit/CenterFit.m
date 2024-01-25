@@ -201,10 +201,15 @@ classdef CenterFit < BecAnalysis
                                 data{8,3} = 'Pixels';
                                 data{9,1} = 'Thermal Cloud Center Slosh Frequency in x';
                                 data{9,2} = '';
-                                data{9,3} = '1/VarUnit';
                                 data{10,1} = 'Thermal Cloud Center Slosh Frequency in y';
                                 data{10,2} = '';
-                                data{10,3} = '1/VarUnit';
+                                if isTimeUnit(becExp.ScannedParameterUnit)
+                                    data{9,3} = 'Hz';
+                                    data{10,3} = 'Hz';
+                                else
+                                    data{9,3} = '1/VarUnit';
+                                    data{10,3} = '1/VarUnit';
+                                end
                         end
                     
                     case "BimodalFit1D"
@@ -233,6 +238,9 @@ classdef CenterFit < BecAnalysis
                 return
             end
             paraList = becExp.ScannedParameterList.';
+            if isTimeUnit(becExp.ScannedParameterUnit)
+                tUnit = unit2SI(becExp.ScannedParameterUnit);
+            end
 
             %% Update data
             switch becExp.DensityFit.FitMethod
@@ -262,7 +270,6 @@ classdef CenterFit < BecAnalysis
                                     obj.FitDataThermalX.do;
                                     obj.FitDataThermalY.do;
                                     if isTimeUnit(becExp.ScannedParameterUnit)
-                                        tUnit = unit2SI(becExp.ScannedParameterUnit);
                                         obj.ThermalCloudCenterAcceleration = ...
                                             1 / (tUnit^2) * 2 * [obj.FitDataThermalX.Coefficient(1);obj.FitDataThermalY.Coefficient(1)];
                                     else
@@ -281,8 +288,13 @@ classdef CenterFit < BecAnalysis
                                         [obj.FitDataThermalX.Coefficient(1);obj.FitDataThermalY.Coefficient(1)];
                                     obj.ThermalCloudCenterSloshOffset = ...
                                         [obj.FitDataThermalX.Coefficient(4);obj.FitDataThermalY.Coefficient(4)];
-                                    obj.ThermalCloudCenterSloshFrequency = ...
-                                        [obj.FitDataThermalX.Coefficient(2);obj.FitDataThermalY.Coefficient(2)];
+                                    if isTimeUnit(becExp.ScannedParameterUnit)
+                                        obj.ThermalCloudCenterSloshFrequency = ...
+                                            1 / tUnit * [obj.FitDataThermalX.Coefficient(2);obj.FitDataThermalY.Coefficient(2)];
+                                    else
+                                        obj.ThermalCloudCenterSloshFrequency = ...
+                                            [obj.FitDataThermalX.Coefficient(2);obj.FitDataThermalY.Coefficient(2)];
+                                    end
                         end
                     end
                 case "BimodalFit1D"

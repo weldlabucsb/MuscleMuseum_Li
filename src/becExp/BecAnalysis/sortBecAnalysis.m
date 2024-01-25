@@ -3,7 +3,7 @@ function analysisListSorted = sortBecAnalysis(analysisList)
 %   We need to run different analysis in certain order so we have to sort
 %   the analysis methods
 analysisListSorted = analysisList(:);
-allAnalysis = ["DensityFit";"AtomNumber";"Tof";"CenterFit"];
+allAnalysis = ["DensityFit";"AtomNumber";"Tof";"CenterFit";"KapitzaDirac"];
 extraAnalysis = analysisListSorted(~ismember(analysisListSorted,allAnalysis));
 analysisListSorted = [allAnalysis(ismember(allAnalysis,analysisListSorted));...
     extraAnalysis];

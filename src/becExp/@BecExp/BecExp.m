@@ -38,7 +38,7 @@ classdef BecExp < Trial
 
     properties (Constant,Hidden)
         AnalysisOrder = {"Od";"Imaging";"Ad";...
-            "DensityFit";["AtomNumber";"Tof";"CenterFit"]}
+            "DensityFit";["AtomNumber";"Tof";"CenterFit";"KapitzaDirac"]}
     end
 
     methods
