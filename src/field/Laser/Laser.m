@@ -20,6 +20,7 @@ classdef Laser < matlab.mixin.Heterogeneous & handle
         AngularWavevector
         WavelengthInAir
         IntensityLu %Intensity in mW/cm^2
+        ElectricFieldAmplitude
     end
     
     methods
@@ -116,6 +117,9 @@ classdef Laser < matlab.mixin.Heterogeneous & handle
         end
         function I = get.IntensityLu(obj)
             I = obj.Intensity / 10;
+        end
+        function E = get.ElectricFieldAmplitude(obj)
+            E = sqrt(obj.Intensity * 2 * Constants.SI("Z0"));
         end
         function obj = rotate(obj,eul)
             rotm = eul2rotm(eul,"ZYZ");
