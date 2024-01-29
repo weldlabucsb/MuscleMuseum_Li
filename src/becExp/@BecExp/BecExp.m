@@ -3,6 +3,7 @@ classdef BecExp < Trial
     %   Detailed explanation goes here
     properties
         Roi Roi
+        SubRoi Roi
         Acquisition Acquisition
         AnalysisMethod string
     end
@@ -76,26 +77,7 @@ classdef BecExp < Trial
                 strtrim(split(obj.AnalysisMethod,";"))]));
             obj.setAnalyzer;
 
-            obj.Od.CLim = [0,obj.ConfigParameter.OdCLim];
-            obj.Od.Colormap = obj.ConfigParameter.OdColormap;
-            obj.Od.FringeRemovalMask = obj.ConfigParameter.FringeRemovalMask;
-            obj.Od.FringeRemovalMethod = obj.ConfigParameter.FringeRemovalMethod;
-            obj.Imaging.ImagingStage = obj.ConfigParameter.ImagingStage;
-            obj.Ad.AdMethod = obj.ConfigParameter.AdMethod;
-            obj.Ad.CLim = [0,obj.ConfigParameter.AdCLim];
-
-            if isprop(obj,'DensityFit')
-                obj.DensityFit.FitMethod = obj.ConfigParameter.DensityFitMethod;
-            end
-            
-            if isprop(obj,'AtomNumber')
-                obj.AtomNumber.YLim = [0,obj.ConfigParameter.AtomNumberYLim];
-            end
-
-            if isprop(obj,'CenterFit')
-                obj.CenterFit.FitMethod = [0,obj.ConfigParameter.CenterFitMethod];
-            end
-
+            % Finalize construction
             obj.update;
             obj.displayLog("Object construction done.")
         end

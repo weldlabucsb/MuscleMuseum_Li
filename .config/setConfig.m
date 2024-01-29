@@ -86,6 +86,9 @@ save(configName,"AcquisitionConfig",'-mat','-append')
 
 %% Set the ROI configuration
 RoiConfig = readtable("roi.csv.xlsx",'TextType','string');
+RoiConfig.SubRoiSeparation = cell2mat(arrayfun(@str2num,RoiConfig.SubRoiSeparation,'UniformOutput',false));
+RoiConfig.SubRoiNRowColumn = cell2mat(arrayfun(@str2num,RoiConfig.SubRoiNRowColumn,'UniformOutput',false));
+RoiConfig.SubRoiCenterSize = arrayfun(@str2num,string(RoiConfig.SubRoiCenterSize),'UniformOutput',false);
 save(configName,"RoiConfig",'-mat','-append')
 
 %% Set the BEC experiment configuration
@@ -120,6 +123,7 @@ BecExpParameterUnit = readtable("parameterUnit.csv.xlsx",'TextType','string');
 BecExpConfig = join(BecExpConfig,BecExpParameterUnit,'Keys',{'ScannedParameter','ScannedParameter'});
 
 load("FringeRemovalMaskConfig.mat","FringeRemovalMaskConfig")
+% Assign empty masks for 
 TrialName = BecExpConfig.TrialName(find(~ismember(BecExpConfig.TrialName,FringeRemovalMaskConfig.TrialName)));
 FringeRemovalMask = cell(numel(TrialName),1);
 FringeRemovalMaskConfig = [FringeRemovalMaskConfig;table(TrialName,FringeRemovalMask)];
