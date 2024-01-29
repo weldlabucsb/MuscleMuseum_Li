@@ -55,10 +55,10 @@ classdef DensityFit < BecAnalysis
             xList = obj.BecExp.Roi.XList;
             yList = obj.BecExp.Roi.YList;
 
-            if isempty(obj.BecExp.Roi.SubRoi)
+            if isempty(becExp.Roi.SubRoi)
                 nSub = 1;
             else
-                nSub = numel(obj.BecExp.Roi.SubRoi);
+                nSub = numel(becExp.Roi.SubRoi);
             end
 
             switch obj.FitMethod
@@ -70,8 +70,8 @@ classdef DensityFit < BecAnalysis
                     obj.FitDataY = BosonicGaussianFit1D([yList,yList]);
             end
 
-            obj.FitDataX = repmat(obj.FitDataX,1,1,nSub);
-            obj.FitDataY = repmat(obj.FitDataY,1,1,nSub);
+            obj.FitDataX = repmat(fitDataX,1,nRun,nSub);
+            obfitDataY = repmat(fitDataY,1,nRun,nSub);
         end
 
         function updateData(obj,runIdx)
