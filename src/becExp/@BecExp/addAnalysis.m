@@ -32,7 +32,7 @@ for ii = 1:numel(newAnalysisList)
             case "AtomNumber"
                 obj.AtomNumber.YLim = [0,obj.ConfigParameter.AtomNumberYLim];
             case "CenterFit"
-                obj.CenterFit.FitMethod = [0,obj.ConfigParameter.CenterFitMethod];
+                obj.CenterFit.FitMethod = obj.ConfigParameter.CenterFitMethod;
         end
     end
 

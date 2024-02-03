@@ -6,7 +6,10 @@ classdef AtomNumber < BecAnalysis
        Raw
        Thermal
        Condensate
-       Total
+    end
+
+    properties (Dependent)
+        % Total
     end
 
     properties (Constant)
@@ -40,10 +43,20 @@ classdef AtomNumber < BecAnalysis
         
         function initialize(obj)
             fig = obj.Chart(1).initialize;
-            obj.Raw = 0;
-            obj.Thermal = 0;
-            obj.Condensate = 0;
-            obj.Total = 0;
+            nSub = obj.BecExp.Roi.NSub;
+            nSub(nSub == 0) = 1;
+
+            if isempty(obj.BecExp.Roi.SubRoi)
+                obj.Raw = 0;
+                obj.Thermal = 0;
+                obj.Condensate = 0;
+                % obj.Total = 0;
+            else
+                obj.Raw = zeros(1,1,nSub);
+                obj.Thermal = zeros(1,1,nSub);
+                obj.Condensate = zeros(1,1,nSub);
+                % obj.Total = zeros(1,1,nSub);
+            end
 
             if ~ishandle(fig)
                 return
@@ -63,44 +76,64 @@ classdef AtomNumber < BecAnalysis
             ax.YLim = obj.YLim;
             co = ax.ColorOrder;
 
-            obj.RawLine = line(ax,1,1);
-            obj.RawLine.Marker = "o";
-            obj.RawLine.MarkerFaceColor = co(1,:);
-            obj.RawLine.MarkerEdgeColor = co(1,:)*.5;
-            obj.RawLine.MarkerSize = 8;
-            obj.RawLine.LineWidth = 2;
-            obj.RawLine.Color = co(1,:);
+            mOrder = markerOrder();
+
+            % for ii = 1:nSub
+                obj.RawLine = line(ax,1,1);
+                obj.RawLine.Marker = mOrder(1);
+                obj.RawLine.MarkerFaceColor = co(1,:);
+                obj.RawLine.MarkerEdgeColor = co(1,:)*.5;
+                obj.RawLine.MarkerSize = 8;
+                obj.RawLine.LineWidth = 2;
+                obj.RawLine.Color = co(1,:);
+            % end
             
             if ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 hold(ax,'on')
                 switch obj.BecExp.DensityFit.FitMethod
                     case {"GaussianFit1D","BosonicGaussianFit1D"}
-                        obj.ThermalLine = line(ax,1,1);
-                        obj.ThermalLine.Marker = "o";
-                        obj.ThermalLine.MarkerFaceColor = co(2,:);
-                        obj.ThermalLine.MarkerEdgeColor = co(2,:)*.5;
-                        obj.ThermalLine.MarkerSize = 8;
-                        obj.ThermalLine.LineWidth = 2;
-                        obj.ThermalLine.Color = co(2,:);
-                        legend(ax,"Raw","Thermal")
+                        for ii = 1:numel(nSub)
+                            obj.ThermalLine = line(ax,1,1);
+                            obj.ThermalLine.Marker = mOrder(1);
+                            obj.ThermalLine.MarkerFaceColor = co(2,:);
+                            obj.ThermalLine.MarkerEdgeColor = co(2,:)*.5;
+                            obj.ThermalLine.MarkerSize = 8;
+                            obj.ThermalLine.LineWidth = 2;
+                            obj.ThermalLine.Color = co(2,:);
+                            legend(ax,"Raw","Thermal")
+                        end
                 end
                 hold(ax,'off')
-            end           
+            end
 
         end
 
         function updateData(obj,runIdx)
             becExp = obj.BecExp;
-            obj.Raw(runIdx) = sum(becExp.Ad.AdData(:,:,runIdx),"all") * (becExp.Acquisition.PixelSizeReal)^2;
+            nSub = becExp.Roi.NSub;
+            nSub(nSub == 0) = 1;
+            px = becExp.Acquisition.PixelSizeReal;
+
+            if isempty(becExp.Roi.SubRoi)
+                obj.Raw(runIdx) = sum(becExp.Ad.AdData(:,:,runIdx),"all") * px^2;
+            else
+                subData = becExp.Roi.selectSub(becExp.Ad.AdData(:,:,runIdx));
+                for ii = 1:nSub
+                    obj.Raw(1,runIdx,ii) = sum(subData{ii},"all") * px^2;
+                end
+            end
+
             if ismember("DensityFit",obj.BecExp.AnalysisMethod)
-                switch obj.BecExp.DensityFit.FitMethod
-                    case "GaussianFit1D"
-                        obj.Thermal(runIdx) = 2 * pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx)) * ...
-                            becExp.DensityFit.ThermalCloudCentralDensity(runIdx);
-                    case "BosonicGaussianFit1D"
-                        obj.Thermal(runIdx) = pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx)) * ...
-                            becExp.DensityFit.ThermalCloudCentralDensity(runIdx) * ...
-                            boseFunction(1,3) / boseFunction(1,2);
+                for ii = 1:nSub
+                    switch obj.BecExp.DensityFit.FitMethod
+                        case "GaussianFit1D"
+                            obj.Thermal(runIdx) = 2 * pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx)) * ...
+                                becExp.DensityFit.ThermalCloudCentralDensity(runIdx);
+                        case "BosonicGaussianFit1D"
+                            obj.Thermal(runIdx) = pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx)) * ...
+                                becExp.DensityFit.ThermalCloudCentralDensity(runIdx) * ...
+                                boseFunction(1,3) / boseFunction(1,2);
+                    end
                 end
             end
         end
@@ -127,7 +160,10 @@ classdef AtomNumber < BecAnalysis
             lg = findobj(fig,"Type","Legend");
             lg.Location = "best";
         end
-
+        
+        % function val = get.Total(obj)
+        %     val = obj.Thermal + obj.Condensate;
+        % end
     end
 
     methods (Static)
