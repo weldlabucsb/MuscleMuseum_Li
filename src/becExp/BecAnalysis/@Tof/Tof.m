@@ -3,10 +3,8 @@ classdef Tof < BecAnalysis
     %   Detailed explanation goes here
 
     properties
-        FitDataThermalX
-        FitDataThermalY
-        FitDataCondensateX
-        FitDataCondensateY
+        FitDataThermal
+        FitDataCondensate
     end
 
     properties (SetAccess = protected)
@@ -45,23 +43,31 @@ classdef Tof < BecAnalysis
         end
 
         function initialize(obj)
+            %% Check if we can do TOF analysis
             if obj.BecExp.ScannedParameter ~= "TOF"
                 warning("Scanned Parameter is not TOF. Can not do TOF analysis")
                 return
             elseif ~ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 warning("No DensityFit. Can not do TOF analysis")
                 return
+            elseif ~isempty(obj.BecExp.Roi.SubRoi)
+                warning("Can not do TOF analysis for sub-ROIs.")
+                return
             end
-            fig = obj.Chart(1).initialize;
-            obj.FitDataThermalX = [];
-            obj.FitDataThermalY = [];
+
+            %% Initialize parameters
+            obj.FitDataThermal = LinearFit1D([1,1]);
+            obj.FitDataThermal = repmat(obj.FitDataThermal,2,1);
             obj.TofTime = 0;
             obj.kBoverM = Constants.SI("kB") / obj.BecExp.Atom.mass;
 
+            %% Initialize plots
+            fig = obj.Chart(1).initialize;
             if ~ishandle(fig)
                 return
             end
 
+            % Initialize the figure
             p1 = uipanel(fig,"Position",[0,0.3,1,0.7]);
             ax = axes(p1);
             ax.XLabel.String = "$t^{2}_{\mathrm{TOF}}$ [$\mu\mathrm{s}^2$]";
@@ -74,6 +80,7 @@ classdef Tof < BecAnalysis
             ax.YGrid = "on";
             co = ax.ColorOrder;
             
+            % Initialize the table
             p2 = uipanel(fig,"Position",[0,0,1,0.3]);
             obj.ParaTable = uitable(p2,'Data', [1 2 3],Unit='normalized',Position=[0,0,1,1]);
             obj.ParaTable.ColumnName = {'Parameter','Value','Unit'};
@@ -95,7 +102,6 @@ classdef Tof < BecAnalysis
             data{6,1} = 'Trapping frequency in y';
             data{6,2} = '';
             data{6,3} = 'Hz';
-
 
             obj.ParaTable.Data = data;
             obj.ParaTable.FontSize = 12;
@@ -143,22 +149,22 @@ classdef Tof < BecAnalysis
         function updateData(obj,~)
             becExp = obj.BecExp;
             if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 2 ||...
-                    ~ismember("DensityFit",obj.BecExp.AnalysisMethod)
+                    ~ismember("DensityFit",obj.BecExp.AnalysisMethod) ||...
+                    ~isempty(obj.BecExp.Roi.SubRoi)
                 return
             end
             obj.TofTime = becExp.ScannedParameterList * unit2SI(becExp.ScannedParameterUnit);
             wt = obj.BecExp.DensityFit.ThermalCloudSize;
-            obj.FitDataThermalX = LinearFit1D([(obj.TofTime.^2).',(wt(1,:).^2).']);
-            obj.FitDataThermalX.do;
+            obj.FitDataThermal = [LinearFit1D([(obj.TofTime.^2).',(wt(1,:).^2).']);...
+                LinearFit1D([(obj.TofTime.^2).',(wt(2,:).^2).'])];
+            obj.FitDataThermal(1).do;
+            obj.FitDataThermal(2).do;
 
-            obj.FitDataThermalY = LinearFit1D([(obj.TofTime.^2).',(wt(2,:).^2).']);
-            obj.FitDataThermalY.do;
-
-            obj.Temperature = mean([obj.FitDataThermalX.Coefficient(1),obj.FitDataThermalY.Coefficient(1)]) / ...
+            obj.Temperature = mean([obj.FitDataThermal(1).Coefficient(1),obj.FitDataThermal(2).Coefficient(1)]) / ...
                 2 / obj.kBoverM;
-            obj.TrappingFrequency = sqrt(1 ./ ([obj.FitDataThermalX.Coefficient(2);obj.FitDataThermalY.Coefficient(2)] / ...
+            obj.TrappingFrequency = sqrt(1 ./ ([obj.FitDataThermal(1).Coefficient(2);obj.FitDataThermal(2).Coefficient(2)] / ...
                 2 / obj.kBoverM / obj.Temperature));
-            obj.ThermalCloudSizeInSitu = sqrt([obj.FitDataThermalX.Coefficient(2);obj.FitDataThermalY.Coefficient(2)]);
+            obj.ThermalCloudSizeInSitu = sqrt([obj.FitDataThermal(1).Coefficient(2);obj.FitDataThermal(2).Coefficient(2)]);
             obj.ThermalCloudCentralDensityInSitu = max(becExp.AtomNumber.Thermal) / ...
                 pi / prod(obj.ThermalCloudSizeInSitu) / boseFunction(1,3) * boseFunction(1,2);
         end
@@ -167,16 +173,17 @@ classdef Tof < BecAnalysis
             becExp = obj.BecExp;
             fig = obj.Chart(1).Figure;
             if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 2 ...
-                    || ~ishandle(fig) || ~ismember("DensityFit",obj.BecExp.AnalysisMethod)
+                    || ~ishandle(fig) || ~ismember("DensityFit",obj.BecExp.AnalysisMethod) ||...
+                    ~isempty(obj.BecExp.Roi.SubRoi)
                 return
             end
             
             switch obj.BecExp.DensityFit.FitMethod
                 case {"GaussianFit1D","BosonicGaussianFit1D"}
-                    rawXT = obj.FitDataThermalX.RawData;
-                    fitXT = obj.FitDataThermalX.FitPlotData;
-                    rawYT = obj.FitDataThermalY.RawData;
-                    fitYT = obj.FitDataThermalY.FitPlotData;
+                    rawXT = obj.FitDataThermal(1).RawData;
+                    fitXT = obj.FitDataThermal(1).FitPlotData;
+                    rawYT = obj.FitDataThermal(2).RawData;
+                    fitYT = obj.FitDataThermal(2).FitPlotData;
                     obj.ThermalXLine.XData = rawXT(:,1) * 1e12;
                     obj.ThermalXLine.YData = rawXT(:,2) * 1e12;
                     obj.ThermalXFitLine.XData = fitXT(:,1) * 1e12;
@@ -192,11 +199,9 @@ classdef Tof < BecAnalysis
                     obj.ParaTable.Data{4,2} = obj.ThermalCloudCentralDensityInSitu;
                     obj.ParaTable.Data{5,2} = obj.TrappingFrequency(1);
                     obj.ParaTable.Data{6,2} = obj.TrappingFrequency(2);
-                    % ax.Title.String = string(obj.Temperature);
             end
             lg = findobj(fig,"Type","Legend");
             lg.Location = "best";
-            
         end
 
         function refresh(obj)

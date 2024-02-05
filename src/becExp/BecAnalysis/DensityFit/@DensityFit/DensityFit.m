@@ -4,8 +4,7 @@ classdef DensityFit < BecAnalysis
 
     properties
         FitMethod string = "BosonicGaussianFit1D"
-        FitDataX
-        FitDataY
+        FitData
     end
 
     properties (SetAccess = protected)
@@ -32,70 +31,47 @@ classdef DensityFit < BecAnalysis
         end
 
         function initialize(obj)
-            obj.Gui(1).initialize(obj.BecExp)
+            becExp = obj.BecExp;
+            nSub = becExp.Roi.NSub;
+            nSub(nSub == 0) = 1;
 
-            if isempty(obj.BecExp.Roi.SubRoi)
-                obj.ThermalCloudCenter = [0;0];
-                obj.ThermalCloudSize = [0;0];
-                obj.ThermalCloudCentralDensity = 0;
-                obj.CondensateCenter = [0;0];
-                obj.CondensateSize = [0;0];
-                obj.CondensateCentralDensity = 0;
-                obj.BackGroundDensity = 0;
-            else
-                obj.ThermalCloudCenter = zeros(2,1,1);
-                obj.ThermalCloudSize = zeros(2,1,1);
-                obj.ThermalCloudCentralDensity = zeros(1,1,1);
-                obj.CondensateCenter = zeros(2,1,1);
-                obj.CondensateSize = zeros(2,1,1);
-                obj.CondensateCentralDensity = zeros(1,1,1);
-                obj.BackGroundDensity = zeros(1,1,1);
-            end
+            %% Initialize plots
+            obj.Gui(1).initialize(becExp)
 
-            xList = obj.BecExp.Roi.XList;
-            yList = obj.BecExp.Roi.YList;
+            %% Initialize data
+            obj.ThermalCloudCenter = zeros(2,1,nSub);
+            obj.ThermalCloudSize = zeros(2,1,nSub);
+            obj.ThermalCloudCentralDensity = zeros(1,1,nSub);
+            obj.CondensateCenter = zeros(2,1,nSub);
+            obj.CondensateSize = zeros(2,1,nSub);
+            obj.CondensateCentralDensity = zeros(1,1,nSub);
+            obj.BackGroundDensity = zeros(1,1,nSub);
 
-            if isempty(obj.BecExp.Roi.SubRoi)
-                nSub = 1;
-            else
-                nSub = numel(obj.BecExp.Roi.SubRoi);
-            end
-
+            %% Initialize fit objects
             switch obj.FitMethod
                 case "GaussianFit1D"
-                    obj.FitDataX = GaussianFit1D([xList,xList]);
-                    obj.FitDataY = GaussianFit1D([yList,yList]);
+                    obj.FitData = GaussianFit1D([1,1]);
                 case "BosonicGaussianFit1D"
-                    obj.FitDataX = BosonicGaussianFit1D([xList,xList]);
-                    obj.FitDataY = BosonicGaussianFit1D([yList,yList]);
+                    obj.FitData = BosonicGaussianFit1D([1,1]);
             end
-
-            obj.FitDataX = repmat(obj.FitDataX,1,1,nSub);
-            obj.FitDataY = repmat(obj.FitDataY,1,1,nSub);
+            obj.FitData = repmat(obj.FitData,2,1,nSub);
         end
 
         function updateData(obj,runIdx)
             becExp = obj.BecExp;
             px = becExp.Acquisition.PixelSizeReal;
             nRun = numel(runIdx);
-            if isempty(becExp.Roi.SubRoi)
-                nSub = 1;
-            else
-                nSub = numel(becExp.Roi.SubRoi);
-            end
+            nSub = obj.BecExp.Roi.NSub;
+            nSub(nSub == 0) = 1;
 
-            %% Initialize the fit objects
+            %% Initialize fit objects
             switch obj.FitMethod
                 case "GaussianFit1D"
-                    fitDataX = GaussianFit1D([1,1]);
-                    fitDataY = GaussianFit1D.empty([1,1]);
+                    fitData = GaussianFit1D([1,1]);
                 case "BosonicGaussianFit1D"
-                    fitDataX = BosonicGaussianFit1D([1,1]);
-                    fitDataY = BosonicGaussianFit1D([1,1]);
+                    fitData = BosonicGaussianFit1D([1,1]);
             end
-
-            fitDataX = repmat(fitDataX,1,nRun,nSub);
-            fitDataY = repmat(fitDataY,1,nRun,nSub);
+            fitData = repmat(fitData,2,nRun,nSub);
 
             %% Assign data to the fit objects
             for ii = 1:nRun
@@ -118,58 +94,55 @@ classdef DensityFit < BecAnalysis
                     end
                     switch obj.FitMethod
                         case "GaussianFit1D"
-                            fitDataX(1,ii,jj) = GaussianFit1D([xList,xRaw]);
-                            fitDataY(1,ii,jj) = GaussianFit1D([yList,yRaw]);
+                            fitData(1,ii,jj) = GaussianFit1D([xList,xRaw]);
+                            fitData(2,ii,jj) = GaussianFit1D([yList,yRaw]);
                         case "BosonicGaussianFit1D"
-                            fitDataX(1,ii,jj) = BosonicGaussianFit1D([xList,xRaw]);
-                            fitDataY(1,ii,jj) = BosonicGaussianFit1D([yList,yRaw]);
+                            fitData(1,ii,jj) = BosonicGaussianFit1D([xList,xRaw]);
+                            fitData(2,ii,jj) = BosonicGaussianFit1D([yList,yRaw]);
                     end
                 end
             end
 
             %% Do fit
-            if nRun*nSub > 1
+            % if numel(fitData) > 2
                 p = gcp('nocreate');
                 if ~isempty(p)
-                    parfor ii = 1:nRun*nSub
-                        fitDataX(ii) = fitDataX(ii).do;
-                        fitDataY(ii) = fitDataY(ii).do;
+                    parfor ii = 1:numel(fitData)
+                        fitData(ii) = fitData(ii).do;
                     end
                 else
-                    for ii = 1:nRun*nSub
-                        fitDataX(ii) = fitDataX(ii).do;
-                        fitDataY(ii) = fitDataY(ii).do;
+                    for ii = 1:numel(fitData)
+                        fitData(ii) = fitData(ii).do;
                     end
                 end
-                obj.FitDataX(1,runIdx,1:nSub) = fitDataX;
-                obj.FitDataY(1,runIdx,1:nSub) = fitDataY;
-            else
-                fitDataX.do;
-                fitDataY.do;
-                obj.FitDataX(1,runIdx,1:nSub) = fitDataX;
-                obj.FitDataY(1,runIdx,1:nSub) = fitDataY;
-            end
+                obj.FitData(:,runIdx,1:nSub) = fitData;
+            % else
+            %     fitData(1).do;
+            %     fitData(2).do;
+            %     obj.FitData(1,runIdx,1) = fitData(1);
+            %     obj.FitData(2,runIdx,1) = fitData(2);
+            % end
 
             %% Assign values to properties
             for ii = runIdx
                 for jj = 1:nSub
                     switch obj.FitMethod
                         case "GaussianFit1D"
-                            amp = [obj.FitDataX(1,ii,jj).Coefficient(1);...
-                                obj.FitDataY(1,ii,jj).Coefficient(1)];
-                            obj.ThermalCloudCenter(:,ii,jj) = px * [obj.FitDataX(1,ii,jj).Coefficient(2);...
-                                obj.FitDataY(1,ii,jj).Coefficient(2)];
+                            amp = [obj.FitData(1,ii,jj).Coefficient(1);...
+                                obj.FitData(2,ii,jj).Coefficient(1)];
+                            obj.ThermalCloudCenter(:,ii,jj) = px * [obj.FitData(1,ii,jj).Coefficient(2);...
+                                obj.FitData(2,ii,jj).Coefficient(2)];
                             obj.ThermalCloudSize(:,ii,jj) = sqrt(2) * px * ...
-                                [obj.FitDataX(1,ii,jj).Coefficient(3);obj.FitDataY(1,ii,jj).Coefficient(3)];
+                                [obj.FitData(1,ii,jj).Coefficient(3);obj.FitData(2,ii,jj).Coefficient(3)];
                             obj.ThermalCloudCentralDensity(1,ii,jj) = ...
                                 mean(amp/sqrt(2*pi)./flip(obj.ThermalCloudSize(:,ii,jj)));
                         case "BosonicGaussianFit1D"
-                            amp = [obj.FitDataX(1,ii,jj).Coefficient(1);...
-                                obj.FitDataY(1,ii,jj).Coefficient(1)];
-                            obj.ThermalCloudCenter(:,ii,jj) = px * [obj.FitDataX(1,ii,jj).Coefficient(2);...
-                                obj.FitDataY(1,ii,jj).Coefficient(2)];
+                            amp = [obj.FitData(1,ii,jj).Coefficient(1);...
+                                obj.FitData(2,ii,jj).Coefficient(1)];
+                            obj.ThermalCloudCenter(:,ii,jj) = px * [obj.FitData(1,ii,jj).Coefficient(2);...
+                                obj.FitData(2,ii,jj).Coefficient(2)];
                             obj.ThermalCloudSize(:,ii,jj) = sqrt(2) * px * ...
-                                [obj.FitDataX(1,ii,jj).Coefficient(3);obj.FitDataY(1,ii,jj).Coefficient(3)];
+                                [obj.FitData(1,ii,jj).Coefficient(3);obj.FitData(2,ii,jj).Coefficient(3)];
                             obj.ThermalCloudCentralDensity(1,ii,jj) = ...
                                 mean(amp*boseFunction(1,2)/sqrt(pi)./flip(obj.ThermalCloudSize(:,ii,jj)));
                     end

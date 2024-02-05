@@ -9,7 +9,7 @@ classdef AtomNumber < BecAnalysis
     end
 
     properties (Dependent)
-        % Total
+        Total
     end
 
     properties (Constant)
@@ -21,10 +21,10 @@ classdef AtomNumber < BecAnalysis
     end
 
     properties (Hidden,Transient)
-        RawLine 
-        ThermalLine 
-        CondensateLine
-        TotalLine
+        RawLine matlab.graphics.primitive.Line
+        ThermalLine matlab.graphics.primitive.Line
+        CondensateLine matlab.graphics.primitive.Line
+        TotalLine matlab.graphics.primitive.Line
     end
     
     methods
@@ -42,28 +42,25 @@ classdef AtomNumber < BecAnalysis
         end
         
         function initialize(obj)
+            becExp = obj.BecExp;
             fig = obj.Chart(1).initialize;
-            nSub = obj.BecExp.Roi.NSub;
+            nSub = becExp.Roi.NSub;
             nSub(nSub == 0) = 1;
 
-            if isempty(obj.BecExp.Roi.SubRoi)
-                obj.Raw = 0;
-                obj.Thermal = 0;
-                obj.Condensate = 0;
-                % obj.Total = 0;
-            else
-                obj.Raw = zeros(1,1,nSub);
-                obj.Thermal = zeros(1,1,nSub);
-                obj.Condensate = zeros(1,1,nSub);
-                % obj.Total = zeros(1,1,nSub);
-            end
+            %% Initialize data
+            obj.Raw = zeros(1,1,nSub);
+            obj.Thermal = zeros(1,1,nSub);
+            obj.Condensate = zeros(1,1,nSub);
 
+            %% Initialize figures
             if ~ishandle(fig)
                 return
             end
 
+            % Listener for plot y limit
             addlistener(obj,'YLim','PostSet',@obj.handlePropEvents);
 
+            % Initialize axis
             ax = gca;
             ax.Box = "on";
             ax.XGrid = "on";
@@ -75,35 +72,51 @@ classdef AtomNumber < BecAnalysis
             ax.FontSize = 12;
             ax.YLim = obj.YLim;
             co = ax.ColorOrder;
-
             mOrder = markerOrder();
 
-            % for ii = 1:nSub
-                obj.RawLine = line(ax,1,1);
-                obj.RawLine.Marker = mOrder(1);
-                obj.RawLine.MarkerFaceColor = co(1,:);
-                obj.RawLine.MarkerEdgeColor = co(1,:)*.5;
-                obj.RawLine.MarkerSize = 8;
-                obj.RawLine.LineWidth = 2;
-                obj.RawLine.Color = co(1,:);
-            % end
+            % Initialize raw plots
+            for ii = 1:nSub
+                obj.RawLine(ii) = line(ax,1,1);
+                obj.RawLine(ii).Marker = mOrder(ii);
+                obj.RawLine(ii).MarkerFaceColor = co(1,:);
+                obj.RawLine(ii).MarkerEdgeColor = co(1,:)*.5;
+                obj.RawLine(ii).MarkerSize = 8;
+                obj.RawLine(ii).LineWidth = 2;
+                obj.RawLine(ii).Color = co(1,:);
+            end
+            legendStrRaw = arrayfun(@(x) "Raw " + x,1:nSub);
             
-            if ismember("DensityFit",obj.BecExp.AnalysisMethod)
+            % Initialize thermal and condensate plots
+            if ismember("DensityFit",becExp.AnalysisMethod)
                 hold(ax,'on')
-                switch obj.BecExp.DensityFit.FitMethod
+                switch becExp.DensityFit.FitMethod
                     case {"GaussianFit1D","BosonicGaussianFit1D"}
-                        for ii = 1:numel(nSub)
-                            obj.ThermalLine = line(ax,1,1);
-                            obj.ThermalLine.Marker = mOrder(1);
-                            obj.ThermalLine.MarkerFaceColor = co(2,:);
-                            obj.ThermalLine.MarkerEdgeColor = co(2,:)*.5;
-                            obj.ThermalLine.MarkerSize = 8;
-                            obj.ThermalLine.LineWidth = 2;
-                            obj.ThermalLine.Color = co(2,:);
-                            legend(ax,"Raw","Thermal")
+                        for ii = 1:nSub
+                            obj.ThermalLine(ii) = line(ax,1,1);
+                            obj.ThermalLine(ii).Marker = mOrder(ii);
+                            obj.ThermalLine(ii).MarkerFaceColor = co(2,:);
+                            obj.ThermalLine(ii).MarkerEdgeColor = co(2,:)*.5;
+                            obj.ThermalLine(ii).MarkerSize = 8;
+                            obj.ThermalLine(ii).LineWidth = 2;
+                            obj.ThermalLine(ii).Color = co(2,:);    
                         end
+                        if isempty(becExp.Roi.SubRoi)
+                            legendStr = ["Raw","Thermal"];
+                        else
+                            legendStrThermal = arrayfun(@(x) "Thermal " + x,1:nSub);
+                            legendStr = [legendStrRaw,legendStrThermal];
+                        end
+                        lg = legend(ax,legendStr(:));
                 end
                 hold(ax,'off')
+            else
+                lg = legend(ax,"Raw");
+            end
+            
+            if numel(lg.String) >= 8
+                lg.NumColumns = 2;
+                lg.FontSize = 8;
+                lg.Location = "best";
             end
 
         end
@@ -114,6 +127,7 @@ classdef AtomNumber < BecAnalysis
             nSub(nSub == 0) = 1;
             px = becExp.Acquisition.PixelSizeReal;
 
+            %% Update Raw data
             if isempty(becExp.Roi.SubRoi)
                 obj.Raw(runIdx) = sum(becExp.Ad.AdData(:,:,runIdx),"all") * px^2;
             else
@@ -123,15 +137,16 @@ classdef AtomNumber < BecAnalysis
                 end
             end
 
+            %% Update thermal and condensate data
             if ismember("DensityFit",obj.BecExp.AnalysisMethod)
                 for ii = 1:nSub
                     switch obj.BecExp.DensityFit.FitMethod
                         case "GaussianFit1D"
-                            obj.Thermal(runIdx) = 2 * pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx)) * ...
-                                becExp.DensityFit.ThermalCloudCentralDensity(runIdx);
+                            obj.Thermal(1,runIdx,ii) = 2 * pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx,ii)) * ...
+                                becExp.DensityFit.ThermalCloudCentralDensity(1,runIdx,ii);
                         case "BosonicGaussianFit1D"
-                            obj.Thermal(runIdx) = pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx)) * ...
-                                becExp.DensityFit.ThermalCloudCentralDensity(runIdx) * ...
+                            obj.Thermal(1,runIdx,ii) = pi * prod(becExp.DensityFit.ThermalCloudSize(:,runIdx,ii)) * ...
+                                becExp.DensityFit.ThermalCloudCentralDensity(1,runIdx,ii) * ...
                                 boseFunction(1,3) / boseFunction(1,2);
                     end
                 end
@@ -145,25 +160,38 @@ classdef AtomNumber < BecAnalysis
                 return
             end
 
-            paraList = obj.BecExp.ScannedParameterList;
-            obj.RawLine.XData = paraList;
-            obj.RawLine.YData = obj.Raw / obj.Unit;
+            %% Parameters. Use sorted list for plotting
+            becExp = obj.BecExp;
+            nSub = becExp.Roi.NSub;
+            nSub(nSub == 0) = 1;
+            paraListSorted = becExp.ScannedParameterListSorted;
+            runListSorted = becExp.RunListSorted;
 
-            if ismember("DensityFit",obj.BecExp.AnalysisMethod)
-                switch obj.BecExp.DensityFit.FitMethod
-                    case {"GaussianFit1D","BosonicGaussianFit1D"}
-                        obj.ThermalLine.XData = paraList;
-                        obj.ThermalLine.YData = obj.Thermal / obj.Unit;
+            %% Update raw plots
+            for ii = 1:nSub
+                obj.RawLine(ii).XData = paraListSorted;
+                obj.RawLine(ii).YData = obj.Raw(1,runListSorted,ii) / obj.Unit;
+            end
+
+            %% Update thermal and condensate plots
+            if ismember("DensityFit",becExp.AnalysisMethod)
+                for ii = 1:nSub
+                    switch becExp.DensityFit.FitMethod
+                        case {"GaussianFit1D","BosonicGaussianFit1D"}
+                            obj.ThermalLine(ii).XData = paraListSorted;
+                            obj.ThermalLine(ii).YData = obj.Thermal(1,runListSorted,ii) / obj.Unit;
+                    end
                 end
             end
             
+            %% Update lengend position
             lg = findobj(fig,"Type","Legend");
             lg.Location = "best";
         end
         
-        % function val = get.Total(obj)
-        %     val = obj.Thermal + obj.Condensate;
-        % end
+        function val = get.Total(obj)
+            val = obj.Thermal + obj.Condensate;
+        end
     end
 
     methods (Static)
