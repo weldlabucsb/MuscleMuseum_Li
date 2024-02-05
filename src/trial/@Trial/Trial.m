@@ -120,6 +120,10 @@ classdef (Abstract) Trial < handle & matlab.mixin.SetGetExactNames & dynamicprop
         function update(obj)
             obj.updateObject
             obj.updateDatabase
+
+            fid = fopen( obj.DataAnalysisPath + "description.txt", 'wt' );
+            fprintf(fid,'\n%s',obj.Description);
+            fclose(fid);
         end
 
         function displayLog(obj,str)

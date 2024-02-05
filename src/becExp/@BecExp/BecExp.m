@@ -114,10 +114,12 @@ classdef BecExp < Trial
         end
 
         function xLabel = get.XLabel(obj)
+            sP = obj.ScannedParameter;
+            sP = strrep(sP,'_','\_');
             if isempty(obj.ScannedParameterUnit) || ismissing(obj.ScannedParameterUnit)
-                xLabel = obj.ScannedParameter;
+                xLabel = sP;
             else
-                xLabel = obj.ScannedParameter + "~[$\mathrm{" + obj.ScannedParameterUnit + "}$]";
+                xLabel = sP + "~[$\mathrm{" + obj.ScannedParameterUnit + "}$]";
             end
         end
 

@@ -22,7 +22,10 @@ if any(runIdx>NComp)
     obj.DeletedRunParameterList = [obj.DeletedRunParameterList,obj.ScannedParameterList(runIdx(runIdx<=NComp))];
     obj.NCompletedRun = NComp - sum(runIdx<=NComp);
 else
+    try
     obj.DeletedRunParameterList = [obj.DeletedRunParameterList,obj.ScannedParameterList(runIdx(runIdx<=NComp))];
+    catch
+    end
     obj.NCompletedRun = NComp - numel(runIdx);
 end
 
@@ -57,25 +60,31 @@ if ~isempty(oldImageList)
         str(2) = newImageNumbers(ii);
         newImageName = strjoin(str,"_");
         if oldImageList(ii) ~= newImageName
-            movefile(fullfile(dataPath,oldImageList(ii)),fullfile(dataPath,newImageName),'f')
+            try
+                movefile(fullfile(dataPath,oldImageList(ii)),fullfile(dataPath,newImageName),'f')
+            catch me
+                warning(me.message)
+            end
         end
     end
 end
 
 %% Delete CiceroData
-if numel(obj.CiceroData.IterationNum) ~= NComp
-    warning("CiceroData size is different from the completed run number. Will try to read Cicero log files.")
-    obj.CiceroData = obj.readCiceroLog(1:NComp);
-end
-if numel(obj.CiceroData.IterationNum) ~= NComp
-    warning("CiceroData size is different from the completed run number. Will not delete corresponding data in CiceroData.")
-else
-    deleteIdx = runIdx(runIdx<=NComp);
-    sData = obj.CiceroData;
-    mData = cell2mat(struct2cell(sData));
-    mData(:,deleteIdx) = [];
-    obj.CiceroData = cell2struct(num2cell(mData,2),fieldnames(obj.CiceroData));
-    obj.CiceroLogTime(deleteIdx) = [];
+if ~isempty(obj.CiceroData)
+    if numel(obj.CiceroData.IterationNum) ~= NComp
+        warning("CiceroData size is different from the completed run number. Will try to read Cicero log files.")
+        obj.CiceroData = obj.readCiceroLog(1:NComp);
+    end
+    if numel(obj.CiceroData.IterationNum) ~= NComp
+        warning("CiceroData size is different from the completed run number. Will not delete corresponding data in CiceroData.")
+    else
+        deleteIdx = runIdx(runIdx<=NComp);
+        sData = obj.CiceroData;
+        mData = cell2mat(struct2cell(sData));
+        mData(:,deleteIdx) = [];
+        obj.CiceroData = cell2struct(num2cell(mData,2),fieldnames(obj.CiceroData));
+        obj.CiceroLogTime(deleteIdx) = [];
+    end
 end
 
 %% Delete Cicero files
@@ -113,6 +122,9 @@ if ~isempty(oldCLogList)
         end
     end
 end
+
+%% Reset exist log file number
+obj.ExistedCiceroLogNumber = countFileNumber(obj.CiceroLogOrigin,".clg");
 
 end
 

@@ -9,7 +9,7 @@ originPath = obj.CiceroLogOrigin;
 % Scan the origin folder to find if a new log file is created.
 while newLogNum<1 && t<5
     pause(tPause)
-    newLogNum = countFileNumber(originPath,".clg") - existedLogNum;
+    newLogNum = countFileNumberJava(originPath,".clg") - existedLogNum;
     if newLogNum>1
         error('>1 log files found')
     end

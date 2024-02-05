@@ -18,6 +18,7 @@ classdef Roi < handle
         XList
         YList
         CornerList
+        NSub
     end
 
     properties (SetAccess = protected)
@@ -471,6 +472,10 @@ classdef Roi < handle
             yxBound = obj.YXBoundary;
             cList = [yxBound(1),yxBound(3);yxBound(2),yxBound(3);...
                 yxBound(2),yxBound(4);yxBound(1),yxBound(4)];
+        end
+
+        function val = get.NSub(obj)
+            val = numel(obj.SubRoi);
         end
     
     end
