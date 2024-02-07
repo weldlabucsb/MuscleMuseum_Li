@@ -272,12 +272,10 @@ classdef Roi < handle
                 subSize = obj.SubRoiCenterSize(1,3:4);
 
                 subRoiSep = obj.SubRoiSeparation;
-                nRow = obj.SubRoiNRowColumn(1);
-                nRow = floor(nRow/2)*2 + 1;
-                centerRow = round(nRow/2);
-                nColumn = obj.SubRoiNRowColumn(2);
-                nColumn = floor(nColumn/2)*2 + 1;
-                centerColumn = round(nColumn/2);
+                nRow = round(obj.SubRoiNRowColumn(1));
+                centerRow = nRow/2 + 1/2;
+                nColumn = round(obj.SubRoiNRowColumn(2));
+                centerColumn = nColumn/2 + 1/2;
                 for ii = 1:nRow
                     for jj = 1:nColumn
                         subCenter = subCenterInRoiCoord;
@@ -395,6 +393,14 @@ classdef Roi < handle
             fullCoordRelative = noRotFullCoord - imageCenter;
             fullCoordRelativeNoRotation = rotationMatrix.' * fullCoordRelative(:);
             noRotFullCoord = round(fullCoordRelativeNoRotation.' + imageCenterNoRotation);
+        end
+
+        function fullCoord = noRotationFull2Full(obj,noRotFullCoord)
+            fullCoord = obj.roi2Full(obj.noRotationFull2Roi(noRotFullCoord));
+        end
+
+        function noRotFullCoord = full2NoRotationFull(obj,fullCoord)
+            noRotFullCoord = obj.roi2NoRotationFull(obj.full2Roi(fullCoord));
         end
 
         function mask = createMask(obj,maskPoints)

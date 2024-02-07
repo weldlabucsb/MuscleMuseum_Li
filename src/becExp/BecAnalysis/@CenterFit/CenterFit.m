@@ -6,6 +6,7 @@ classdef CenterFit < BecAnalysis
         FitMethod = "LinearFit1D"
         FitDataThermal
         FitDataCondensate
+        IsSaveCenter logical = false
     end
 
     properties (SetAccess = protected)
@@ -233,8 +234,8 @@ classdef CenterFit < BecAnalysis
 
         function updateData(obj,~)
             becExp = obj.BecExp;
-            if ~ismember("DensityFit",obj.BecExp.AnalysisMethod) ||...
-                    ~isempty(obj.BecExp.Roi.SubRoi)
+            if ~ismember("DensityFit",becExp.AnalysisMethod) ||...
+                    ~isempty(becExp.Roi.SubRoi)
                 return
             end
             paraList = becExp.ScannedParameterList.';
@@ -372,7 +373,35 @@ classdef CenterFit < BecAnalysis
             obj.updateFigure(obj.BecExp.NCompletedRun)
         end
 
+        function save(obj)
+            becExp = obj.BecExp;
+            if ~ismember("DensityFit",becExp.AnalysisMethod) ||...
+                    ~isempty(becExp.Roi.SubRoi)
+                return
+            end
+            obj.Chart(1).save
 
+            % save center data
+            if obj.IsSaveCenter
+                load("CloudCenterData.mat","CloudCenter")
+                TrialNameList = CloudCenter.TrialName;
+                TrialName = becExp.Name;
+                px = becExp.Acquisition.PixelSizeReal;
+                switch becExp.DensityFit.FitMethod
+                    case {"GaussianFit1D","BosonicGaussianFit1D"}
+                        Center = obj.ThermalCloudCenterMean; 
+                end
+                Center = reshape(flip(Center),1,2) / px; % Use ROI coordinates convention.
+                Center = becExp.Roi.full2NoRotationFull(Center); % Convert to no-rotation full coordinates
+                t = table(TrialName,Center);
+                if ~ismember(TrialName,TrialNameList)
+                    CloudCenter = [CloudCenter;t];
+                else
+                    CloudCenter(TrialNameList == TrialName,:) = t;
+                end
+                save(which("CloudCenterData.mat"),"CloudCenter")
+            end
+        end
     end
 end
 
