@@ -38,12 +38,6 @@ classdef KapitzaDirac < BecAnalysis
             if ~ishandle(fig)
                 return
             end
-
-
-
-            
-    
-
         end
 
         function updateData(obj,runIdx)

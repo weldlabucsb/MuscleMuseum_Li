@@ -6,6 +6,7 @@ classdef BecExp < Trial
         SubRoi Roi
         Acquisition Acquisition
         AnalysisMethod string
+        CloudCenter (1,2) double % Cloud center [y_0,x_0] from previous measurement, in pixels
     end
 
     properties(Hidden)
@@ -49,13 +50,18 @@ classdef BecExp < Trial
             arguments
                 trialName string
                 options.isLocalTest logical = false
+                options.config = struct.empty
             end
-            if options.isLocalTest
-                becExpConfigName = "BecExpLocalTestConfig";
+            if isempty(options.config)
+                if options.isLocalTest
+                    config = "BecExpLocalTestConfig";
+                else
+                    config = "BecExpConfig";
+                end
             else
-                becExpConfigName = "BecExpConfig";
+                config = options.config;
             end
-            obj@Trial(trialName,becExpConfigName);
+            obj@Trial(trialName,config);
             obj.ParameterUnitConfig = loadVar("Config.mat","BecExpParameterUnit");
 
             % Atom setting
@@ -72,9 +78,19 @@ classdef BecExp < Trial
             obj.Acquisition.ImagePrefix = obj.DataPrefix;
             obj.Roi = Roi(obj.ConfigParameter.RoiName,imageSize = obj.Acquisition.ImageSize);
 
+            % Cloud center
+            if ~ismissing(obj.ConfigParameter.CloudCenterReference)
+                load("CloudCenterData.mat","CloudCenter")
+                if ismember(obj.ConfigParameter.CloudCenterReference,CloudCenter.TrialName)
+                    obj.CloudCenter = ...
+                        CloudCenter(CloudCenter.TrialName == obj.ConfigParameter.CloudCenterReference,:).Center;
+                end
+            end
+
             % Analysis settings
-            obj.addAnalysis(rmmissing(["Od";"Imaging";"Ad";... 
-                strtrim(split(obj.AnalysisMethod,";"))]));
+            obj.AnalysisMethod = rmmissing(["Od";"Imaging";"Ad";... 
+                strtrim(split(obj.AnalysisMethod,";"))]);
+            obj.addAnalysis(obj.AnalysisMethod);
             obj.setAnalyzer;
 
             % Finalize construction
