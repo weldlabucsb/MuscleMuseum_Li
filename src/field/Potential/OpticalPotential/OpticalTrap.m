@@ -9,14 +9,15 @@ classdef OpticalTrap < OpticalPotential
     end
     
     methods
-        function obj = OpticalTrap(atom,laser)
+        function obj = OpticalTrap(atom,laser,name)
             %OPTICALTRAP Construct an instance of this class
             %   Detailed explanation goes here
             arguments
                 atom (1,1) Atom
                 laser (1,1) GaussianBeam
+                name string = string.empty
             end
-            obj@OpticalPotential(atom,laser);
+            obj@OpticalPotential(atom,laser,name);
         end
         
         function v0 = get.Depth(obj)

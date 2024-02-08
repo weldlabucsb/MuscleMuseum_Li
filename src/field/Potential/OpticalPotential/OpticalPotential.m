@@ -1,9 +1,8 @@
-classdef (Abstract) OpticalPotential < matlab.mixin.Heterogeneous & handle
+classdef (Abstract) OpticalPotential < Potential & matlab.mixin.Heterogeneous
     %OPTICALPOTENTIAL Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
-        Atom Atom
         Laser Laser
     end
 
@@ -16,17 +15,15 @@ classdef (Abstract) OpticalPotential < matlab.mixin.Heterogeneous & handle
     end
     
     methods
-        function obj = OpticalPotential(atom,laser)
+        function obj = OpticalPotential(atom,laser,name)
             %OPTICALPOTENTIAL Construct an instance of this class
             %   Detailed explanation goes here
             arguments
                 atom (1,1) Atom
                 laser (1,1) Laser
+                name string = string.empty
             end
-            if atom.Type == "Divalent"
-                error("Divalent is not supported yet")
-            end
-            obj.Atom = atom;
+            obj@Potential(atom,name);
             obj.Laser = laser;
         end
 

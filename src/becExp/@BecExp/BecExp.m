@@ -6,7 +6,7 @@ classdef BecExp < Trial
         SubRoi Roi
         Acquisition Acquisition
         AnalysisMethod string
-        CloudCenter (1,2) double % Cloud center [y_0,x_0] from previous measurement, in pixels
+        CloudCenter double % Cloud center [y_0,x_0] from previous measurement, in pixels
     end
 
     properties(Hidden)
