@@ -52,6 +52,9 @@ classdef (Abstract) Trial < handle & matlab.mixin.SetGetExactNames & dynamicprop
     properties (Hidden,Transient)
         TempData = []
         TempDataPath string
+    end
+
+    properties (Hidden)
         ConfigParameter struct
     end
 
