@@ -112,17 +112,21 @@ classdef CenterFit < BecAnalysis
                 ax2.YGrid = "on";
 
                 %% Initialize plots, based on DensityFit method
+                hold(ax1,'on')
+                hold(ax2,'on')
                 switch becExp.DensityFit.FitMethod
                     case {"GaussianFit1D","BosonicGaussianFit1D"}
                         % X data lines
                         co = ax1.ColorOrder;
-                        obj.ThermalXLine = line(ax1,1,1);
+                        obj.ThermalXLine = errorbar(ax1,1,1,[]);
                         obj.ThermalXLine.Marker = "o";
                         obj.ThermalXLine.MarkerFaceColor = co(1,:);
                         obj.ThermalXLine.MarkerEdgeColor = co(1,:)*.5;
                         obj.ThermalXLine.MarkerSize = 8;
                         obj.ThermalXLine.LineWidth = 2;
                         obj.ThermalXLine.LineStyle = "none";
+                        obj.ThermalXLine.CapSize = 0;
+
                         obj.ThermalXFitLine = line(ax1,1,1);
                         obj.ThermalXFitLine.LineWidth = 2;
                         obj.ThermalXFitLine.Color = co(1,:);
@@ -130,19 +134,22 @@ classdef CenterFit < BecAnalysis
 
                         % Y data lines
                         co = ax2.ColorOrder;
-                        obj.ThermalYLine = line(ax2,1,1);
+                        obj.ThermalYLine = errorbar(ax2,1,1,[]);
                         obj.ThermalYLine.Marker = "o";
                         obj.ThermalYLine.MarkerFaceColor = co(1,:);
                         obj.ThermalYLine.MarkerEdgeColor = co(1,:)*.5;
                         obj.ThermalYLine.MarkerSize = 8;
                         obj.ThermalYLine.LineWidth = 2;
                         obj.ThermalYLine.LineStyle = "none";
+                        obj.ThermalYLine.CapSize = 0;
+
                         obj.ThermalYFitLine = line(ax2,1,1);
                         obj.ThermalYFitLine.LineWidth = 2;
                         obj.ThermalYFitLine.Color = co(1,:);
                         legend(ax2,"Thermal Data","Thermal Fit");
-
                 end
+                hold(ax1,'off')
+                hold(ax2,'off')
             end
             
             %% Initialize table
@@ -325,10 +332,18 @@ classdef CenterFit < BecAnalysis
                     elseif becExp.NCompletedRun >= obj.MinimumFitNumber 
                         rawXT = obj.FitDataThermal(1).RawData;
                         rawYT = obj.FitDataThermal(2).RawData;
-                        obj.ThermalXLine.XData = rawXT(:,1);
-                        obj.ThermalXLine.YData = rawXT(:,2) / px;
-                        obj.ThermalYLine.XData = rawYT(:,1);
-                        obj.ThermalYLine.YData = rawYT(:,2) / px;
+                        [xRawXT,yRawXT,stdRawXT] = computeStd(rawXT(:,1),rawXT(:,2) / px);
+                        [xRawYT,yRawYT,stdRawYT] = computeStd(rawYT(:,1),rawYT(:,2) / px);
+
+                        obj.ThermalXLine.XData = xRawXT;
+                        obj.ThermalXLine.YData = yRawXT;
+                        obj.ThermalXLine.YNegativeDelta = stdRawXT;
+                        obj.ThermalXLine.YPositiveDelta = stdRawXT;
+
+                        obj.ThermalYLine.XData = xRawYT;
+                        obj.ThermalYLine.YData = yRawYT;
+                        obj.ThermalYLine.YNegativeDelta = stdRawYT;
+                        obj.ThermalYLine.YPositiveDelta = stdRawYT;
 
                         fitXT = obj.FitDataThermal(1).FitPlotData;
                         fitYT = obj.FitDataThermal(2).FitPlotData;
