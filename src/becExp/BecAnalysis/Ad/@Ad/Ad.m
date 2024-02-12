@@ -150,8 +150,9 @@ classdef Ad < BecAnalysis
             %% Plot AD Data
             nRun = obj.BecExp.NCompletedRun;
             cData = cell(1,nRun);
+            runList = obj.BecExp.RunListSorted;
             for ii = 1:nRun
-                cData{ii} = obj.AdData(:,:,ii);
+                cData{ii} = obj.AdData(:,:,runList(ii));
             end
             mData = horzcat(cData{:}) / obj.Unit;
             img = imagesc(ax,mData);
@@ -198,7 +199,7 @@ classdef Ad < BecAnalysis
             ax.TickDir = "out";
             tickSpace = roiSize(2);
             ax.XTick = (tickSpace/2):tickSpace:(tickSpace*double(nRun)-tickSpace/2);
-            ax.XTickLabel = string(obj.BecExp.ScannedParameterList);
+            ax.XTickLabel = string(obj.BecExp.ScannedParameterListSorted);
             set(ax,'box','off')
 
         end
@@ -224,8 +225,9 @@ classdef Ad < BecAnalysis
             yxBoundary = roi.YXBoundary;
             roiSize = roi.CenterSize(3:4);
             nRun = becExp.NCompletedRun;
+            runList = obj.BecExp.RunListSorted;
             paraName = becExp.ScannedParameter;
-            paraList = becExp.ScannedParameterList;
+            paraListSorted = becExp.ScannedParameterListSorted;
             paraUnit = becExp.ScannedParameterUnit;
 
             %% Initialize plots
@@ -298,17 +300,17 @@ classdef Ad < BecAnalysis
                 for ii = 1:nRun
 
                     % Update plots
-                    img.CData = obj.AdData(:,:,ii) / obj.Unit;
-                    xLine.YData = squeeze(obj.AdData(round(roiSize(1)/2),:,ii)) / obj.Unit;
-                    yLine.XData = squeeze(obj.AdData(:,round(roiSize(2)/2),ii)) / obj.Unit;
+                    img.CData = obj.AdData(:,:,runList(ii)) / obj.Unit;
+                    xLine.YData = squeeze(obj.AdData(round(roiSize(1)/2),:,runList(ii))) / obj.Unit;
+                    yLine.XData = squeeze(obj.AdData(:,round(roiSize(2)/2),runList(ii))) / obj.Unit;
 
                     % Update title
                     if ismissing(paraUnit)
                         paraLabel = "$\mathrm{" + paraName + "} = ~$" + ...
-                            string(paraList(ii));
+                            string(paraListSorted(ii));
                     else
                         paraLabel = "$\mathrm{" + paraName + "} = ~$" + ...
-                            string(paraList(ii)) + "$~\mathrm{" + ...
+                            string(paraListSorted(ii)) + "$~\mathrm{" + ...
                             paraUnit + "}$";
                     end
                     imgAxes.Title.String = ...
