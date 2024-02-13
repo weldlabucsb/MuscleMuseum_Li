@@ -7,7 +7,7 @@ existedLogNum = obj.ExistedCiceroLogNumber; % Number of old log files.
 originPath = obj.CiceroLogOrigin;
 
 % Scan the origin folder to find if a new log file is created.
-while newLogNum<1 && t<5
+while newLogNum<1 && t<10
     pause(tPause)
     newLogNum = countFileNumberJava(originPath,".clg") - existedLogNum;
     if newLogNum>1
@@ -16,8 +16,8 @@ while newLogNum<1 && t<5
     t = t + tPause;
 end
 
-if t>= 5
-    error('Can not find a log file in 5 seconds')
+if t>= 10
+    error('Can not find a log file in 10 seconds')
 end
 
 % Get the newest log file.
