@@ -24,6 +24,10 @@ classdef AtomNumber < BecAnalysis
         IsShowTotal logical = true;
     end
 
+    properties 
+        IsShowNormalized logical = true;
+    end
+
     properties (Hidden,Transient)
         RawLine matlab.graphics.chart.primitive.ErrorBar
         ThermalLine matlab.graphics.chart.primitive.ErrorBar
@@ -110,7 +114,11 @@ classdef AtomNumber < BecAnalysis
                         lg = legend(ax,legendStr(:));
                 end
             else
-                lg = legend(ax,"Raw");
+                if isempty(becExp.Roi.SubRoi)
+                    lg = legend(ax,"Raw");
+                else
+                    lg = legend(ax,legendStrRaw);
+                end
             end
             hold(ax,'off')
 
@@ -120,15 +128,50 @@ classdef AtomNumber < BecAnalysis
             ax.YGrid = "on";
             ax.XLabel.String = obj.BecExp.XLabel;
             ax.XLabel.Interpreter = "latex";
-            ax.YLabel.String = "${N}_{\mathrm{atom}}~[\times 10^{" + string(log(obj.Unit)/log(10)) + "}]$";
+            ax.YLim = obj.YLim;
+            if nSub > 1 && obj.IsShowNormalized
+                ax.YLabel.String = "${N}_{\mathrm{atom, subroi}}/{N}_{\mathrm{atom, total}}$";
+                ax.YLim = [0,1];
+            else
+                ax.YLabel.String = "${N}_{\mathrm{atom}}~[\times 10^{" + string(log(obj.Unit)/log(10)) + "}]$";
+            end
             ax.YLabel.Interpreter = "latex";
             ax.FontSize = 12;
-            ax.YLim = obj.YLim;
             
             if numel(lg.String) >= 8
                 lg.NumColumns = 2;
                 lg.FontSize = 8;
                 lg.Location = "best";
+            end
+
+            % Change visibilities of lines
+            if ~isempty(obj.RawLine)
+                if obj.IsShowRaw
+                    [obj.RawLine.Visible] = deal("on");
+                else
+                    [obj.RawLine.Visible] = deal("off");
+                end
+            end
+            if ~isempty(obj.ThermalLine)
+                if obj.IsShowThermal
+                    [obj.ThermalLine.Visible] = deal("on");
+                else
+                    [obj.ThermalLine.Visible] = deal("off");
+                end
+            end
+            if ~isempty(obj.CondensateLine)
+                if obj.IsShowCondensate
+                    [obj.CondensateLine.Visible] = deal("on");
+                else
+                    [obj.CondensateLine.Visible] = deal("off");
+                end
+            end
+            if ~isempty(obj.TotalLine)
+                if obj.IsShowTotal
+                    [obj.TotalLine.Visible] = deal("on");
+                else
+                    [obj.TotalLine.Visible] = deal("off");
+                end
             end
 
         end
@@ -180,8 +223,13 @@ classdef AtomNumber < BecAnalysis
             runListSorted = becExp.RunListSorted;
 
             %% Update raw plots
+            rawTotal = sum(obj.Raw,3);
             for ii = 1:nSub
-                [xRaw,yRaw,stdRaw] = computeStd(paraList,obj.Raw(1,:,ii) / obj.Unit);
+                if nSub > 1 && obj.IsShowNormalized
+                    [xRaw,yRaw,stdRaw] = computeStd(paraList,obj.Raw(1,:,ii) ./ rawTotal);
+                else
+                    [xRaw,yRaw,stdRaw] = computeStd(paraList,obj.Raw(1,:,ii) / obj.Unit);
+                end
                 obj.RawLine(ii).XData = xRaw;
                 obj.RawLine(ii).YData = yRaw;
                 obj.RawLine(ii).YNegativeDelta = stdRaw;
@@ -190,15 +238,20 @@ classdef AtomNumber < BecAnalysis
 
             %% Update thermal and condensate plots
             if ismember("DensityFit",becExp.AnalysisMethod)
-                for ii = 1:nSub
-                    switch becExp.DensityFit.FitMethod
-                        case {"GaussianFit1D","BosonicGaussianFit1D"}
-                            [xThermal,yThermal,stdThermal] = computeStd(paraList,obj.Thermal(1,:,ii) / obj.Unit);
+                switch becExp.DensityFit.FitMethod
+                    case {"GaussianFit1D","BosonicGaussianFit1D"}
+                        thermalTotal = sum(obj.Thermal,3);
+                        for ii = 1:nSub
+                            if nSub > 1 && obj.IsShowNormalized
+                                [xThermal,yThermal,stdThermal] = computeStd(paraList,obj.Thermal(1,:,ii) ./ thermalTotal);
+                            else
+                                [xThermal,yThermal,stdThermal] = computeStd(paraList,obj.Thermal(1,:,ii) / obj.Unit);
+                            end
                             obj.ThermalLine(ii).XData = xThermal;
                             obj.ThermalLine(ii).YData = yThermal;
                             obj.ThermalLine(ii).YNegativeDelta = stdThermal;
                             obj.ThermalLine(ii).YPositiveDelta = stdThermal;
-                    end
+                        end
                 end
             end
             
@@ -224,28 +277,36 @@ classdef AtomNumber < BecAnalysis
                     ax = fig.CurrentAxes;
                     ax.YLim = obj.YLim;
                 case 'IsShowRaw'
-                    if obj.IsShowRaw
-                        [obj.RawLine.Visible] = deal("on");
-                    else
-                        [obj.RawLine.Visible] = deal("off");
+                    if ~isempty(obj.RawLine)
+                        if obj.IsShowRaw
+                            [obj.RawLine.Visible] = deal("on");
+                        else
+                            [obj.RawLine.Visible] = deal("off");
+                        end
                     end
                 case 'IsShowThermal'
-                    if obj.IsShowThermal
-                        [obj.ThermalLine.Visible] = deal("on");
-                    else
-                        [obj.ThermalLine.Visible] = deal("off");
+                    if ~isempty(obj.ThermalLine)
+                        if obj.IsShowThermal
+                            [obj.ThermalLine.Visible] = deal("on");
+                        else
+                            [obj.ThermalLine.Visible] = deal("off");
+                        end
                     end
                 case 'IsShowCondensate'
-                    if obj.IsShowCondensate
-                        [obj.CondensateLine.Visible] = deal("on");
-                    else
-                        [obj.CondensateLine.Visible] = deal("off");
+                    if ~isempty(obj.CondensateLine)
+                        if obj.IsShowCondensate
+                            [obj.CondensateLine.Visible] = deal("on");
+                        else
+                            [obj.CondensateLine.Visible] = deal("off");
+                        end
                     end
                 case 'IsShowTotal'
-                    if obj.IsShowTotal
-                        [obj.TotalLine.Visible] = deal("on");
-                    else
-                        [obj.TotalLine.Visible] = deal("off");
+                    if ~isempty(obj.TotalLine)
+                        if obj.IsShowTotal
+                            [obj.TotalLine.Visible] = deal("on");
+                        else
+                            [obj.TotalLine.Visible] = deal("off");
+                        end
                     end
             end
         end
