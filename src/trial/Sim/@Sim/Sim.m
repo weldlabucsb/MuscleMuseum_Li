@@ -1,11 +1,11 @@
-classdef (Abstract) Sim < Trial & matlab.mixin.Heterogeneous
+classdef (Abstract) Sim < Trial
     %SIMULATION Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
         Output
         WallTime double = 11.5*3600
-        SimRun SimRun
+        SimRun
     end
 
     properties(Dependent,Hidden)
@@ -13,10 +13,10 @@ classdef (Abstract) Sim < Trial & matlab.mixin.Heterogeneous
     end
   
     methods
-        function obj = Sim(trialName,configName)
+        function obj = Sim(trialName,config)
             %SIMULATION Construct an instance of this class
             %   Detailed explanation goes here
-            obj@Trial(trialName,configName);
+            obj@Trial(trialName,config);
         end
 
         function uRunIdx = get.UncompletedRunIndex(obj) 

@@ -220,7 +220,6 @@ classdef AtomNumber < BecAnalysis
             nSub = becExp.Roi.NSub;
             nSub(nSub == 0) = 1;
             paraList = becExp.ScannedParameterList;
-            runListSorted = becExp.RunListSorted;
 
             %% Update raw plots
             rawTotal = sum(obj.Raw,3);

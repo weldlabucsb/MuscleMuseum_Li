@@ -17,6 +17,13 @@ classdef DensityFit < BecAnalysis
         BackGroundDensity % m^-2
     end
 
+    properties (Hidden, Transient)
+        ThermalXLine matlab.graphics.chart.primitive.ErrorBar
+        ThermalYLine matlab.graphics.chart.primitive.ErrorBar
+        CondensateXLine matlab.graphics.chart.primitive.ErrorBar
+        CondensateYLine matlab.graphics.chart.primitive.ErrorBar
+    end
+
     methods
         function obj = DensityFit(becExp)
             %OD Construct an instance of this class
@@ -28,6 +35,13 @@ classdef DensityFit < BecAnalysis
                 loc = [0.003125,0.032],...
                 size = [0.38984375,0.330]...
                 );
+            obj.Chart(1) = Chart(...
+                name = "Cloud size",...
+                num = 33, ...
+                fpath = fullfile(becExp.DataAnalysisPath,"CloudSize"),...
+                loc = [-0.00001,0.032],...
+                size = [0.3069,0.57]...
+                );
         end
 
         function initialize(obj)
@@ -37,6 +51,7 @@ classdef DensityFit < BecAnalysis
 
             %% Initialize plots
             obj.Gui(1).initialize(becExp)
+            fig = obj.Chart(1).initialize;
 
             %% Initialize data
             obj.ThermalCloudCenter = zeros(2,1,nSub);
@@ -55,6 +70,81 @@ classdef DensityFit < BecAnalysis
                     obj.FitData = BosonicGaussianFit1D([1,1]);
             end
             obj.FitData = repmat(obj.FitData,2,1,nSub);
+
+            %% Initialize cloud size plots
+            if ~ishandle(fig)
+                return
+            end
+
+            % Initialize axis
+            t = tiledlayout(fig,2,1);
+            t.TileSpacing = 'compact';
+            t.Padding = 'compact';
+            ax1 = nexttile(t);
+            ax2 = nexttile(t);
+            co = ax1.ColorOrder;
+            mOrder = markerOrder();
+
+            hold(ax1,'on')
+            hold(ax2,'on')
+            % Initialize thermal and condensate plots
+                switch obj.FitMethod
+                    case {"GaussianFit1D","BosonicGaussianFit1D"}
+                        for ii = 1:nSub
+                            obj.ThermalXLine(ii) = errorbar(ax1,1,1,[]);
+                            obj.ThermalXLine(ii).Marker = mOrder(ii);
+                            obj.ThermalXLine(ii).MarkerFaceColor = co(ii,:);
+                            obj.ThermalXLine(ii).MarkerEdgeColor = co(ii,:)*.5;
+                            obj.ThermalXLine(ii).MarkerSize = 8;
+                            obj.ThermalXLine(ii).LineWidth = 2;
+                            obj.ThermalXLine(ii).Color = co(ii,:); 
+                            obj.ThermalXLine(ii).CapSize = 0;
+
+                            obj.ThermalYLine(ii) = errorbar(ax2,1,1,[]);
+                            obj.ThermalYLine(ii).Marker = mOrder(ii);
+                            obj.ThermalYLine(ii).MarkerFaceColor = co(ii,:);
+                            obj.ThermalYLine(ii).MarkerEdgeColor = co(ii,:)*.5;
+                            obj.ThermalYLine(ii).MarkerSize = 8;
+                            obj.ThermalYLine(ii).LineWidth = 2;
+                            obj.ThermalYLine(ii).Color = co(ii,:); 
+                            obj.ThermalYLine(ii).CapSize = 0;
+                        end
+                        if isempty(becExp.Roi.SubRoi)
+                            legendStr = "Thermal";
+                        else
+                            legendStr = arrayfun(@(x) "Thermal " + x,1:nSub);
+                        end
+                        lg1 = legend(ax1,legendStr(:));
+                        lg2 = legend(ax2,legendStr(:));
+                end
+            hold(ax1,'off')
+            hold(ax2,'off')
+
+            % Change axis properties
+            ax1.Box = "on";
+            ax1.XGrid = "on";
+            ax1.YGrid = "on";
+            ax1.YLabel.String = "$R_x$ [$\mu\mathrm{m}$]";
+            ax1.YLabel.Interpreter = "latex";
+            ax1.FontSize = 12;
+
+            ax2.Box = "on";
+            ax2.XGrid = "on";
+            ax2.YGrid = "on";
+            ax2.XLabel.String = obj.BecExp.XLabel;
+            ax2.XLabel.Interpreter = "latex";
+            ax2.YLabel.String = "$R_y$ [$\mu\mathrm{m}$]";
+            ax2.YLabel.Interpreter = "latex";
+            ax2.FontSize = 12;
+            
+            if numel(lg1.String) >= 8
+                lg1.NumColumns = 2;
+                lg1.FontSize = 8;
+                lg1.Location = "best";
+                lg2.NumColumns = 2;
+                lg2.FontSize = 8;
+                lg2.Location = "best";
+            end
         end
 
         function updateData(obj,runIdx)
@@ -104,24 +194,17 @@ classdef DensityFit < BecAnalysis
             end
 
             %% Do fit
-            % if numel(fitData) > 2
-                p = gcp('nocreate');
-                if ~isempty(p)
-                    parfor ii = 1:numel(fitData)
-                        fitData(ii) = fitData(ii).do;
-                    end
-                else
-                    for ii = 1:numel(fitData)
-                        fitData(ii) = fitData(ii).do;
-                    end
+            p = gcp('nocreate');
+            if ~isempty(p)
+                parfor ii = 1:numel(fitData)
+                    fitData(ii) = fitData(ii).do;
                 end
-                obj.FitData(:,runIdx,1:nSub) = fitData;
-            % else
-            %     fitData(1).do;
-            %     fitData(2).do;
-            %     obj.FitData(1,runIdx,1) = fitData(1);
-            %     obj.FitData(2,runIdx,1) = fitData(2);
-            % end
+            else
+                for ii = 1:numel(fitData)
+                    fitData(ii) = fitData(ii).do;
+                end
+            end
+            obj.FitData(:,runIdx,1:nSub) = fitData;
 
             %% Assign values to properties
             for ii = runIdx
@@ -152,6 +235,33 @@ classdef DensityFit < BecAnalysis
 
         function updateFigure(obj,~)
             obj.Gui(1).update
+            fig = obj.Chart(1).Figure;
+            if ~ishandle(fig)
+                return
+            end
+
+            becExp = obj.BecExp;
+            nSub = becExp.Roi.NSub;
+            nSub(nSub == 0) = 1;
+            paraList = becExp.ScannedParameterList;
+
+            switch obj.FitMethod
+                case {"GaussianFit1D","BosonicGaussianFit1D"}
+                    for ii = 1:nSub
+                        [xThermalX,yThermalX,stdThermalX] = computeStd(paraList,obj.ThermalCloudSize(1,:,ii) * 1e6);
+                        [xThermalY,yThermalY,stdThermalY] = computeStd(paraList,obj.ThermalCloudSize(2,:,ii) * 1e6);
+                        obj.ThermalXLine(ii).XData = xThermalX;
+                        obj.ThermalXLine(ii).YData = yThermalX;
+                        obj.ThermalXLine(ii).YNegativeDelta = stdThermalX;
+                        obj.ThermalXLine(ii).YPositiveDelta = stdThermalX;
+                        obj.ThermalYLine(ii).XData = xThermalY;
+                        obj.ThermalYLine(ii).YData = yThermalY;
+                        obj.ThermalYLine(ii).YNegativeDelta = stdThermalY;
+                        obj.ThermalYLine(ii).YPositiveDelta = stdThermalY;
+                    end
+            end
+            lg = findobj(fig,"Type","Legend");
+            [lg.Location] = deal("best");
         end
 
         function refresh(obj)
