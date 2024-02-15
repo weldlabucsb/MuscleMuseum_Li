@@ -55,11 +55,7 @@ classdef Tof < BecAnalysis
                 return
             end
 
-            %% Turn off density fit cloud size plots
-            obj.BecExp.DensityFit.Chart(1).IsEnabled = false;
-            if ishandle(obj.BecExp.DensityFit.Chart(1).Figure)
-                close(obj.BecExp.DensityFit.Chart(1).Figure);
-            end
+            %% Turn off density fit asdf
 
             %% Initialize parameters
             obj.FitDataThermal = LinearFit1D([1,1]);
