@@ -43,7 +43,7 @@ classdef Chart < handle
 
         function fig = initialize(obj)
             if ~obj.IsEnabled
-                fig = [];
+                fig = {1};
                 return
             end
 
