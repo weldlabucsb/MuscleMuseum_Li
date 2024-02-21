@@ -152,18 +152,22 @@ MeSimConfig.DataGroupSize = 1;
 MeSimType = readtable("meSimType.csv.xlsx",'TextType','string');
 MeSimConfig = [MeSimType,repmat(struct2table(MeSimConfig),size(MeSimType,1),1)];
 
-% atomDataPath = fullfile(getenv('USERPROFILE'),"Documents","AtomData","AtomData.mat");
-for ii = 1:size(MeSimConfig,1)
-    try
-        atomList(ii,1) = Alkali(MeSimConfig.Atom(ii));
-    catch
-        atomList(ii,1) = Divalent(MeSimConfig.Atom(ii));
-    end
-end
-
-MeSimConfig.Atom = [];
-MeSimConfig.Atom = atomList;
 MeSimOutput = readtable("meSimOutput.csv.xlsx",'TextType','string');
 save(configName,"MeSimConfig","MeSimOutput",'-mat','-append')
+
+%% Set the lattice schrodinger equation simulation configuration
+LatticeSeSim1DConfig.ParentPath = fullfile("C:\data","latticeSeSim1D");
+LatticeSeSim1DConfig.DataPrefix = "run";
+LatticeSeSim1DConfig.DataFormat = ".mat";
+LatticeSeSim1DConfig.IsAutoDelete = false;
+LatticeSeSim1DConfig.DatabaseName = "simulation";
+LatticeSeSim1DConfig.DatabaseTableName = "lattice_schrodinger_equation_simulation_1d";
+LatticeSeSim1DConfig.DataGroupSize = 1;
+
+LatticeSeSim1DType = readtable("latticeSeSim1DType.csv.xlsx",'TextType','string');
+LatticeSeSim1DConfig = [LatticeSeSim1DType,repmat(struct2table(LatticeSeSim1DConfig),size(LatticeSeSim1DType,1),1)];
+
+LatticeSeSim1DOutput = readtable("latticeSeSim1DOutput.csv.xlsx",'TextType','string');
+save(configName,"LatticeSeSim1DConfig","LatticeSeSim1DOutput",'-mat','-append')
 
 end

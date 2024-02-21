@@ -23,17 +23,21 @@ classdef SineFit1D < FitData1D
             guessAmplitude = (max(y) - min(y))/2;
 
             % Frequency guess
-            dx = max(abs(diff(sort(x))));
-            dYdX = diff(y) / dx;
-            guessFrequency = (max(dYdX) - min(dYdX)) / 4 / pi / guessAmplitude;
-            % guessFrequency = 1 / (max(x) - min(x));
+            n = numel(x);
+            xUnit = max(x)/n;
+            yFT = nufft(y,x/xUnit);
+            yFT(1) = 0;
+            yFT = yFT(1:floor(n/2));
+            fList = (0:floor(n/2)-1)/n / xUnit;
+            [~,idx] = max(abs(yFT));
+            guessFrequency = fList(idx(1));
 
             % Phase guess
-            guessPhase = mod(pi/2 - 2 * pi * guessFrequency * x(y==max(y)),2 * pi);
+            guessPhase = mean(mod(pi/2 - 2 * pi * guessFrequency * x(y==max(y)),2 * pi));
 
             obj.StartPoint = [guessAmplitude,guessFrequency,guessPhase,guessOffset];
-            obj.Lower = [0.5 * guessAmplitude, guessFrequency / 3, 0, guessOffset - 0.3 * guessAmplitude];
-            obj.Upper = [2 * guessAmplitude, 3 * guessFrequency, 2 * pi, guessOffset + 0.3 * guessAmplitude];
+            obj.Lower = [0.5 * guessAmplitude, guessFrequency / 5, 0, guessOffset - 0.3 * guessAmplitude];
+            obj.Upper = [2 * guessAmplitude, 5 * guessFrequency, 2 * pi, guessOffset + 0.3 * guessAmplitude];
 
         end
 

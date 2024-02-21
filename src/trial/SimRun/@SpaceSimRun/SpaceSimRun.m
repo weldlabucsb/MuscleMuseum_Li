@@ -5,7 +5,7 @@ classdef (Abstract) SpaceSimRun < SimRun
     properties
         SpaceOrigin double = [0;0;0] % in meters
         SpaceRange double {mustBePositive} % in meters
-        NSpaceStep double {mustBePositive,mustBeInteger}
+        SpaceStep double {mustBePositive} % in meters
         BoundaryCondition string {mustBeMember(BoundaryCondition,{'Periodic','Dirichlet','Neumann'})} = "Periodic"
     end
 
@@ -14,7 +14,7 @@ classdef (Abstract) SpaceSimRun < SimRun
     end
 
     properties (Dependent)
-        SpaceStep
+        NSpaceStep
         SpaceList
         SpaceAngularFrequencyStep % for fft
         SpaceAngularFrequencyList % for fft
@@ -29,10 +29,10 @@ classdef (Abstract) SpaceSimRun < SimRun
             end
             obj@SimRun(spaceSim)
             if ~isempty(spaceSim)
-                if isa(spaceSim,"SpaceSim")
+                if isa(spaceSim,"SpaceSim") || isa(spaceSim,"SpaceTimeSim")
                     obj.SpaceOrigin = spaceSim.SpaceOrigin;
                     obj.SpaceRange = spaceSim.SpaceRange;
-                    obj.NSpaceStep = spaceSim.NSpaceStep;
+                    obj.SpaceStep = spaceSim.SpaceStep;
                     obj.Dimension = spaceSim.Dimension;
                 else
                     error("Input must be an object of the SpaceSim class")
@@ -40,47 +40,72 @@ classdef (Abstract) SpaceSimRun < SimRun
             end
         end
 
-        function obj = set.NSpaceStep(obj,val)
-            % Number of steps must be an odd number
-            if mod(val,2) ~= 0
-                val = val + 1;
+        function obj = set.SpaceStep(obj,val)
+            % Number of steps must be power of 2
+            sRange = obj.SpaceRange;
+            if isempty(sRange)
+                return
+            elseif isempty(obj.SpaceStep)
+                nSpaceStep = getNSpaceStep(sRange,val);
+                obj.SpaceStep = sRange ./ (nSpaceStep - 1);
+            elseif any(abs(val - obj.SpaceStep)>eps)
+                nSpaceStep = getNSpaceStep(sRange,val);
+                obj.SpaceStep = sRange ./ (nSpaceStep - 1);
             end
-            if mod(log2(val),1)~=0
-                warning("# of spatial steps is not a power of 2. A power of 2 step number " + ...
-                    "can enhance fft performance.")
+        end
+
+        function obj = set.SpaceRange(obj,val)
+            obj.SpaceRange = val;
+            step = obj.SpaceStep;
+            if isempty(step)
+                return
+            else
+                nSpaceStep = val ./ step;
+                nSpaceStep = 2.^(ceil(log2(nSpaceStep)));
+                obj.SpaceStep = val ./ (nSpaceStep - 1);
             end
-            obj.NSpaceStep = val;
+        end
+
+        function NN = get.NSpaceStep(obj)
+            switch obj.Dimension
+                case 1
+                    NN = numel(obj.SpaceList);
+                case 2
+                    NN = cellfun(@numel,(obj.SpaceList));
+                case 3
+                    NN = cellfun(@numel,(obj.SpaceList));
+            end
         end
 
         function sList = get.SpaceList(obj)
             origin = obj.SpaceOrigin;
             sRange = obj.SpaceRange;
-            NN = obj.NSpaceStep;
+            step = obj.SpaceStep;
             switch obj.Dimension
                 case 1
-                    sList = origin(1) + linspace(-sRange(1)/2, sRange(1)/2, NN(1));
+                    sList = origin(1) + (-sRange(1)/2 : step : sRange(1)/2);
                 case 2
-                    sListX = origin(1) + linspace(-sRange(1)/2, sRange(1)/2, NN(1));
-                    sListY = origin(2) + linspace(-sRange(2)/2, sRange(2)/2, NN(2));
+                    sListX = origin(1) + (-sRange(1)/2 : step : sRange(1)/2);
+                    sListY = origin(2) + (-sRange(2)/2 : step : sRange(2)/2);
                     sList = {sListX;sListY};
                 case 3
-                    sListX = origin(1) + linspace(-sRange(1)/2, sRange(1)/2, NN(1));
-                    sListY = origin(2) + linspace(-sRange(2)/2, sRange(2)/2, NN(2));
-                    sListZ = origin(3) + linspace(-sRange(3)/2, sRange(3)/2, NN(3));
+                    sListX = origin(1) + (-sRange(1)/2 : step : sRange(1)/2);
+                    sListY = origin(2) + (-sRange(2)/2 : step : sRange(2)/2);
+                    sListZ = origin(3) + (-sRange(3)/2 : step : sRange(3)/2);
                     sList = {sListX;sListY;sListZ};
             end
         end
 
-        function spaceStep = get.SpaceStep(obj)
-            switch obj.Dimension
-                case 1
-                    spaceStep = obj.SpaceList(2) - obj.SpaceList(1);
-                case 2
-                    spaceStep = cellfun(@(x) x(2) - x(1),obj.SpaceList);
-                case 3
-                    spaceStep = cellfun(@(x) x(2) - x(1),obj.SpaceList);
-            end
-        end
+        % function spaceStep = get.SpaceStep(obj)
+        %     switch obj.Dimension
+        %         case 1
+        %             spaceStep = obj.SpaceList(2) - obj.SpaceList(1);
+        %         case 2
+        %             spaceStep = cellfun(@(x) x(2) - x(1),obj.SpaceList);
+        %         case 3
+        %             spaceStep = cellfun(@(x) x(2) - x(1),obj.SpaceList);
+        %     end
+        % end
 
         function kList = get.SpaceAngularFrequencyList(obj)
             NN = obj.NSpaceStep;

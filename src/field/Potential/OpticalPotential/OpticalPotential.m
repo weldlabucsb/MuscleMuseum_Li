@@ -20,7 +20,7 @@ classdef (Abstract) OpticalPotential < Potential & matlab.mixin.Heterogeneous
             %   Detailed explanation goes here
             arguments
                 atom (1,1) Atom
-                laser (1,1) Laser
+                laser Laser
                 name string = string.empty
             end
             obj@Potential(atom,name);

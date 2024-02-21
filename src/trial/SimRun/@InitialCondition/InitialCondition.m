@@ -33,6 +33,7 @@ classdef InitialCondition < dynamicprops
                     pWF.SetMethod = @setWaveFunction;
                     pDM.SetMethod = @setDensityMatrix;
                 case {"SeSim1D","SeSim1DRun"}
+                    addprop(obj,"WaveFunctionFunc");
                     pWF = addprop(obj,"WaveFunction");
                     pWF.SetMethod = @setWaveFunction;
             end

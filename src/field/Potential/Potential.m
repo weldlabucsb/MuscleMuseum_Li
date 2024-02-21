@@ -6,6 +6,11 @@ classdef (Abstract) Potential < handle
         Atom Atom
         Name string
     end
+
+    properties
+        Manifold string
+        StateIndex double
+    end
     
     methods
         function obj = Potential(atom,name)
