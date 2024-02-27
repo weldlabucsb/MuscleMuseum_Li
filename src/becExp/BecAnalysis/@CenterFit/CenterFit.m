@@ -311,7 +311,7 @@ classdef CenterFit < BecAnalysis
         function updateFigure(obj,~)
             fig = obj.Chart(1).Figure;
             becExp = obj.BecExp;
-            if ~ismember("DensityFit",obj.BecExp.AnalysisMethod) || ~ishandle(fig) ||...
+            if ~ismember("DensityFit",obj.BecExp.AnalysisMethod) || (isempty(fig) || ~ishandle(fig)) ||...
                     ~isempty(obj.BecExp.Roi.SubRoi)
                 return
             end

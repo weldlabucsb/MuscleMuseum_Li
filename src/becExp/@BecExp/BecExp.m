@@ -19,7 +19,7 @@ classdef BecExp < Trial
     end
 
     properties (SetAccess = private, Hidden)
-        CiceroLogOrigin {mustBeFolder} = "."
+        CiceroLogOrigin = "."
         CiceroLogPath string
         CiceroLogTime datetime
         DeletedRunParameterList
