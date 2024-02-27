@@ -149,8 +149,7 @@ classdef SeSim1DRun < TimeSimRun & SpaceSimRun
             renderTicks(img,t,x)
             xlabel("$t~[\mathrm{ms}]$",'Interpreter','latex')
             ylabel("$y~[\mu\mathrm{m}]$",'Interpreter','latex')
-            % clim([0,max(n(1,:))])
-            clim([0,3.8349e+05])
+            clim([0,max(n(1,:))])
             render
         end
 

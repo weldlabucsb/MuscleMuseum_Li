@@ -110,7 +110,7 @@ classdef Od < BecAnalysis
             roiSize = roi.CenterSize(3:4);
             nRun = becExp.NCompletedRun;
 
-            if ~isvalid(obj.Gui(1).App)
+            if isempty(obj.Gui(1).App) || ~isvalid(obj.Gui(1).App)
                 obj.Gui(1).initialize(obj.BecExp)
             end
 

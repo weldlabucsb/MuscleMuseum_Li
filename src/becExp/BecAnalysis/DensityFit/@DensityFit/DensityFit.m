@@ -236,7 +236,7 @@ classdef DensityFit < BecAnalysis
         function updateFigure(obj,~)
             obj.Gui(1).update
             fig = obj.Chart(1).Figure;
-            if ~ishandle(fig)
+            if isempty(fig) || ~ishandle(fig)
                 return
             end
 

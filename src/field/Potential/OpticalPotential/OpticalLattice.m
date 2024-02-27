@@ -128,7 +128,22 @@ classdef OpticalLattice < OpticalPotential
         function func = spaceFunc(obj)
             V0 = obj.Depth;
             k = obj.Laser.AngularWavevector.';
-            func = @(r) -V0 .* (cos(k * r)).^2;
+            k0 = norm(k);
+            kHat = k ./ k0;
+            if class(obj.Laser) == "GaussianBeam"
+                w0 = sqrt(prod(obj.Laser.Waist));
+                zR = obj.Laser.RayleighRange;
+                func = @(r) V(r);
+            else
+                func = @(r) -V0 .* (cos(k * r)).^2;
+            end
+            function Vout = V(r)
+                z = kHat * r;
+                r2 = vecnorm(r - kHat.' * z).^2;
+                wz = w0 * sqrt(1 + (z./zR).^2);
+                Vout = -V0 .* (w0./wz).^2 .* exp(-2 .* r2 ./ wz.^2) .* ...
+                    cos(k0 * z .* (1 + 1/2 * r2 ./ zR^2 .* w0^2 ./ wz.^2)).^2;
+            end
         end
 
         function [E,u] = computeBand1D(obj,q,n,x)

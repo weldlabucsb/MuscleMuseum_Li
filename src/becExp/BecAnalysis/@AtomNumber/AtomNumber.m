@@ -267,7 +267,7 @@ classdef AtomNumber < BecAnalysis
     methods (Static)
         function handlePropEvents(src,evnt)
             obj = evnt.AffectedObject;
-            if ~ishandle(obj.Chart(1).Figure)
+            if isempty(obj.Chart(1).Figure) || ~ishandle(obj.Chart(1).Figure)
                 return
             end
             switch src.Name
