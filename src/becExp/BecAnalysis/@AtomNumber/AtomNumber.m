@@ -75,6 +75,7 @@ classdef AtomNumber < BecAnalysis
             % Initialize axis
             ax = gca;
             co = ax.ColorOrder;
+            conum=size(co, 1);
             mOrder = markerOrder();
 
             hold(ax,'on')
@@ -98,8 +99,8 @@ classdef AtomNumber < BecAnalysis
                         for ii = 1:nSub
                             obj.ThermalLine(ii) = errorbar(ax,1,1,[]);
                             obj.ThermalLine(ii).Marker = mOrder(ii);
-                            obj.ThermalLine(ii).MarkerFaceColor = co(ii + nSub,:);
-                            obj.ThermalLine(ii).MarkerEdgeColor = co(ii + nSub,:)*.5;
+                            obj.ThermalLine(ii).MarkerFaceColor = co(mod(ii + nSub-1,conum)+1,:);
+                            obj.ThermalLine(ii).MarkerEdgeColor = co(mod(ii + nSub-1,conum)+1,:)*.5;
                             obj.ThermalLine(ii).MarkerSize = 8;
                             obj.ThermalLine(ii).LineWidth = 2;
                             obj.ThermalLine(ii).Color = co(ii + nSub,:); 
