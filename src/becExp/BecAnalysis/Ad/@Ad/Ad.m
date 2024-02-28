@@ -125,7 +125,7 @@ classdef Ad < BecAnalysis
             roiSize = becExp.Roi.CenterSize(3:4);
             obj.AdData = zeros([roiSize,1]);
 
-            if ~isvalid(obj.Gui(1).App)
+            if isempty(obj.Gui(1).App) || ~isvalid(obj.Gui(1).App)
                 obj.Gui(1).initialize(obj.BecExp)
             end
 

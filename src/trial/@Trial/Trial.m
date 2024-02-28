@@ -197,7 +197,10 @@ classdef (Abstract) Trial < handle & matlab.mixin.SetGetExactNames & dynamicprop
 
     methods (Static)
         function obj = loadobj(obj)
-            obj.Writer = createWriter(obj.DatabaseName); %Create writer type database connection
+            try
+                obj.Writer = createWriter(obj.DatabaseName); %Create writer type database connection
+            catch
+            end
             if ~isempty(obj.ControlAppName)
                 obj.ControlApp = get(findall(0, 'Tag', obj.ControlAppName), 'RunningAppInstance');
             end

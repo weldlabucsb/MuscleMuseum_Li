@@ -17,7 +17,6 @@ classdef Chart < handle
 
     properties (Transient)
         Figure matlab.ui.Figure
-        Image matlab.graphics.primitive.Image
     end
 
     methods
