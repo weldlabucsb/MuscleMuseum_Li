@@ -78,6 +78,11 @@ classdef AtomNumber < BecAnalysis
             conum=size(co, 1);
             mOrder = markerOrder();
 
+            obj.RawLine = matlab.graphics.chart.primitive.ErrorBar.empty;
+            obj.ThermalLine = matlab.graphics.chart.primitive.ErrorBar.empty;
+            obj.CondensateLine = matlab.graphics.chart.primitive.ErrorBar.empty;
+            obj.TotalLine = matlab.graphics.chart.primitive.ErrorBar.empty;
+
             hold(ax,'on')
             % Initialize raw plots
             for ii = 1:nSub
