@@ -114,19 +114,7 @@ classdef Od < BecAnalysis
                 obj.Gui(1).initialize(obj.BecExp)
             end
 
-            % If refresh, read the RoiData again from files
-            roiData = zeros([roiSize,nRun,3]);
-            p = gcp('nocreate');
-            if isempty(p)
-                for ii = 1:nRun
-                    roiData(:,:,ii,:) = roi.select(becExp.readRun(ii));
-                end
-            else
-                parfor ii = 1:nRun
-                    roiData(:,:,ii,:) = roi.select(becExp.readRun(ii));
-                end
-            end
-            obj.RoiData = roiData;
+            obj.RoiData = becExp.readRunRoi(1:nRun);
 
             % Redo ploting
             obj.finalize;
@@ -190,13 +178,14 @@ classdef Od < BecAnalysis
             img = imagesc(ax,mData);
 
             %% Render
+            fz = 20;
             cb = colorbar(ax);
             clim(obj.CLim)
             colormap(ax,obj.Colormap)
             
             cb.Label.Interpreter = "Latex";
             cb.Label.String = "OD";
-            cb.Label.FontSize = 14;
+            cb.Label.FontSize = fz;
             roiSize = obj.BecExp.Roi.CenterSize(3:4);
             yxBoundary = obj.BecExp.Roi.YXBoundary;
             aspect = double(nRun)*roiSize(2)/roiSize(1);
@@ -218,14 +207,15 @@ classdef Od < BecAnalysis
             ax.Units = "normalized";
             ax.XLabel.String = obj.BecExp.XLabel;
             ax.XLabel.Interpreter = "latex";
-            ax.XLabel.FontSize = 14;
+            ax.XLabel.FontSize = fz;
             ax.YLabel.String = "$y$ position [pixels]";
             ax.YLabel.Interpreter = "latex";
-            ax.YLabel.FontSize = 14;
+            ax.YLabel.FontSize = fz;
             ax.Title.String = "TrialName: " + obj.BecExp.Name + ...
                 ", Trial \#" + num2str(obj.BecExp.SerialNumber);
             ax.Title.Interpreter = "latex";
-            ax.Title.FontSize = 14;
+            ax.Title.FontSize = fz;
+            ax.FontSize = fz;
             
             renderTicks(img,[1,2],yxBoundary(1):yxBoundary(2))
             ax.TickDir = "out";

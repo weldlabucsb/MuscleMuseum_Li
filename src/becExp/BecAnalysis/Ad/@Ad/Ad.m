@@ -115,7 +115,12 @@ classdef Ad < BecAnalysis
         function show(obj)
             addlistener(obj,'CLim','PostSet',@obj.handlePropEvents);
             obj.Gui(1).initialize(obj.BecExp)
-            obj.Chart(1).show
+            if isfile(obj.Chart(1).Path + ".fig") % for backwards compatibility
+                obj.Chart(1).show
+            elseif obj.Chart(1).IsEnabled
+                load(fullfile(obj.BecExp.DataAnalysisPath,"AdData.mat"),"adData")
+                obj.plotAdMix(adData);
+            end
             obj.Chart(2).show
         end
 
@@ -137,7 +142,19 @@ classdef Ad < BecAnalysis
             obj.finalize;
         end
 
-        function plotAdMix(obj)
+        function save(obj)
+            adData = obj.AdData;
+            x = obj.BecExp.Roi.XList * obj.BecExp.Acquisition.PixelSizeReal;
+            y = obj.BecExp.Roi.YList * obj.BecExp.Acquisition.PixelSizeReal;
+            save(fullfile(obj.BecExp.DataAnalysisPath,"AdData"),"adData","x","y")
+            saveas(obj.Chart(1).Figure,obj.Chart(1).Path,'png')
+        end
+
+        function plotAdMix(obj,adData)
+            arguments
+                obj
+                adData = []
+            end
             %% Initialize
             fig = obj.Chart(1).initialize;
             if ishandle(fig)
@@ -151,20 +168,24 @@ classdef Ad < BecAnalysis
             nRun = obj.BecExp.NCompletedRun;
             cData = cell(1,nRun);
             runList = obj.BecExp.RunListSorted;
+            if isempty(adData)
+                adData = obj.AdData;
+            end
             for ii = 1:nRun
-                cData{ii} = obj.AdData(:,:,runList(ii));
+                cData{ii} = adData(:,:,runList(ii));
             end
             mData = horzcat(cData{:}) / obj.Unit;
             img = imagesc(ax,mData);
 
             %% Render
+            fz = 20;
             cb = colorbar(ax);
             clim(obj.CLim)
             colormap(ax,obj.Colormap)
             
             cb.Label.Interpreter = "Latex";
             cb.Label.String = "AD [$\times 10^{" + string(log(obj.Unit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
-            cb.Label.FontSize = 14;
+            cb.Label.FontSize = fz;
             roiSize = obj.BecExp.Roi.CenterSize(3:4);
             yxBoundary = obj.BecExp.Roi.YXBoundary;
             aspect = double(nRun)*roiSize(2)/roiSize(1);
@@ -186,14 +207,15 @@ classdef Ad < BecAnalysis
             ax.Units = "normalized";
             ax.XLabel.String = obj.BecExp.XLabel;
             ax.XLabel.Interpreter = "latex";
-            ax.XLabel.FontSize = 14;
+            ax.XLabel.FontSize = fz;
             ax.YLabel.String = "$y$ position [pixels]";
             ax.YLabel.Interpreter = "latex";
-            ax.YLabel.FontSize = 14;
+            ax.YLabel.FontSize = fz;
             ax.Title.String = "TrialName: " + obj.BecExp.Name + ...
                 ", Trial \#" + num2str(obj.BecExp.SerialNumber);
             ax.Title.Interpreter = "latex";
-            ax.Title.FontSize = 14;
+            ax.Title.FontSize = fz;
+            ax.FontSize = fz;
 
             renderTicks(img,[1,2],yxBoundary(1):yxBoundary(2))
             ax.TickDir = "out";

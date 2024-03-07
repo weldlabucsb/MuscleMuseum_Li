@@ -164,6 +164,7 @@ classdef BecExp < Trial
         show(obj)
         refresh(obj,anaylsisName)
         mData = readRun(obj,runIdx)
+        roiData = readRunRoi(obj,runIdx)
         deleteRun(obj,runIdx)
         sData = readCiceroLog(obj,runIdx)
         fetchCiceroLog(obj,runIdx)
