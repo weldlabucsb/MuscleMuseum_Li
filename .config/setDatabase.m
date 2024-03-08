@@ -1,6 +1,14 @@
-function setDatabase
+function setDatabase(isLocal)
+arguments
+    isLocal logical = true
+end
+if isLocal
+    serverName = "localhost";
+else
+    serverName = "128.111.8.45";
+end
 %% Connect to the default database
-serverName = "localhost";
+
 databaseName = "postgres";
 port = 5432;
 username = "postgres";
@@ -8,7 +16,11 @@ password = "Ultr@c0ld";
 conn = connectPsqlDatabase(databaseName,serverName,port,username,password);
 
 %% Create databases
-newDatabaseList = ["lithium_experiment","simulation"];
+if isLocal
+    newDatabaseList = ["lithium_experiment_local","simulation_local"];
+else
+    newDatabaseList = ["lithium_experiment","simulation"];
+end
 
 disp([newline,'Attempt to create new databases...'])
 for ii = 1: numel(newDatabaseList)
@@ -34,7 +46,6 @@ end
 close(conn)
 
 %% Create tables for experiment
-serverName = "localhost";
 databaseName = newDatabaseList(1);
 port = 5432;
 username = "postgres";
@@ -60,7 +71,6 @@ end
 close(conn)
 
 %% Create tables for simulation
-serverName = "localhost";
 databaseName = newDatabaseList(2);
 port = 5432;
 username = "postgres";
@@ -91,8 +101,6 @@ close(conn)
 
 %% Grant permissions
 for ii = 1:numel(newDatabaseList)
-
-    serverName = "localhost";
     databaseName = newDatabaseList(ii);
     port = 5432;
     username = "postgres";

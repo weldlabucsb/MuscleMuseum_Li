@@ -123,7 +123,7 @@ BecExpParameterUnit = readtable("parameterUnit.csv.xlsx",'TextType','string');
 BecExpConfig = join(BecExpConfig,BecExpParameterUnit,'Keys',{'ScannedParameter','ScannedParameter'});
 
 load("FringeRemovalMaskConfig.mat","FringeRemovalMaskConfig")
-% Assign empty masks for 
+% Assign empty masks 
 TrialName = BecExpConfig.TrialName(find(~ismember(BecExpConfig.TrialName,FringeRemovalMaskConfig.TrialName)));
 FringeRemovalMask = cell(numel(TrialName),1);
 FringeRemovalMaskConfig = [FringeRemovalMaskConfig;table(TrialName,FringeRemovalMask)];
@@ -133,6 +133,7 @@ save(configName,"BecExpConfig","BecExpParameterUnit",'-mat','-append')
 
 %% Set the BEC experiment local test configuration
 BecExpLocalTestConfig = BecExpConfig;
+BecExpLocalTestConfig.DatabaseName(:) = "lithium_experiment_local";
 BecExpLocalTestConfig.ParentPath(:) = fullfile("C:\data","becExp");
 BecExpLocalTestConfig.CiceroLogOrigin(:) = fullfile(repoPath,"test","testData","testLogFiles");
 BecExpLocalTestConfig.IsAutoAcquire(:) = false;

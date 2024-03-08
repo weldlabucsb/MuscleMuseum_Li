@@ -42,9 +42,10 @@ columnCompare = ismember(columnNames,columnNamesDB);
 %If the input data have different columns compared to the database, add
 %columns to the database table
 if ~all(columnCompare)
-    addedColumnNames = columnNames(~columnCompare);
     [data,columnTypes] = database.internal.utilities.TypeMapper.matlabToDatabaseTypes(conn,data,conn.DatabaseProductName);
     [data,columnTypes,columnNames] = database.internal.utilities.TypeMapper.modifyData(data,columnTypes,columnNames);
+    columnCompare = ismember(columnNames,columnNamesDB);
+    addedColumnNames = columnNames(~columnCompare);
     firstRowData = table2cell(data(1,:));
     for ii = 1:numel(columnNames)
         if numel(firstRowData{ii})>1 || isForceArray %If the input data are vectors, create vector type columns in database
