@@ -1,0 +1,23 @@
+atom = Alkali("Lithium7");
+laser = GaussianBeam( ...
+    wavelength = 1064e-9,...
+    direction = [0;1;0],...
+    polarization = [0;0;1],...
+    power = 1, ...
+    waist = 110e-6 ...
+    );
+ol = OpticalLattice(atom,laser);
+
+nPower = 10;
+powerList = linspace(0.1,2,nPower);
+depthList = zeros(1,nPower);
+freqList = zeros(1,nPower);
+kL = laser.AngularWavenumber;
+
+for ii = 1:nPower
+    ol.Laser.Power = powerList(ii);
+    freqList(ii) = ol.computeTransitionFrequency1D(0.3 * kL,0,1);
+    depthList(ii) = ol.DepthLu;
+end
+
+plot(depthList,freqList)

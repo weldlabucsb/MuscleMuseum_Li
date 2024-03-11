@@ -67,7 +67,9 @@ if ~all(columnCompare)
         end
     end
     query = query + ";";
-    execute(conn,query)
+    if ~isempty(addedColumnTypes)
+        execute(conn,query)
+    end
 end
 
 if isempty(data)

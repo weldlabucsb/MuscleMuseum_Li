@@ -157,11 +157,13 @@ MeSimOutput = readtable("meSimOutput.csv.xlsx",'TextType','string');
 save(configName,"MeSimConfig","MeSimOutput",'-mat','-append')
 
 %% Set the lattice schrodinger equation simulation configuration
-LatticeSeSim1DConfig.ParentPath = fullfile("C:\data","latticeSeSim1D");
+% LatticeSeSim1DConfig.ParentPath = fullfile("C:\data","latticeSeSim1D");
+% LatticeSeSim1DConfig.DatabaseName = "simulation";
+LatticeSeSim1DConfig.ParentPath = fullfile("B:\__Lab Member Folders\Xiao\SimulationData","latticeSeSim1D");
+LatticeSeSim1DConfig.DatabaseName = "simulation";
 LatticeSeSim1DConfig.DataPrefix = "run";
 LatticeSeSim1DConfig.DataFormat = ".mat";
 LatticeSeSim1DConfig.IsAutoDelete = false;
-LatticeSeSim1DConfig.DatabaseName = "simulation";
 LatticeSeSim1DConfig.DatabaseTableName = "lattice_schrodinger_equation_simulation_1d";
 LatticeSeSim1DConfig.DataGroupSize = 1;
 

@@ -18,6 +18,7 @@ classdef OpticalLattice < OpticalPotential
         RadialFrequencyKd % in Hz, linear frequency, calculated from KD depth
         RadialFrequencySpec % in Hz, linear frequency, calculated from spectrum depth
         Depth % in Hz, best value
+        DepthLu % in Er, best value
         AxialFrequency % in Hz, best value
         RadialFrequency % in Hz, best value
     end
@@ -103,6 +104,10 @@ classdef OpticalLattice < OpticalPotential
             end
         end
 
+        function v0 = get.DepthLu(obj)
+            v0 = obj.Depth/obj.RecoilEnergy;
+        end
+        
         function fZ = get.AxialFrequency(obj)
             if ~isempty(obj.DepthSpec)
                 fZ = obj.AxialFrequencySpec;
@@ -146,111 +151,16 @@ classdef OpticalLattice < OpticalPotential
             end
         end
 
-        function [E,u] = computeBand1D(obj,q,n,x)
-            % Calculate Bloch state for quasimomentum q and band index n.
-            % q: Sampling quasimomentum [p/hbar] in unit of 1/meter.
-            % n: Band index. Start from zero. So n = 0 means the s band.
-            % x: Optional. The sampling 1D spatial grids in unit of meter.
-            % E: Band energy given as a nmax * length(q) matrix, where nmax
-            % is the band index cutoff = 2*(max(n)+1)+49.
-            % u: Bloch state in real space. If x is given, u is a matrix of
-            % dimension length(x) * length(q) * length(n). If not, u is a
-            % cell of function handles with dimension length(q) *
-            % length(n).
-            arguments
-                obj OpticalLattice
-                q double {mustBeVector}
-                n double {mustBeVector,mustBeInteger,mustBeNonnegative}
-                x double = []
-            end
-            v0 = obj.Depth / obj.RecoilEnergy; % Dimensionless lattice depth.
-            kL = obj.Laser.AngularWavenumber;
-            q = q / kL; % Dimensionless quasi-momentum.
-            n = n + 1; % For easier indexing.
-            nmax = 2 * max(n)+49; % Band index cutoff.
-            j = 1-nmax:2:nmax-1;
-            Vmat = -v0/4*gallery('tridiag',nmax,1,0,1); % I added a minus sign here
-            E = zeros(nmax,length(q)); % Band energy
-            ck = zeros(nmax,nmax,length(q)); % Bloch states in the plane wave basis.
-            for qIdx = 1:length(q)
-                Tmat = sparse(1:nmax,1:nmax,(q(qIdx)+j).^2,nmax,nmax);
-                [ck(:,:,qIdx),tempE] = eig(full(Vmat+Tmat));
-                E(:,qIdx) = diag(tempE);
-            end
-
-            if nargout == 2
-                k = (1-nmax:2:nmax-1) * kL;
-                q = q * kL;
-                if isempty(x)
-                    uFunc = cell(numel(q),numel(n));
-                    for nIdx = 1:numel(n)
-                        for qIdx = 1:numel(q)
-                            uFunc{qIdx,nIdx} = @(x) 0;
-                            vn = ck(:,n(nIdx),qIdx);
-                            for ii = 1:nmax
-                                uFunc{qIdx} = @(x) uFunc{qIdx}(x) + vn(ii)*exp(1i*(k(ii)+q(qIdx))*x);
-                            end
-                        end
-                    end
-                    u = uFunc;
-                else
-                    if ~isvector(x)
-                        error("x must be a vector")
-                    end
-                    u = zeros(numel(x),numel(q),numel(n));
-                    x = x(:); % Make sure x is a column vecter.
-                    dx = abs(x(2) - x(1));
-                    for nIdx = 1:numel(n)
-                        for qIdx = 1:numel(q)
-                            vn = ck(:,n(nIdx),qIdx);
-                            for ii = 1:nmax
-                                u(:,qIdx,nIdx) = u(:,qIdx,nIdx) + vn(ii)*exp(1i*(k(ii)+q(qIdx))*x);
-                            end
-                        end
-                    end
-                    u = u ./ sqrt(sum(abs(u).^2,1) * dx); % Normalization
-                end
-            end
+        function updatePower(obj)
+            v0 = obj.Depth;
+            alpha = obj.ScalarPolarizabilityGround;
+            eField = sqrt(abs(v0 / alpha)
+            v0 =  4 * abs(obj.ScalarPolarizabilityGround * abs(obj.Laser.ElectricFieldAmplitude)^2 / 4);
         end
 
-        function pop = computeBandPopulation1D(obj,psi,x,n)
-            % Calculate band population for wavefunction psi.
-            % psi: The wavefunctions. It is recommended to input the
-            % conjugate of psi. psi is assumed to be a npsi * length(x)
-            % matrix, where npsi the number of wavefunctions we want to
-            % compute band population.
-            % x: The sampling 1D spatial grids in unit of meter. Must be
-            % the same size as the wave function.
-            % n: Maximum band index. By default we calculate up to the d
-            % band.
-            % pop: Output band population as a npsi * n+1 matrix.
-            arguments
-                obj OpticalLattice
-                psi double 
-                x double {mustBeVector}
-                n double {mustBeInteger,mustBeNonnegative} = 2
-            end
-
-            % Input validation
-            if ~ismatrix(psi)
-                error("Incorrect dimension of psi.")
-            elseif size(psi,1) == numel(x)
-                psi = psi'; % The spatial dimension of psi must be the second dimension.
-            elseif size(psi,2) ~= numel(x)
-                error("Incorrect dimension of psi.")
-            end
-
-            dx = x(2) - x(1); % Spatial grid size
-            kL = obj.Laser.AngularWavenumber;
-            dk = 2 * pi / numel(x) / dx; % Momentum grid size
-            q = -kL:dk:kL; % Sampling quasi-momentum
-            [~,u] = obj.computeBand1D(q,0:n,x);
-            pop = zeros(size(psi,1),n+1);
-            for nIdx = 1:(n+1)
-                pop(:,nIdx) = sum(abs(psi * u(:,:,nIdx) * dx).^2,2);
-            end
-        end
-
+        [E,u] = computeBand1D(obj,q,n,x)
+        pop = computeBandPopulation1D(obj,psi,x,n)
+        freq = computeTransitionFrequency1D(obj,n1,n2,q)
     end
 end
 
