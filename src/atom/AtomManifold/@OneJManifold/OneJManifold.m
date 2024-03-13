@@ -139,7 +139,7 @@ classdef OneJManifold < AtomManifold
              Ham = (Ham + Ham')/2;
         end
 
-        function [dressedStateList,U] = BiasDressedStateList(obj,B,isPlot)
+        function [dressedStateList,U,brMap] = BiasDressedStateList(obj,B,isPlot)
             arguments
                 obj OneJManifold
                 B MagneticField
@@ -179,13 +179,17 @@ classdef OneJManifold < AtomManifold
             dressedStateList.EnergyShift = dressedStateList.EnergyShift - dressedStateList.Energy;
             U = dressedStateList.DressedState;
             U = horzcat(U{:}); %Unitary operator the connect to the dressed states
+
+            biasList = [BList.Bias];
+            [~,sortIndex] = sort(Index);
+            biasList = biasList(3,:);
+            brMap = {biasList,D(sortIndex,:)};
+
             if isPlot
                 close(figure(1024))
                 figure(1024)
-                biasList = [BList.Bias];
-                biasList = biasList(3,:);
+
                 ll = cell(1,numel(Index));
-                [~,sortIndex] = sort(Index);
                 for ii = 1:numel(Index)
                     s = dressedStateList(dressedStateList.Index == ii,:);
                     ll{ii} = "$F=" + num2str(s.F) + ",M_F=" + num2str(s.MF) + "$";
