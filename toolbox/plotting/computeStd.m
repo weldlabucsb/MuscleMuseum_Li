@@ -31,6 +31,7 @@ selectIdx = [[1;(icSortedDiff+1)],[icSortedDiff;numel(ic)]];
 for ii = 1:size(selectIdx,1)
     ySelected = y(icSortIdx(selectIdx(ii,1):selectIdx(ii,2)));
     [yError(ii),yAve(ii)] = std(ySelected); % standard deviation and mean
+    yError(ii) = yError(ii) / sqrt(numel(ySelected));
 end
 end
 

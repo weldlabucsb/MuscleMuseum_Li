@@ -217,6 +217,31 @@ classdef CenterFit < BecAnalysis
                                     data{9,3} = '1/VarUnit';
                                     data{10,3} = '1/VarUnit';
                                 end
+                            case "TriangleFit1D"
+                                obj.MinimumFitNumber = 5;
+                                data{5,1} = 'Thermal Cloud Center Slosh Amplitude in x';
+                                data{5,2} = '';
+                                data{5,3} = 'Pixels';
+                                data{6,1} = 'Thermal Cloud Center Slosh Amplitude in y';
+                                data{6,2} = '';
+                                data{6,3} = 'Pixels';
+                                data{7,1} = 'Thermal Cloud Center Slosh Offset in x';
+                                data{7,2} = '';
+                                data{7,3} = 'Pixels';
+                                data{8,1} = 'Thermal Cloud Center Slosh Offset in y';
+                                data{8,2} = '';
+                                data{8,3} = 'Pixels';
+                                data{9,1} = 'Thermal Cloud Center Slosh Frequency in x';
+                                data{9,2} = '';
+                                data{10,1} = 'Thermal Cloud Center Slosh Frequency in y';
+                                data{10,2} = '';
+                                if isTimeUnit(becExp.ScannedParameterUnit)
+                                    data{9,3} = 'Hz';
+                                    data{10,3} = 'Hz';
+                                else
+                                    data{9,3} = '1/VarUnit';
+                                    data{10,3} = '1/VarUnit';
+                                end
                         end
                     
                     case "BimodalFit1D"
@@ -300,6 +325,26 @@ classdef CenterFit < BecAnalysis
                                         obj.ThermalCloudCenterSloshFrequency = ...
                                             [obj.FitDataThermal(1).Coefficient(2);obj.FitDataThermal(2).Coefficient(2)];
                                     end
+                            case "TriangleFit1D"
+                                %% Sine Fit
+                                    obj.FitDataThermal = ...
+                                        [TriangleFit1D([paraList,becExp.DensityFit.ThermalCloudCenter(1,:).']);...
+                                         TriangleFit1D([paraList,becExp.DensityFit.ThermalCloudCenter(2,:).'])];
+                                    obj.FitDataThermal(1).do;
+                                    obj.FitDataThermal(2).do;
+                                    obj.ThermalCloudCenterSloshAmplitude = ...
+                                        [(obj.FitDataThermal(1).Coefficient(1) - obj.FitDataThermal(1).Coefficient(2))/2;...
+                                        (obj.FitDataThermal(2).Coefficient(1) - obj.FitDataThermal(2).Coefficient(2))/2];
+                                    obj.ThermalCloudCenterSloshOffset = ...
+                                        [(obj.FitDataThermal(1).Coefficient(1) + obj.FitDataThermal(1).Coefficient(2))/2;...
+                                        (obj.FitDataThermal(2).Coefficient(1) + obj.FitDataThermal(2).Coefficient(2))/2];
+                                    if isTimeUnit(becExp.ScannedParameterUnit)
+                                        obj.ThermalCloudCenterSloshFrequency = ...
+                                            1 ./ tUnit ./ [obj.FitDataThermal(1).Coefficient(4);obj.FitDataThermal(2).Coefficient(4)];
+                                    else
+                                        obj.ThermalCloudCenterSloshFrequency = ...
+                                            1 ./ [obj.FitDataThermal(1).Coefficient(4);obj.FitDataThermal(2).Coefficient(4)];
+                                    end
                         end
                     end
                 case "BimodalFit1D"
@@ -364,7 +409,7 @@ classdef CenterFit < BecAnalysis
                                     obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterAcceleration(1)/px);
                                     obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterAcceleration(2)/px);
                                 end
-                            case "SineFit1D"
+                            case {"SineFit1D","TriangleFit1D"}
                                     obj.ParaTable.Data{5,2} = num2str(obj.ThermalCloudCenterSloshAmplitude(1)/px);
                                     obj.ParaTable.Data{6,2} = num2str(obj.ThermalCloudCenterSloshAmplitude(2)/px);
                                     obj.ParaTable.Data{7,2} = num2str(obj.ThermalCloudCenterSloshOffset(1)/px);
