@@ -19,7 +19,7 @@ if obj.NCompletedRun == 0
     return
 end
 
-if obj.Od.FringeRemovalMethod == "None"
+if obj.Od.FringeRemovalMethod == "None" || isempty(obj.Od.FringeRemovalMask)
     obj.displayLog("Saving the figures.")
     for ii = 1:numel(obj.AnalysisMethod)
         obj.(obj.AnalysisMethod(ii)).finalize;

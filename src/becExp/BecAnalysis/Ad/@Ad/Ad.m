@@ -191,7 +191,7 @@ classdef Ad < BecAnalysis
             aspect = double(nRun)*roiSize(2)/roiSize(1);
             figPos = fig.InnerPosition;
             targetWidth = figPos(3)*0.85;
-            targetHeight = figPos(4)*0.85;
+            targetHeight = figPos(4)*0.8;
             ax.Units = "pixels";
             if targetWidth > targetHeight * aspect
                 ax.Position(4) = targetHeight;
