@@ -162,6 +162,7 @@ classdef BecExp < Trial
         pause(obj)
         resume(obj)
         stop(obj)
+        fastStop(obj)
         show(obj)
         refresh(obj,anaylsisName)
         mData = readRun(obj,runIdx)

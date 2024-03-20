@@ -11,7 +11,7 @@ classdef Roi < handle
         CenterSize (1,4) double = [512.5,512.5,1024,1024] %[centerY,centerX,sizeY,sizeX]
         SubRoiCenterSize double % N * 4 array or 1 * 4 array. In the full image basis.
         SubRoiNRowColumn (1,2) double = [1,1]
-        SubRoiSeparation (1,2) double = [100,100]
+        SubRoiSeparation (1,2) double = [100,100] 
     end
 
     properties (Dependent)
@@ -43,12 +43,13 @@ classdef Roi < handle
             end
             
             warning off
+            obj.IsSubRoi = options.isSubRoi;
+            
             if ~isempty(roiName)
                 % If ROI name is specified, load ROI from Config, unless
                 % the name is "Full". For "Full" ROI one has to specify the
                 % image size explicitly.
-                obj.Name = roiName;
-                obj.IsSubRoi = options.isSubRoi;
+                obj.Name = roiName;  
                 if roiName ~= "Full"
                     load("Config.mat","RoiConfig")
                     configParameter = RoiConfig(RoiConfig.Name == roiName,:);
@@ -79,8 +80,6 @@ classdef Roi < handle
                     obj.SubRoiSeparation = options.subRoiSeparation;
                     obj.SubRoiCenterSize = options.subRoiCenterSize;
                 end
-
-
             else
                 % If ROI name is not specified, set ROI properties
                 % according to the input.
@@ -202,6 +201,7 @@ classdef Roi < handle
         function set.Angle(obj,val)
             if obj.IsSubRoi
                 obj.Angle = 0;
+                obj.ImageSizeRotated = obj.ImageSize;
                 return
             end
             if numel(val) == 1
@@ -483,7 +483,39 @@ classdef Roi < handle
         function val = get.NSub(obj)
             val = numel(obj.SubRoi);
         end
+
+        function s = saveobj(obj)
+            s = struct();
+            s.Name = obj.Name;
+            s.ImageSize = obj.ImageSize;
+            s.ImageSizeRotated = obj.ImageSizeRotated;
+            s.YXBoundary = obj.YXBoundary;
+            s.Angle = obj.Angle;
+            s.SubRoiCenterSize = obj.SubRoiCenterSize;
+            s.SubRoiNRowColumn = obj.SubRoiNRowColumn;
+            s.SubRoiSeparation = obj.SubRoiSeparation;
+            s.IsSubRoi = obj.IsSubRoi;
+        end
+    end
     
+    methods (Static)
+        function obj = loadobj(s)
+            if isstruct(s)
+                newObj = Roi(...
+                yxBoundary = s.YXBoundary,...
+                angle = s.Angle,...
+                imageSize = s.ImageSize,...
+                isSubRoi = s.IsSubRoi,...
+                subRoiCenterSize = s.SubRoiCenterSize,...
+                subRoiNRowColumn = s.SubRoiNRowColumn,...
+                subRoiSeparation = s.SubRoiSeparation...
+                );
+                newObj.Name = s.Name;
+                obj = newObj;
+            else
+                obj = s;
+            end
+        end
     end
 end
 
