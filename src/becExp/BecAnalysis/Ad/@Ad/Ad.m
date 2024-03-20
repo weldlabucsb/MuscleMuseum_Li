@@ -147,7 +147,7 @@ classdef Ad < BecAnalysis
             x = obj.BecExp.Roi.XList * obj.BecExp.Acquisition.PixelSizeReal;
             y = obj.BecExp.Roi.YList * obj.BecExp.Acquisition.PixelSizeReal;
             save(fullfile(obj.BecExp.DataAnalysisPath,"AdData"),"adData","x","y")
-            if obj.Chart(1).isEnabled
+            if obj.Chart(1).IsEnabled
                 saveas(obj.Chart(1).Figure,obj.Chart(1).Path,'png')
             end
         end
@@ -193,7 +193,7 @@ classdef Ad < BecAnalysis
             aspect = double(nRun)*roiSize(2)/roiSize(1);
             figPos = fig.InnerPosition;
             targetWidth = figPos(3)*0.85;
-            targetHeight = figPos(4)*0.85;
+            targetHeight = figPos(4)*0.8;
             ax.Units = "pixels";
             if targetWidth > targetHeight * aspect
                 ax.Position(4) = targetHeight;
