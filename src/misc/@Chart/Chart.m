@@ -137,13 +137,19 @@ classdef Chart < handle
                     warning off
                     copyobj(allchild(src),fig)
                     warning on
-                    % obj.Figure = fig;
                 end
-            else
-                % gifPath = obj.Path + ".gif";
-                % if isfile(gifPath)
-                %     winopen(gifPath)
-                % end
+            end
+        end
+
+        function showGif(obj)
+            if ~obj.IsEnabled
+                return
+            end
+            if obj.IsGif
+                gifPath = obj.Path + ".gif";
+                if isfile(gifPath)
+                    winopen(gifPath)
+                end
             end
         end
     
@@ -154,8 +160,6 @@ classdef Chart < handle
 
             if ~obj.IsGif
                 close(figure(obj.Number))
-            else
-
             end
         end
     end
