@@ -51,12 +51,19 @@ classdef (Abstract) BecAnalysis < handle & matlab.mixin.SetGetExactNames
             end
         end
 
-        function show(obj)
+        function show(obj,isBrowser,monitorIndex)
+            arguments
+                obj BecAnalysis
+                isBrowser logical = false
+                monitorIndex double = 1
+            end
             for ii = 1:numel(obj.Gui)
+                obj.Gui(ii).MonitorIndex = monitorIndex;
                 obj.Gui(ii).initialize(obj.BecExp);
+                obj.Gui(ii).MonitorIndex = 1;
             end
             for ii = 1:numel(obj.Chart)
-                obj.Chart(ii).show;
+                obj.Chart(ii).show(isBrowser,monitorIndex);
             end
         end
 
@@ -78,12 +85,16 @@ classdef (Abstract) BecAnalysis < handle & matlab.mixin.SetGetExactNames
             end
         end
 
-        function close(obj)
+        function close(obj,isBrowser)
+            arguments
+                obj BecAnalysis
+                isBrowser logical = false
+            end
             for ii = 1:numel(obj.Gui)
                 obj.Gui(ii).close;
             end
             for ii = 1:numel(obj.Chart)
-                obj.Chart(ii).close;
+                obj.Chart(ii).close(isBrowser);
             end 
         end
     end

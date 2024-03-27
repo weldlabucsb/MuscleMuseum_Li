@@ -8,6 +8,7 @@ classdef Gui < handle
         Location
         Size
         IsEnabled logical = true
+        MonitorIndex double = 1
     end
 
     properties (Transient)
@@ -33,59 +34,65 @@ classdef Gui < handle
         end
         
         function initialize(obj,varargin)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
             if ~obj.IsEnabled
                 return
             end
 
-            allfigs = findall(0,'Type','figure'); 
-            app2Handle = findall(allfigs, 'Name', obj.Name);
-            close(app2Handle)
+            obj.close
+            % allfigs = findall(0,'Type','figure'); 
+            % app2Handle = findall(allfigs, 'Name', obj.Name);
+            % close(app2Handle)
             try
                 obj.App = feval(obj.Name,varargin{:});
             catch
                 obj.App = eval(obj.Name);
             end
-            SS = get(0,'screensize');
+
+            mp = sortMonitor;
+            ss = mp(1,:);
 
             if isstring(obj.Size)
                 switch obj.Size
                     case "small"
-                        fWidth = SS(3)/4.1;
-                        fHeight = SS(4)/2.1;
+                        fWidth = ss(3)/4.1;
+                        fHeight = ss(4)/2.1;
                     case "medium"
-                        fWidth = SS(3)/3.1;
-                        fHeight = SS(4)/2.1;
+                        fWidth = ss(3)/3.1;
+                        fHeight = ss(4)/2.1;
                     case "large"
-                        fWidth = SS(3)/3.1 * 1.5;
-                        fHeight = SS(4)/2.1 *1.5;
+                        fWidth = ss(3)/3.1 * 1.5;
+                        fHeight = ss(4)/2.1 *1.5;
                     case "largetall"
-                        fWidth = SS(3)/3.1 * 1.5;
-                        fHeight = SS(4)/1.1;
+                        fWidth = ss(3)/3.1 * 1.5;
+                        fHeight = ss(4)/1.1;
                     case "full"
-                        fWidth = SS(3)/1.1;
-                        fHeight = SS(4)/1.1;
+                        fWidth = ss(3)/1.1;
+                        fHeight = ss(4)/1.1;
                 end
             else
-                fWidth = obj.Size(1) * SS(3);
-                fHeight = obj.Size(2) * SS(4);
+                fWidth = obj.Size(1) * ss(3);
+                fHeight = obj.Size(2) * ss(4);
             end
 
             if isstring(obj.Location)
                 switch obj.Location
                     case "eastnorthwest"
-                        loc = [SS(3)/2,-1];
+                        loc = [ss(3)/2,-1];
                     otherwise
                         loc = obj.Location;
                 end
             else
-                loc = [obj.Location(1) * SS(3),obj.Location(2) * SS(4)];
+                loc = [obj.Location(1) * ss(3),obj.Location(2) * ss(4)];
             end
 
             obj.App.UIFigure.Position = [200,600,fWidth,fHeight];
             obj.App.UIFigure.Name = obj.Name;
             movegui(obj.App.UIFigure,loc);
+            if obj.MonitorIndex ~= 1
+                pause(0.02) % This is somehow critical
+                obj.App.UIFigure.Position = [obj.App.UIFigure.Position(1:2)./ss(3:4).*mp(obj.MonitorIndex,3:4) + mp(obj.MonitorIndex,1:2),...
+                    obj.App.UIFigure.Position(3:4)./ss(3:4).*mp(obj.MonitorIndex,3:4)];
+            end  
         end
 
         function update(obj)
@@ -95,8 +102,10 @@ classdef Gui < handle
         end
 
         function close(obj)
-            if isvalid(obj.App)
-                obj.App.delete
+            if ~isempty(obj.App)
+                if isvalid(obj.App)
+                    obj.App.delete
+                end
             end
         end
     end

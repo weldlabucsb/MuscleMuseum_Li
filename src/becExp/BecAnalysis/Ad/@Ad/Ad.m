@@ -112,16 +112,23 @@ classdef Ad < BecAnalysis
             obj.plotAdAnimation
         end
 
-        function show(obj)
+        function show(obj,isBrowser,monitorIndex)
+            arguments
+                obj BecAnalysis
+                isBrowser logical = false
+                monitorIndex double = 1
+            end
             addlistener(obj,'CLim','PostSet',@obj.handlePropEvents);
+            obj.Gui(1).MonitorIndex = monitorIndex;
             obj.Gui(1).initialize(obj.BecExp)
+            obj.Gui(1).MonitorIndex = 1;
             if isfile(obj.Chart(1).Path + ".fig") % for backwards compatibility
-                obj.Chart(1).show
+                obj.Chart(1).show(isBrowser,monitorIndex)
             elseif obj.Chart(1).IsEnabled
                 load(fullfile(obj.BecExp.DataAnalysisPath,"AdData.mat"),"adData")
-                obj.plotAdMix(adData);
+                obj.plotAdMix(adData,isBrowser,monitorIndex);
             end
-            obj.Chart(2).show
+            obj.Chart(2).show(isBrowser,monitorIndex)
         end
 
         function refresh(obj)
@@ -152,13 +159,15 @@ classdef Ad < BecAnalysis
             end
         end
 
-        function plotAdMix(obj,adData)
+        function plotAdMix(obj,adData,isBrowser,monitorIndex)
             arguments
                 obj
                 adData = []
+                isBrowser logical = false
+                monitorIndex double = 1
             end
             %% Initialize
-            fig = obj.Chart(1).initialize;
+            fig = obj.Chart(1).initialize(isBrowser,monitorIndex);
             if ishandle(fig)
                 figure(fig)
             else
