@@ -1,5 +1,6 @@
 % This is a function to set the configuration file
 function setConfig
+disp(newline + "Setting configurations...")
 %% Find the repo path
 configPath = findFunctionPath();
 [repoPath,~,~] = fileparts(configPath);
@@ -19,6 +20,28 @@ CiceroLogOrigin = "\\169.254.203.255\RunLogs";
 ComputerConfig = table(BecExpControlComputerName,BecExpParentPath,...
     BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,CiceroLogOrigin);
 save(configName,"ComputerConfig",'-mat')
+
+%% Set the database configuration
+Name = [
+    "lithium_experiment";...
+    "simulation";...
+    ];
+Table = {
+"main";    
+["master_equation_simulation",...
+    "gross_pitaevskii_equation_simulation",...
+    "schrodinger_equation_simulation",...
+    "fokker_planck_equation_simulation",...
+    "lattice_schrodinger_equation_simulation_1d"]...
+    };
+DatabaseConfig = table(Name,Table);
+
+Name = ["localhost";"128.111.8.45"];
+Port = [5432;5432];
+Username = ["postgres";"postgres";];
+Password = ["Ultr@c0ld";"Ultr@c0ld"];
+DatabaseServerConfig = table(Name,Port,Username,Password);
+save(configName,"DatabaseConfig","DatabaseServerConfig",'-mat','-append')
 
 %% Set the acquisition configuration
 Name = [
@@ -173,4 +196,5 @@ LatticeSeSim1DConfig = [LatticeSeSim1DType,repmat(struct2table(LatticeSeSim1DCon
 LatticeSeSim1DOutput = readtable("latticeSeSim1DOutput.csv.xlsx",'TextType','string');
 save(configName,"LatticeSeSim1DConfig","LatticeSeSim1DOutput",'-mat','-append')
 
+disp("Done.")
 end

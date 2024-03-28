@@ -1,17 +1,44 @@
-%% Path
+%% Set Path
+disp(newline + "Setting path...")
 addpath(genpath_exclude(pwd,{'.git','testData','sampleData','.gitignore'}));
+disp("Done.")
 
-%% DataBase
+%% Check MATLAB version
+disp(newline + "Checking MATLAB version...")
+vers = version('-release');
+if string(vers) == "2023b" || str2double(vers(1:4))>2023
+    warning(['MuscleMuseum is only compatible with MATLAB 2023a or earlier versions. ' ...
+        'Newer MATLAB releases may break the database functions of this package.'])
+else
+    disp("MATLAB version [" + string(vers) + "] is good.")
+end
 
-%% Python
+%% Check MATLAB packages
+disp(newline + "Checking MATLAB packages...")
+packageList = getPackageList;
+requiredPackageList = ["Data Acquisition Toolbox","Curve Fitting Toolbox","Parallel Computing Toolbox"];
+missedPackageList = requiredPackageList(~ismember(requiredPackageList,packageList));
+if ~isempty(missedPackageList)
+    warning("Packages " + strjoin("["+ missedPackageList + "]",", ") + " are missing. Please " + ...
+        "install those packages.")
+else
+    disp("Required MATLAB packages are installed.")
+end
+
+%% Set Python
 setPython;
 
-%% Configuration
+%% Set Configuration
 setConfig;
 
-%% Color Order
+%% Set DataBase
+setDatabase;
+
+%% Set Color Order
+disp(newline + "Setting color order...")
 newcolors = slanCL(617,1:80);
 set(groot, "defaultaxescolororder", newcolors)
+disp("Done.")
 
 clear
 close all
