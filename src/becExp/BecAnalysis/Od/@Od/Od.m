@@ -97,6 +97,7 @@ classdef Od < BecAnalysis
         end
 
         function show(obj)
+            addlistener(obj,'CLim','PostSet',@obj.handlePropEvents);
             obj.Gui(1).initialize(obj.BecExp)
             obj.Chart(1).show
             obj.Chart(2).show
@@ -109,23 +110,11 @@ classdef Od < BecAnalysis
             roiSize = roi.CenterSize(3:4);
             nRun = becExp.NCompletedRun;
 
-            if ~isvalid(obj.Gui(1).App)
+            if isempty(obj.Gui(1).App) || ~isvalid(obj.Gui(1).App)
                 obj.Gui(1).initialize(obj.BecExp)
             end
 
-            % If refresh, read the RoiData again from files
-            roiData = zeros([roiSize,nRun,3]);
-            p = gcp('nocreate');
-            if isempty(p)
-                for ii = 1:nRun
-                    roiData(:,:,ii,:) = roi.select(becExp.readRun(ii));
-                end
-            else
-                parfor ii = 1:nRun
-                    roiData(:,:,ii,:) = roi.select(becExp.readRun(ii));
-                end
-            end
-            obj.RoiData = roiData;
+            obj.RoiData = becExp.readRunRoi(1:nRun);
 
             % Redo ploting
             obj.finalize;
@@ -181,20 +170,22 @@ classdef Od < BecAnalysis
             %% Plot OD Data
             nRun = obj.BecExp.NCompletedRun;
             cData = cell(1,nRun);
+            runList = obj.BecExp.RunListSorted;
             for ii = 1:nRun
-                cData{ii} = obj.OdData(:,:,ii);
+                cData{ii} = obj.OdData(:,:,runList(ii));
             end
             mData = horzcat(cData{:});
             img = imagesc(ax,mData);
 
             %% Render
+            fz = 20;
             cb = colorbar(ax);
             clim(obj.CLim)
             colormap(ax,obj.Colormap)
             
             cb.Label.Interpreter = "Latex";
             cb.Label.String = "OD";
-            cb.Label.FontSize = 14;
+            cb.Label.FontSize = fz;
             roiSize = obj.BecExp.Roi.CenterSize(3:4);
             yxBoundary = obj.BecExp.Roi.YXBoundary;
             aspect = double(nRun)*roiSize(2)/roiSize(1);
@@ -216,20 +207,21 @@ classdef Od < BecAnalysis
             ax.Units = "normalized";
             ax.XLabel.String = obj.BecExp.XLabel;
             ax.XLabel.Interpreter = "latex";
-            ax.XLabel.FontSize = 14;
+            ax.XLabel.FontSize = fz;
             ax.YLabel.String = "$y$ position [pixels]";
             ax.YLabel.Interpreter = "latex";
-            ax.YLabel.FontSize = 14;
+            ax.YLabel.FontSize = fz;
             ax.Title.String = "TrialName: " + obj.BecExp.Name + ...
                 ", Trial \#" + num2str(obj.BecExp.SerialNumber);
             ax.Title.Interpreter = "latex";
-            ax.Title.FontSize = 14;
+            ax.Title.FontSize = fz;
+            ax.FontSize = fz;
             
             renderTicks(img,[1,2],yxBoundary(1):yxBoundary(2))
             ax.TickDir = "out";
             tickSpace = roiSize(2);
             ax.XTick = (tickSpace/2):tickSpace:(tickSpace*double(nRun)-tickSpace/2);
-            ax.XTickLabel = string(obj.BecExp.ScannedParameterList);
+            ax.XTickLabel = string(obj.BecExp.ScannedParameterListSorted);
             set(ax,'box','off')
             
         end
@@ -255,8 +247,9 @@ classdef Od < BecAnalysis
             yxBoundary = roi.YXBoundary;
             roiSize = roi.CenterSize(3:4);
             nRun = becExp.NCompletedRun;
+            runList = obj.BecExp.RunListSorted;
             paraName = becExp.ScannedParameter;
-            paraList = becExp.ScannedParameterList;
+            paraListSorted = becExp.ScannedParameterListSorted;
             paraUnit = becExp.ScannedParameterUnit;
 
             %% Initialize plots
@@ -329,17 +322,17 @@ classdef Od < BecAnalysis
                 for ii = 1:nRun
 
                     % Update plots
-                    img.CData = obj.OdData(:,:,ii);
-                    xLine.YData = squeeze(obj.OdData(round(roiSize(1)/2),:,ii));
-                    yLine.XData = squeeze(obj.OdData(:,round(roiSize(2)/2),ii));
+                    img.CData = obj.OdData(:,:,runList(ii));
+                    xLine.YData = squeeze(obj.OdData(round(roiSize(1)/2),:,runList(ii)));
+                    yLine.XData = squeeze(obj.OdData(:,round(roiSize(2)/2),runList(ii)));
 
                     % Update title
                     if ismissing(paraUnit)
                         paraLabel = "$\mathrm{" + paraName + "} = ~$" + ...
-                            string(paraList(ii));
+                            string(paraListSorted(ii));
                     else
                         paraLabel = "$\mathrm{" + paraName + "} = ~$" + ...
-                            string(paraList(ii)) + "$~\mathrm{" + ...
+                            string(paraListSorted(ii)) + "$~\mathrm{" + ...
                             paraUnit + "}$";
                     end
                     imgAxes.Title.String = ...
@@ -377,6 +370,15 @@ classdef Od < BecAnalysis
                             fig = obj.Chart(ii).Figure;
                             ax = fig.CurrentAxes;
                             ax.CLim = obj.CLim;
+                        end
+                    end
+                    if ~isempty(obj.Gui(1).App)
+                        if isvalid(obj.Gui(1).App)
+                            obj.Gui(1).App.OdAxes.CLim = obj.CLim;
+                            obj.Gui(1).App.OdYAxes.XLim = obj.CLim;
+                            obj.Gui(1).App.OdXAxes.YLim = obj.CLim;
+                            obj.Gui(1).App.ODMinEditField.Value = obj.CLim(1);
+                            obj.Gui(1).App.ODMaxEditField.Value = obj.CLim(2);
                         end
                     end
             end

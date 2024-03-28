@@ -21,7 +21,7 @@ classdef Ad < BecAnalysis
 
     properties (Constant)
         Blur = 100
-        AdUnit = 1e13;
+        Unit = 1e13;
     end
 
     methods
@@ -112,13 +112,25 @@ classdef Ad < BecAnalysis
             obj.plotAdAnimation
         end
 
+        function show(obj)
+            addlistener(obj,'CLim','PostSet',@obj.handlePropEvents);
+            obj.Gui(1).initialize(obj.BecExp)
+            if isfile(obj.Chart(1).Path + ".fig") % for backwards compatibility
+                obj.Chart(1).show
+            elseif obj.Chart(1).IsEnabled
+                load(fullfile(obj.BecExp.DataAnalysisPath,"AdData.mat"),"adData")
+                obj.plotAdMix(adData);
+            end
+            obj.Chart(2).show
+        end
+
         function refresh(obj)
             becExp = obj.BecExp;
             nRun = becExp.NCompletedRun;
             roiSize = becExp.Roi.CenterSize(3:4);
             obj.AdData = zeros([roiSize,1]);
 
-            if ~isvalid(obj.Gui(1).App)
+            if isempty(obj.Gui(1).App) || ~isvalid(obj.Gui(1).App)
                 obj.Gui(1).initialize(obj.BecExp)
             end
 
@@ -130,7 +142,21 @@ classdef Ad < BecAnalysis
             obj.finalize;
         end
 
-        function plotAdMix(obj)
+        function save(obj)
+            adData = obj.AdData;
+            x = obj.BecExp.Roi.XList * obj.BecExp.Acquisition.PixelSizeReal;
+            y = obj.BecExp.Roi.YList * obj.BecExp.Acquisition.PixelSizeReal;
+            save(fullfile(obj.BecExp.DataAnalysisPath,"AdData"),"adData","x","y")
+            if obj.Chart(1).IsEnabled
+                saveas(obj.Chart(1).Figure,obj.Chart(1).Path,'png')
+            end
+        end
+
+        function plotAdMix(obj,adData)
+            arguments
+                obj
+                adData = []
+            end
             %% Initialize
             fig = obj.Chart(1).initialize;
             if ishandle(fig)
@@ -143,26 +169,31 @@ classdef Ad < BecAnalysis
             %% Plot AD Data
             nRun = obj.BecExp.NCompletedRun;
             cData = cell(1,nRun);
-            for ii = 1:nRun
-                cData{ii} = obj.AdData(:,:,ii);
+            runList = obj.BecExp.RunListSorted;
+            if isempty(adData)
+                adData = obj.AdData;
             end
-            mData = horzcat(cData{:}) / obj.AdUnit;
+            for ii = 1:nRun
+                cData{ii} = adData(:,:,runList(ii));
+            end
+            mData = horzcat(cData{:}) / obj.Unit;
             img = imagesc(ax,mData);
 
             %% Render
+            fz = 20;
             cb = colorbar(ax);
             clim(obj.CLim)
             colormap(ax,obj.Colormap)
             
             cb.Label.Interpreter = "Latex";
-            cb.Label.String = "AD [$\times 10^{" + string(log(obj.AdUnit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
-            cb.Label.FontSize = 14;
+            cb.Label.String = "AD [$\times 10^{" + string(log(obj.Unit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
+            cb.Label.FontSize = fz;
             roiSize = obj.BecExp.Roi.CenterSize(3:4);
             yxBoundary = obj.BecExp.Roi.YXBoundary;
             aspect = double(nRun)*roiSize(2)/roiSize(1);
             figPos = fig.InnerPosition;
             targetWidth = figPos(3)*0.85;
-            targetHeight = figPos(4)*0.85;
+            targetHeight = figPos(4)*0.8;
             ax.Units = "pixels";
             if targetWidth > targetHeight * aspect
                 ax.Position(4) = targetHeight;
@@ -178,20 +209,21 @@ classdef Ad < BecAnalysis
             ax.Units = "normalized";
             ax.XLabel.String = obj.BecExp.XLabel;
             ax.XLabel.Interpreter = "latex";
-            ax.XLabel.FontSize = 14;
+            ax.XLabel.FontSize = fz;
             ax.YLabel.String = "$y$ position [pixels]";
             ax.YLabel.Interpreter = "latex";
-            ax.YLabel.FontSize = 14;
+            ax.YLabel.FontSize = fz;
             ax.Title.String = "TrialName: " + obj.BecExp.Name + ...
                 ", Trial \#" + num2str(obj.BecExp.SerialNumber);
             ax.Title.Interpreter = "latex";
-            ax.Title.FontSize = 14;
+            ax.Title.FontSize = fz;
+            ax.FontSize = fz;
 
             renderTicks(img,[1,2],yxBoundary(1):yxBoundary(2))
             ax.TickDir = "out";
             tickSpace = roiSize(2);
             ax.XTick = (tickSpace/2):tickSpace:(tickSpace*double(nRun)-tickSpace/2);
-            ax.XTickLabel = string(obj.BecExp.ScannedParameterList);
+            ax.XTickLabel = string(obj.BecExp.ScannedParameterListSorted);
             set(ax,'box','off')
 
         end
@@ -217,8 +249,9 @@ classdef Ad < BecAnalysis
             yxBoundary = roi.YXBoundary;
             roiSize = roi.CenterSize(3:4);
             nRun = becExp.NCompletedRun;
+            runList = obj.BecExp.RunListSorted;
             paraName = becExp.ScannedParameter;
-            paraList = becExp.ScannedParameterList;
+            paraListSorted = becExp.ScannedParameterListSorted;
             paraUnit = becExp.ScannedParameterUnit;
 
             %% Initialize plots
@@ -250,7 +283,7 @@ classdef Ad < BecAnalysis
             imgAxes.Colormap = obj.Colormap;
             cb = colorbar(imgAxes,"eastoutside");
             cb.Label.Interpreter = "Latex";
-            cb.Label.String = "AD [$\times 10^{" + string(log(obj.AdUnit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
+            cb.Label.String = "AD [$\times 10^{" + string(log(obj.Unit)/log(10))+"} ~ \mathrm{m}^{-2}$]";
             cb.Label.FontSize = 14;
             imgAxes.Position = [imgLeft,imgBottom,imgWidth,imgHeight];
             imgAxes.CLim = obj.CLim;
@@ -291,17 +324,17 @@ classdef Ad < BecAnalysis
                 for ii = 1:nRun
 
                     % Update plots
-                    img.CData = obj.AdData(:,:,ii) / obj.AdUnit;
-                    xLine.YData = squeeze(obj.AdData(round(roiSize(1)/2),:,ii)) / obj.AdUnit;
-                    yLine.XData = squeeze(obj.AdData(:,round(roiSize(2)/2),ii)) / obj.AdUnit;
+                    img.CData = obj.AdData(:,:,runList(ii)) / obj.Unit;
+                    xLine.YData = squeeze(obj.AdData(round(roiSize(1)/2),:,runList(ii))) / obj.Unit;
+                    yLine.XData = squeeze(obj.AdData(:,round(roiSize(2)/2),runList(ii))) / obj.Unit;
 
                     % Update title
                     if ismissing(paraUnit)
                         paraLabel = "$\mathrm{" + paraName + "} = ~$" + ...
-                            string(paraList(ii));
+                            string(paraListSorted(ii));
                     else
                         paraLabel = "$\mathrm{" + paraName + "} = ~$" + ...
-                            string(paraList(ii)) + "$~\mathrm{" + ...
+                            string(paraListSorted(ii)) + "$~\mathrm{" + ...
                             paraUnit + "}$";
                     end
                     imgAxes.Title.String = ...
@@ -339,6 +372,15 @@ classdef Ad < BecAnalysis
                             fig = obj.Chart(ii).Figure;
                             ax = fig.CurrentAxes;
                             ax.CLim = obj.CLim;
+                        end
+                    end
+                    if ~isempty(obj.Gui(1).App)
+                        if isvalid(obj.Gui(1).App)
+                            obj.Gui(1).App.AdAxes.CLim = obj.CLim;
+                            obj.Gui(1).App.AdYAxes.XLim = obj.CLim;
+                            obj.Gui(1).App.AdXAxes.YLim = obj.CLim;
+                            obj.Gui(1).App.ADMinEditField.Value = obj.CLim(1);
+                            obj.Gui(1).App.ADMaxEditField.Value = obj.CLim(2);
                         end
                     end
             end

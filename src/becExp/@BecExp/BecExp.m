@@ -3,8 +3,10 @@ classdef BecExp < Trial
     %   Detailed explanation goes here
     properties
         Roi Roi
+        SubRoi Roi
         Acquisition Acquisition
         AnalysisMethod string
+        CloudCenter double % Cloud center [y_0,x_0] from previous measurement, in pixels
     end
 
     properties(Hidden)
@@ -17,10 +19,11 @@ classdef BecExp < Trial
     end
 
     properties (SetAccess = private, Hidden)
-        CiceroLogOrigin {mustBeFolder} = "."
+        CiceroLogOrigin = "."
         CiceroLogPath string
         CiceroLogTime datetime
         DeletedRunParameterList
+        ParameterUnitConfig
     end
 
     properties(SetAccess = private)
@@ -35,6 +38,11 @@ classdef BecExp < Trial
         XLabel
     end
 
+    properties (Constant,Hidden)
+        AnalysisOrder = {"Od";"Imaging";"Ad";...
+            "DensityFit";["AtomNumber";"Tof";"CenterFit";"KapitzaDirac"]}
+    end
+
     methods
         function obj = BecExp(trialName,options)
             %BECEXP Construct an instance of this class
@@ -42,13 +50,19 @@ classdef BecExp < Trial
             arguments
                 trialName string
                 options.isLocalTest logical = false
+                options.config = struct.empty
             end
-            if options.isLocalTest
-                becExpConfigName = "BecExpLocalTestConfig";
+            if isempty(options.config)
+                if options.isLocalTest
+                    config = "BecExpLocalTestConfig";
+                else
+                    config = "BecExpConfig";
+                end
             else
-                becExpConfigName = "BecExpConfig";
+                config = options.config;
             end
-            obj@Trial(trialName,becExpConfigName);
+            obj@Trial(trialName,config);
+            obj.ParameterUnitConfig = loadVar("Config.mat","BecExpParameterUnit");
 
             % Atom setting
             try
@@ -64,24 +78,22 @@ classdef BecExp < Trial
             obj.Acquisition.ImagePrefix = obj.DataPrefix;
             obj.Roi = Roi(obj.ConfigParameter.RoiName,imageSize = obj.Acquisition.ImageSize);
 
+            % Cloud center
+            if ~ismissing(obj.ConfigParameter.CloudCenterReference)
+                load("CloudCenterData.mat","CloudCenter")
+                if ismember(obj.ConfigParameter.CloudCenterReference,CloudCenter.TrialName)
+                    obj.CloudCenter = ...
+                        CloudCenter(CloudCenter.TrialName == obj.ConfigParameter.CloudCenterReference,:).Center;
+                end
+            end
+
             % Analysis settings
-            obj.AnalysisMethod = rmmissing(["Od";"Imaging";"Ad";... %Od and Imaging as default analyses
+            obj.AnalysisMethod = rmmissing(["Od";"Imaging";"Ad";... 
                 strtrim(split(obj.AnalysisMethod,";"))]);
-            obj.AnalysisMethod = obj.AnalysisMethod';
+            obj.addAnalysis(obj.AnalysisMethod);
             obj.setAnalyzer;
 
-            analysisMethod = obj.AnalysisMethod;
-            for ii = 1:numel(analysisMethod)
-                addprop(obj,analysisMethod(ii));
-                obj.(analysisMethod(ii)) = eval(analysisMethod(ii) + "(obj)");
-            end
-            obj.Od.CLim = [0,obj.ConfigParameter.OdCLim];
-            obj.Od.Colormap = obj.ConfigParameter.OdColormap;
-            obj.Od.FringeRemovalMask = obj.ConfigParameter.FringeRemovalMask;
-            obj.Od.FringeRemovalMethod = obj.ConfigParameter.FringeRemovalMethod;
-            obj.Imaging.ImagingStage = obj.ConfigParameter.ImagingStage;
-            obj.Ad.AdMethod = obj.ConfigParameter.AdMethod;
-
+            % Finalize construction
             obj.update;
             obj.displayLog("Object construction done.")
         end
@@ -89,12 +101,14 @@ classdef BecExp < Trial
         function paraList = get.ScannedParameterList(obj)
             switch obj.ScannedParameter
                 case "RunIndex"
-                    paraList = 1:obj.NCompletedRun;
+                    paraList = double(1:obj.NCompletedRun);
                 case "CiceroLogTime"
                     if ~isempty(obj.CiceroLogTime)
                         paraList = obj.CiceroLogTime;
+                        paraList = paraList - paraList(1);
+                        paraList = seconds(paraList);
                     else
-                        paraList = datetime.empty;
+                        paraList = [];
                     end
                 otherwise
                     if ~isempty(obj.CiceroData)
@@ -116,10 +130,13 @@ classdef BecExp < Trial
         end
 
         function xLabel = get.XLabel(obj)
-            if isempty(obj.ScannedParameterUnit) || ismissing(obj.ScannedParameterUnit)
-                xLabel = obj.ScannedParameter;
+            sP = obj.ScannedParameter;
+            sP = strrep(sP,'_','\_');
+            if isempty(obj.ScannedParameterUnit) || ismissing(obj.ScannedParameterUnit) ||...
+                    obj.ScannedParameterUnit == ""
+                xLabel = sP;
             else
-                xLabel = obj.ScannedParameter + "~[$\mathrm{" + obj.ScannedParameterUnit + "}$]";
+                xLabel = sP + "~[$\mathrm{" + obj.ScannedParameterUnit + "}$]";
             end
         end
 
@@ -138,13 +155,19 @@ classdef BecExp < Trial
 
     methods
         setAnalyzer(obj)
+        addAnalysis(obj,newAnalysisList)
+        removeAnalysis(obj,removeAnalysisList)
+        sortAnalysis(obj)
         start(obj)
         pause(obj)
         resume(obj)
         stop(obj)
+        fastStop(obj)
         show(obj)
-        refresh(obj)
+        browserShow(obj)
+        refresh(obj,anaylsisName)
         mData = readRun(obj,runIdx)
+        roiData = readRunRoi(obj,runIdx)
         deleteRun(obj,runIdx)
         sData = readCiceroLog(obj,runIdx)
         fetchCiceroLog(obj,runIdx)

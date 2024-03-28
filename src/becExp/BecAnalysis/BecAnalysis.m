@@ -59,6 +59,27 @@ classdef (Abstract) BecAnalysis < handle & matlab.mixin.SetGetExactNames
                 obj.Chart(ii).show;
             end
         end
+        
+        function browserShow(obj)
+            mp = sortMonitor;
+            monitorIndex = 1;
+            if size(mp,1) > 1
+                appHandle = get(findall(0, 'Tag', obj.BecExp.ControlAppName), 'RunningAppInstance');
+                if ~isempty(appHandle)
+                    if isvalid(appHandle)
+                        monitorIndex = 2;
+                    end
+                end
+            end
+            for jj = 1:numel(obj.Gui)
+                obj.Gui(jj).Monitor = monitorIndex;
+            end
+            for jj = 1:numel(obj.Chart)
+                obj.Chart(jj).IsBrowser = true;
+                obj.Chart(jj).Monitor = monitorIndex;
+            end
+            obj.show
+        end
 
         function refresh(obj)
             obj.initialize
@@ -84,7 +105,7 @@ classdef (Abstract) BecAnalysis < handle & matlab.mixin.SetGetExactNames
             end
             for ii = 1:numel(obj.Chart)
                 obj.Chart(ii).close;
-            end 
+            end
         end
     end
 

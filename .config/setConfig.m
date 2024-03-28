@@ -1,5 +1,6 @@
 % This is a function to set the configuration file
 function setConfig
+disp(newline + "Setting configurations...")
 %% Find the repo path
 configPath = findFunctionPath();
 [repoPath,~,~] = fileparts(configPath);
@@ -8,6 +9,39 @@ configName = fullfile(configPath,'Config.mat');
 %% Set the main data path
 % mainPath = fullfile(repoPath,'test','testData');
 mainPath = "C:\data";
+
+%% Set the computer configuration
+BecExpControlComputerName = "WOODHOUSE";
+BecExpParentPath = "B:\_Li\_LithiumData";
+BecExpDatabaseName = "lithium_experiment";
+BecExpDatabaseTableName = "main";
+CiceroComputerName = "GOB";
+CiceroLogOrigin = "\\169.254.203.255\RunLogs";
+ComputerConfig = table(BecExpControlComputerName,BecExpParentPath,...
+    BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,CiceroLogOrigin);
+save(configName,"ComputerConfig",'-mat')
+
+%% Set the database configuration
+Name = [
+    "lithium_experiment";...
+    "simulation";...
+    ];
+Table = {
+"main";    
+["master_equation_simulation",...
+    "gross_pitaevskii_equation_simulation",...
+    "schrodinger_equation_simulation",...
+    "fokker_planck_equation_simulation",...
+    "lattice_schrodinger_equation_simulation_1d"]...
+    };
+DatabaseConfig = table(Name,Table);
+
+Name = ["localhost";"128.111.8.45"];
+Port = [5432;5432];
+Username = ["postgres";"postgres";];
+Password = ["Ultr@c0ld";"Ultr@c0ld"];
+DatabaseServerConfig = table(Name,Port,Username,Password);
+save(configName,"DatabaseConfig","DatabaseServerConfig",'-mat','-append')
 
 %% Set the acquisition configuration
 Name = [
@@ -35,7 +69,7 @@ SerialNumber = int32([ ...
     21975809; ...
     24528051; ...
     21750852]);
-ExposureTime = [30;35;35;35;35] * 1e-6; % in SI unit
+ExposureTime = [30;70;70;70;70] * 1e-6; % in SI unit
 IsExternalTriggered = [true;true;true;false;true];
 PixelSize = [6.5;2.2;2.2;2.2;2.2] * 1e-6; % in SI unit
 ImageSize = int32([ ...
@@ -67,13 +101,17 @@ BadRow = {
     [];
     []
 };
+BitsPerSample = [16;8;8;8;8]; % How many bits per pixel
 AcquisitionConfig = table(Name,CameraType,AdaptorName,DeviceID,...
     SerialNumber,ExposureTime,IsExternalTriggered,PixelSize,...
-    ImageSize,BadRow,Magnification,ImageGroupSize,ConfigFun,QuantumEfficiencyData);
-save(configName,"AcquisitionConfig",'-mat')
+    ImageSize,BadRow,Magnification,ImageGroupSize,ConfigFun,QuantumEfficiencyData,BitsPerSample);
+save(configName,"AcquisitionConfig",'-mat','-append')
 
 %% Set the ROI configuration
 RoiConfig = readtable("roi.csv.xlsx",'TextType','string');
+RoiConfig.SubRoiSeparation = cell2mat(arrayfun(@str2num,RoiConfig.SubRoiSeparation,'UniformOutput',false));
+RoiConfig.SubRoiNRowColumn = cell2mat(arrayfun(@str2num,RoiConfig.SubRoiNRowColumn,'UniformOutput',false));
+RoiConfig.SubRoiCenterSize = arrayfun(@str2num,string(RoiConfig.SubRoiCenterSize),'UniformOutput',false);
 save(configName,"RoiConfig",'-mat','-append')
 
 %% Set the BEC experiment configuration
@@ -89,13 +127,13 @@ if ~exist(dsLibPath,'file')
     end
 end
 
-BecExpConfig.ParentPath = fullfile(mainPath,"becExp"); % use test data path
+BecExpConfig.ParentPath = ComputerConfig.BecExpParentPath; % use test data path
 BecExpConfig.DataPrefix = "run";
 BecExpConfig.DataFormat = ".tif";
 BecExpConfig.IsAutoDelete = false;
-BecExpConfig.DatabaseName = "lithium_experiment";
-BecExpConfig.DatabaseTableName = "main";
-BecExpConfig.CiceroLogOrigin = "\\169.254.203.255\RunLogs";
+BecExpConfig.DatabaseName = ComputerConfig.BecExpDatabaseName;
+BecExpConfig.DatabaseTableName = ComputerConfig.BecExpDatabaseTableName;
+BecExpConfig.CiceroLogOrigin = ComputerConfig.CiceroLogOrigin;
 BecExpConfig.DataGroupSize = 3;
 BecExpConfig.IsAutoAcquire = true;
 BecExpConfig.OdColormap = {jet};
@@ -108,25 +146,17 @@ BecExpParameterUnit = readtable("parameterUnit.csv.xlsx",'TextType','string');
 BecExpConfig = join(BecExpConfig,BecExpParameterUnit,'Keys',{'ScannedParameter','ScannedParameter'});
 
 load("FringeRemovalMaskConfig.mat","FringeRemovalMaskConfig")
+% Assign empty masks 
 TrialName = BecExpConfig.TrialName(find(~ismember(BecExpConfig.TrialName,FringeRemovalMaskConfig.TrialName)));
 FringeRemovalMask = cell(numel(TrialName),1);
 FringeRemovalMaskConfig = [FringeRemovalMaskConfig;table(TrialName,FringeRemovalMask)];
 BecExpConfig = join(BecExpConfig,FringeRemovalMaskConfig);
 
-% % Construct the Acquisition objects
-% AcquisitionList = arrayfun(@(x) Acquisition(BecExpConfig(x,:).AcquisitionName),(1:size(BecExpConfig,1))');
-% BecExpConfig = addvars(BecExpConfig,AcquisitionList,'NewVariableNames',"Acquisition");
-% BecExpConfig.AcquisitionName = [];
-
-% % Construct the Roi objects
-% RoiList = arrayfun(@(x) Roi(BecExpConfig(x,:).RoiName,imagesize = BecExpConfig(x,:).Acquisition.ImageSize),(1:size(BecExpConfig,1))');
-% BecExpConfig = addvars(BecExpConfig,RoiList,'NewVariableNames',"Roi");
-% BecExpConfig.RoiName = [];
-
 save(configName,"BecExpConfig","BecExpParameterUnit",'-mat','-append')
 
 %% Set the BEC experiment local test configuration
 BecExpLocalTestConfig = BecExpConfig;
+BecExpLocalTestConfig.DatabaseName(:) = "lithium_experiment_local";
 BecExpLocalTestConfig.ParentPath(:) = fullfile("C:\data","becExp");
 BecExpLocalTestConfig.CiceroLogOrigin(:) = fullfile(repoPath,"test","testData","testLogFiles");
 BecExpLocalTestConfig.IsAutoAcquire(:) = false;
@@ -146,18 +176,25 @@ MeSimConfig.DataGroupSize = 1;
 MeSimType = readtable("meSimType.csv.xlsx",'TextType','string');
 MeSimConfig = [MeSimType,repmat(struct2table(MeSimConfig),size(MeSimType,1),1)];
 
-% atomDataPath = fullfile(getenv('USERPROFILE'),"Documents","AtomData","AtomData.mat");
-for ii = 1:size(MeSimConfig,1)
-    try
-        atomList(ii,1) = Alkali(MeSimConfig.Atom(ii));
-    catch
-        atomList(ii,1) = Divalent(MeSimConfig.Atom(ii));
-    end
-end
-
-MeSimConfig.Atom = [];
-MeSimConfig.Atom = atomList;
 MeSimOutput = readtable("meSimOutput.csv.xlsx",'TextType','string');
 save(configName,"MeSimConfig","MeSimOutput",'-mat','-append')
 
+%% Set the lattice schrodinger equation simulation configuration
+% LatticeSeSim1DConfig.ParentPath = fullfile("C:\data","latticeSeSim1D");
+% LatticeSeSim1DConfig.DatabaseName = "simulation";
+LatticeSeSim1DConfig.ParentPath = fullfile("B:\__Lab Member Folders\Xiao\SimulationData","latticeSeSim1D");
+LatticeSeSim1DConfig.DatabaseName = "simulation";
+LatticeSeSim1DConfig.DataPrefix = "run";
+LatticeSeSim1DConfig.DataFormat = ".mat";
+LatticeSeSim1DConfig.IsAutoDelete = false;
+LatticeSeSim1DConfig.DatabaseTableName = "lattice_schrodinger_equation_simulation_1d";
+LatticeSeSim1DConfig.DataGroupSize = 1;
+
+LatticeSeSim1DType = readtable("latticeSeSim1DType.csv.xlsx",'TextType','string');
+LatticeSeSim1DConfig = [LatticeSeSim1DType,repmat(struct2table(LatticeSeSim1DConfig),size(LatticeSeSim1DType,1),1)];
+
+LatticeSeSim1DOutput = readtable("latticeSeSim1DOutput.csv.xlsx",'TextType','string');
+save(configName,"LatticeSeSim1DConfig","LatticeSeSim1DOutput",'-mat','-append')
+
+disp("Done.")
 end

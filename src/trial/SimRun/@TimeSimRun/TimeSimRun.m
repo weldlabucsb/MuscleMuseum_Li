@@ -25,7 +25,7 @@ classdef (Abstract) TimeSimRun < SimRun
             end
             obj@SimRun(timeSim)
             if ~isempty(timeSim)
-                if isa(timeSim,"TimeSim")
+                if isa(timeSim,"TimeSim") || isa(timeSim,"SpaceTimeSim")
                     obj.InitialTime = timeSim.InitialTime;
                     obj.TotalTime = timeSim.TotalTime;
                     obj.TimeStep = timeSim.TimeStep;

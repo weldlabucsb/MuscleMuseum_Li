@@ -27,7 +27,7 @@ classdef (Abstract) FitData1D < FitData
             fpData = [xFit,yFit];
         end
 
-        function fitResult = do(obj)
+        function obj = do(obj)
             [fitResult,gof] = fit(obj.RawData(:,1),obj.RawData(:,2),obj.Func,obj.Option);
             obj.Result = fitResult;
             obj.Gof = gof;
@@ -44,11 +44,14 @@ classdef (Abstract) FitData1D < FitData
             if isempty(targetAxes)
                 figure
                 ax = gca;
-                
             else
                 ax = targetAxes;
             end
-            l = plot(ax,obj.RawData(:,1),obj.RawData(:,2),obj.FitPlotData(:,1),obj.FitPlotData(:,2));
+            x = obj.RawData(:,1);
+            [x,idx] = sort(x);
+            y = obj.RawData(:,2);
+            y = y(idx);
+            l = plot(ax,x,y,obj.FitPlotData(:,1),obj.FitPlotData(:,2));
             l(1).LineWidth = 1.5;
             l(2).LineWidth = 1.5;
             legend(ax,"Raw Data","Fit Data")

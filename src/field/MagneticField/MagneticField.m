@@ -56,7 +56,7 @@ classdef MagneticField
                 func = @(r) sFunc(r);
             end
             function B = sFunc(r)
-                B = bias + grad*r(:);
+                B = bias + grad*r;
             end
         end
 

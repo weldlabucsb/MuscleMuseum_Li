@@ -84,7 +84,8 @@ for ii = 1:numel(eb)
 end
 
 %% Set linespecs.
-
+co=get(gca,'colororder');
+nCo = size(co,1);
 for ii = 1:numel(p)
     if p(ii).LineStyle == "none"
         p(ii).Marker = markers{ii};
@@ -93,15 +94,15 @@ for ii = 1:numel(p)
     elseif p(ii).Marker == "none"
         if numel(p)<=4
             p(ii).Color = colors{numel(p)-ii+1};
-        elseif numel(p)<=7
+        elseif numel(p)<=nCo
             co=get(gca,'colororder');
             p(ii).Color = co(ii,:);
 %             p(ii).LineStyle = linestyles{ii};
 %             p(ii).Color = 'k';
         else
             co=get(gca,'colororder');
-            p(ii).Color = co(mod(ii-1,7)+1,:);
-            p(ii).LineStyle = linestyles{ceil(ii/7)};
+            p(ii).Color = co(mod(ii-1,nCo)+1,:);
+            p(ii).LineStyle = linestyles{ceil(ii/nCo)};
         end
     else
         p(ii).Marker = markers{ii};

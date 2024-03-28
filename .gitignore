@@ -1,0 +1,4 @@
+*.pyc
+Thumbs.db
+/.config/Config.mat
+/toolbox/py/__pycache/
