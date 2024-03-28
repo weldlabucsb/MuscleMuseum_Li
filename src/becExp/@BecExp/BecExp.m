@@ -164,6 +164,7 @@ classdef BecExp < Trial
         stop(obj)
         fastStop(obj)
         show(obj)
+        browserShow(obj)
         refresh(obj,anaylsisName)
         mData = readRun(obj,runIdx)
         roiData = readRunRoi(obj,runIdx)
