@@ -44,7 +44,6 @@ classdef (Abstract) FitData1D < FitData
             if isempty(targetAxes)
                 figure
                 ax = gca;
-                
             else
                 ax = targetAxes;
             end

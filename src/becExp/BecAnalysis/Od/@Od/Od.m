@@ -96,18 +96,11 @@ classdef Od < BecAnalysis
             obj.plotOdAnimation
         end
 
-        function show(obj,isBrowser,monitorIndex)
-            arguments
-                obj BecAnalysis
-                isBrowser logical = false
-                monitorIndex double = 1
-            end
+        function show(obj)
             addlistener(obj,'CLim','PostSet',@obj.handlePropEvents);
-            obj.Gui(1).MonitorIndex = monitorIndex;
             obj.Gui(1).initialize(obj.BecExp)
-            obj.Gui(1).MonitorIndex = 1;
-            obj.Chart(1).show(isBrowser,monitorIndex)
-            obj.Chart(2).show(isBrowser,monitorIndex)
+            obj.Chart(1).show
+            obj.Chart(2).show
         end
 
         function refresh(obj)

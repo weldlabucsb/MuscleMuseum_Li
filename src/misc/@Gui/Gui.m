@@ -8,7 +8,7 @@ classdef Gui < handle
         Location
         Size
         IsEnabled logical = true
-        MonitorIndex double = 1
+        Monitor double = 1
     end
 
     properties (Transient)
@@ -42,11 +42,11 @@ classdef Gui < handle
             % allfigs = findall(0,'Type','figure'); 
             % app2Handle = findall(allfigs, 'Name', obj.Name);
             % close(app2Handle)
-            try
+            % try
                 obj.App = feval(obj.Name,varargin{:});
-            catch
-                obj.App = eval(obj.Name);
-            end
+            % catch
+                % obj.App = eval(obj.Name);
+            % end
 
             mp = sortMonitor;
             ss = mp(1,:);
@@ -88,10 +88,11 @@ classdef Gui < handle
             obj.App.UIFigure.Position = [200,600,fWidth,fHeight];
             obj.App.UIFigure.Name = obj.Name;
             movegui(obj.App.UIFigure,loc);
-            if obj.MonitorIndex ~= 1
+            if obj.Monitor > 1 && obj.Monitor <= size(mp,1)
                 pause(0.02) % This is somehow critical
-                obj.App.UIFigure.Position = [obj.App.UIFigure.Position(1:2)./ss(3:4).*mp(obj.MonitorIndex,3:4) + mp(obj.MonitorIndex,1:2),...
-                    obj.App.UIFigure.Position(3:4)./ss(3:4).*mp(obj.MonitorIndex,3:4)];
+                obj.App.UIFigure.Position = ...
+                    [obj.App.UIFigure.Position(1:2)./ss(3:4).*mp(obj.Monitor,3:4) + mp(obj.Monitor,1:2),...
+                    obj.App.UIFigure.Position(3:4)./ss(3:4).*mp(obj.Monitor,3:4)];
             end  
         end
 

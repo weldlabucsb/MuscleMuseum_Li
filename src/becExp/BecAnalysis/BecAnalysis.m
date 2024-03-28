@@ -51,20 +51,34 @@ classdef (Abstract) BecAnalysis < handle & matlab.mixin.SetGetExactNames
             end
         end
 
-        function show(obj,isBrowser,monitorIndex)
-            arguments
-                obj BecAnalysis
-                isBrowser logical = false
-                monitorIndex double = 1
-            end
+        function show(obj)
             for ii = 1:numel(obj.Gui)
-                obj.Gui(ii).MonitorIndex = monitorIndex;
                 obj.Gui(ii).initialize(obj.BecExp);
-                obj.Gui(ii).MonitorIndex = 1;
             end
             for ii = 1:numel(obj.Chart)
-                obj.Chart(ii).show(isBrowser,monitorIndex);
+                obj.Chart(ii).show;
             end
+        end
+        
+        function browserShow(obj)
+            mp = sortMonitor;
+            monitorIndex = 1;
+            if size(mp,1) > 1
+                appHandle = get(findall(0, 'Tag', obj.BecExp.ControlAppName), 'RunningAppInstance');
+                if ~isempty(appHandle)
+                    if isvalid(appHandle)
+                        monitorIndex = 2;
+                    end
+                end
+            end
+            for jj = 1:numel(obj.Gui)
+                obj.Gui(jj).Monitor = monitorIndex;
+            end
+            for jj = 1:numel(obj.Chart)
+                obj.Chart(jj).IsBrowser = true;
+                obj.Chart(jj).Monitor = monitorIndex;
+            end
+            obj.show
         end
 
         function refresh(obj)
@@ -85,17 +99,13 @@ classdef (Abstract) BecAnalysis < handle & matlab.mixin.SetGetExactNames
             end
         end
 
-        function close(obj,isBrowser)
-            arguments
-                obj BecAnalysis
-                isBrowser logical = false
-            end
+        function close(obj)
             for ii = 1:numel(obj.Gui)
                 obj.Gui(ii).close;
             end
             for ii = 1:numel(obj.Chart)
-                obj.Chart(ii).close(isBrowser);
-            end 
+                obj.Chart(ii).close;
+            end
         end
     end
 

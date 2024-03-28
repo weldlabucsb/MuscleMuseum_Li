@@ -13,10 +13,15 @@ classdef Chart < handle
 
     properties
         IsEnabled logical = true
+        Monitor double = 1
     end
 
     properties (Transient)
         Figure matlab.ui.Figure
+    end
+
+    properties (Hidden)
+        IsBrowser logical = false
     end
 
     properties (Constant,Hidden)
@@ -44,21 +49,15 @@ classdef Chart < handle
             obj.IsEnabled = NameValueArgs.isEnabled;
         end
 
-        function fig = initialize(obj,isBrowser,monitorIndex)
-            arguments
-                obj Chart
-                isBrowser logical = false
-                monitorIndex double = 1
-            end
+        function fig = initialize(obj)
             if ~obj.IsEnabled
                 fig = {1};
                 return
             end
-
-            if ~isBrowser
+            
+            if ~obj.IsBrowser
                 obj.Figure = figure(obj.Number);
             else
-                % If initialized in Browser, change the figure number
                 obj.Figure = figure(obj.Number + obj.NumberOffset);
             end
             clf(obj.Figure);
@@ -108,11 +107,12 @@ classdef Chart < handle
             obj.Figure.Name = obj.Name;
             movegui(obj.Figure,loc);
             fig = obj.Figure;
-            if monitorIndex ~= 1
+            if obj.Monitor > 1 && obj.Monitor <= size(mp,1)
                 pause(0.02) % This is somehow critical
-                fig.OuterPosition = [fig.OuterPosition(1:2)./ss(3:4).*mp(monitorIndex,3:4) + mp(monitorIndex,1:2),...
-                    fig.OuterPosition(3:4)./ss(3:4).*mp(monitorIndex,3:4)];
-            end   
+                fig.OuterPosition = ...
+                    [fig.OuterPosition(1:2)./ss(3:4).*mp(obj.Monitor,3:4) + mp(obj.Monitor,1:2),...
+                    fig.OuterPosition(3:4)./ss(3:4).*mp(obj.Monitor,3:4)];
+            end
         end
 
         function save(obj)
@@ -144,12 +144,7 @@ classdef Chart < handle
             end
         end
 
-        function show(obj,isBrowser,monitorIndex)
-            arguments
-                obj Chart
-                isBrowser logical = false
-                monitorIndex double = 1
-            end
+        function show(obj)
             if ~obj.IsEnabled
                 return
             end
@@ -157,7 +152,7 @@ classdef Chart < handle
             if ~obj.IsGif
                 figPath = obj.Path + ".fig";
                 if isfile(figPath)
-                    fig = obj.initialize(isBrowser,monitorIndex);
+                    fig = obj.initialize;
                     src = openfig(figPath,"invisible");
                     warning off
                     copyobj(allchild(src),fig)
@@ -178,17 +173,13 @@ classdef Chart < handle
             end
         end
     
-        function close(obj,isBrowser)
-            arguments
-                obj Chart
-                isBrowser logical = false
-            end
+        function close(obj)
             if ~obj.IsEnabled
                 return
             end
 
             if ~obj.IsGif
-                if ~isBrowser
+                if ~obj.IsBrowser
                     close(figure(obj.Number))
                 else
                     close(figure(obj.Number + obj.NumberOffset))

@@ -12,7 +12,14 @@ if size(mp,1) > 1
     end
 end
 for ii = 1:numel(obj.AnalysisMethod)
-    obj.(obj.AnalysisMethod(ii)).show(true,monitorIndex);
+    for jj = 1:numel(obj.(obj.AnalysisMethod(ii)).Gui)
+        obj.(obj.AnalysisMethod(ii)).Gui(jj).Monitor = monitorIndex;
+    end
+    for jj = 1:numel(obj.(obj.AnalysisMethod(ii)).Chart)
+        obj.(obj.AnalysisMethod(ii)).Chart(jj).IsBrowser = true;
+        obj.(obj.AnalysisMethod(ii)).Chart(jj).Monitor = monitorIndex;
+    end
+    obj.(obj.AnalysisMethod(ii)).show;
 end
 end
 
