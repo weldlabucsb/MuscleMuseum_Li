@@ -22,14 +22,14 @@ createFolder(fullfile(testPath,"testData","becExp"));
 
 %% Start experiment
 setTestConfig;
-b = BecExp("EvapDTof",isLocalTest=true);
+b = BecExp("Test",isLocalTest=true);
 deleteFolder(b.CiceroLogOrigin);
 mkdir(b.CiceroLogOrigin);
 b.start;
 
 %% Copy files to mimic data acquisition
 
-for iRun = 1:3
+for iRun = 1:nRun
     pause(0.3)
     copyfile(fullfile(samplePath,sampleDataName((iRun-1)*3+1)+'.tif'),fullfile(b.DataPath,sampleDataName((iRun-1)*3+1)+'.tif'))
     pause(0.1)

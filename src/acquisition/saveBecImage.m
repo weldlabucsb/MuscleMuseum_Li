@@ -22,15 +22,16 @@ for ii = 1:3
     fullFilePath = imageName + imageLabel(ii) + imageFormat;
     if imageFormat == ".tif"
         t = Tiff(fullFilePath,'w');
-        setTag(t,'ImageWidth',becExp.Acquisition.ImageSize(1));
-        setTag(t,'ImageLength',becExp.Acquisition.ImageSize(2));
+        setTag(t,'ImageWidth',double(becExp.Acquisition.ImageSize(2)));
+        setTag(t,'ImageLength',double(becExp.Acquisition.ImageSize(1)));
         setTag(t,'Photometric',Tiff.Photometric.MinIsBlack)
-        setTag(t,'BitsPerSample',16);
+        setTag(t,'BitsPerSample',double(becExp.Acquisition.BitsPerSample));
         setTag(t,'SamplesPerPixel',1);
         setTag(t,'Compression',Tiff.Compression.None);
         setTag(t,'PlanarConfiguration',Tiff.PlanarConfiguration.Chunky)
         setTag(t,'RowsPerStrip',1)
         write(t,mData(:,:,ii));
+        close(t)
     else
         imwrite(mData(:,:,ii), fullFilePath);
     end

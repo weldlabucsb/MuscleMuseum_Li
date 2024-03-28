@@ -5,5 +5,6 @@ OD = -log(abs(absorp)+eps);
 % OD(OD<0) = 0;
 OD(isnan(OD))=0;
 OD(isinf(OD))=0;
+OD = real(OD);
 end
 

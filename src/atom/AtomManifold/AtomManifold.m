@@ -10,7 +10,7 @@ classdef (Abstract) AtomManifold < matlab.mixin.Heterogeneous
 
     properties (Dependent)
         Wavelength double
-        Wavenumber double
+        AngularWavenumber double
         RecoilMomentum double
         RecoilVelocity double
         RecoilEnergy double
@@ -31,11 +31,11 @@ classdef (Abstract) AtomManifold < matlab.mixin.Heterogeneous
         function lambda0 = get.Wavelength(obj)
             lambda0 = Constants.SI("c")./obj.Frequency;
         end
-        function k0 = get.Wavenumber(obj)
+        function k0 = get.AngularWavenumber(obj)
             k0 = 2*pi./obj.Wavelength;
         end
         function pr = get.RecoilMomentum(obj)
-            pr = Constants.SI("hbar")*obj.Wavenumber;
+            pr = Constants.SI("hbar")*obj.AngularWavenumber;
         end
         function vr = get.RecoilVelocity(obj)
             vr = obj.RecoilMomentum./obj.Atom.mass;

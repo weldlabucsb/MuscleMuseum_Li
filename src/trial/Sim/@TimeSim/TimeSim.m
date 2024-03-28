@@ -11,10 +11,10 @@ classdef (Abstract) TimeSim < Sim
     end
     
     methods
-        function obj = TimeSim(trialName,configName)
+        function obj = TimeSim(trialName,config)
             %TIMESIM Construct an instance of this class
             %   Detailed explanation goes here
-            obj@Sim(trialName,configName);
+            obj@Sim(trialName,config);
         end
         
     end

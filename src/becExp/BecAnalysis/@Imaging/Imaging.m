@@ -48,7 +48,7 @@ classdef Imaging < BecAnalysis
             c = Constants.SI("c");
             omega = 2*pi*becExp.Atom.CyclerFrequency;
             lambda = 2*pi*c/omega;
-            load("Config.mat","BecExpParameterUnit")
+            BecExpParameterUnit = becExp.ParameterUnitConfig;
             obj.ImagingTimeUnit = BecExpParameterUnit(BecExpParameterUnit.ScannedParameter == "t_image",:).ScannedParameterUnit;
             mul = unit2SI(obj.ImagingTimeUnit);
             obj.Prefactor = hbar*omega/(pixelSize/mag)^2/Isat/mul;
@@ -73,8 +73,8 @@ classdef Imaging < BecAnalysis
             ax1 = subplot(2,1,1,'parent',fig,...
                 'box','on');
             co=get(ax1,'colororder');
-            plot(ax1,0,0,'ko','MarkerFaceColor',co(1,:),'linewidth',2,...
-                'markeredgecolor',co(1,:)*.5,'markersize',8);
+            errorbar(ax1,0,0,[],'ko','MarkerFaceColor',co(1,:),'linewidth',2,...
+                'markeredgecolor',co(1,:)*.5,'markersize',8,'CapSize',0);
             grid on
             ax1.FontSize = 12;
 
@@ -82,10 +82,10 @@ classdef Imaging < BecAnalysis
             ax2 = subplot(2,1,2,'parent',fig,...
                 'box','on');
             hold on
-            plot(ax2,0,0,'ko','MarkerFaceColor',co(1,:),'linewidth',2,...
-                'markeredgecolor',co(1,:)*.5,'markersize',8);
-            plot(ax2,0,0,'o','MarkerFaceColor',co(2,:),'linewidth',2,...
-                'markeredgecolor',co(2,:)*.5,'markersize',8);
+            errorbar(ax2,0,0,[],'ko','MarkerFaceColor',co(1,:),'linewidth',2,...
+                'markeredgecolor',co(1,:)*.5,'markersize',8,'CapSize',0);
+            errorbar(ax2,0,0,[],'o','MarkerFaceColor',co(2,:),'linewidth',2,...
+                'markeredgecolor',co(2,:)*.5,'markersize',8,'CapSize',0);
             hold off
             legend(ax2,"Light","Dark","Interpreter","latex")
             grid on
@@ -113,24 +113,39 @@ classdef Imaging < BecAnalysis
         end
 
         function updateFigure(obj,~)
+            % Check if we have the figure handle
             if ishandle(obj.Chart(1).Figure)
                 fig = figure(obj.Chart(1).Figure);
             else
                 return
             end
 
+            % Parameters
             paraList = obj.BecExp.ScannedParameterList;
             ax = findobj(fig,'Type','Axes');
 
-            l = findobj(ax(1),'Type','Line');
-            l(1).XData = paraList;
-            l(1).YData = obj.LightMean;
-            l(2).XData = paraList;
-            l(2).YData = obj.DarkMean;
+            % Find x, y, and error plot data
+            [xLight,yLight,stdLight] = computeStd(paraList,obj.LightMean);
+            [xDark,yDark,stdDark] = computeStd(paraList,obj.DarkMean);
+            [xSat,ySat,stdSat] = computeStd(paraList,obj.SaturationParameterMean);
 
-            l = findobj(ax(2),'Type','Line');
-            l(1).XData = paraList;
-            l(1).YData = obj.SaturationParameterMean;
+            % Update imaging counts plots
+            l = findobj(ax(1),'Type','ErrorBar');
+            l(1).XData = xLight;
+            l(1).YData = yLight;
+            l(1).YNegativeDelta = stdLight;
+            l(1).YPositiveDelta = stdLight;
+            l(2).XData = xDark;
+            l(2).YData = yDark;
+            l(2).YNegativeDelta = stdDark;
+            l(2).YPositiveDelta = stdDark;
+
+            % Update sat parameter plots
+            l = findobj(ax(2),'Type','ErrorBar');
+            l(1).XData = xSat;
+            l(1).YData = ySat;
+            l(1).YNegativeDelta = stdSat;
+            l(1).YPositiveDelta = stdSat;
 
             title(ax(2),obj.ImagingStage + " Imaging. First run $t_{\mathrm{image}}=" + num2str(obj.ImagingTime(1)) + "~\mathrm{" + ...
                 obj.ImagingTimeUnit + "}.~\bar{s} = " + num2str(obj.SaturationParameterMeanOverall) + "$",...
@@ -139,6 +154,22 @@ classdef Imaging < BecAnalysis
 
         function sMean = get.SaturationParameterMeanOverall(obj)
             sMean = mean(obj.SaturationParameterMean(:));
+        end
+
+        function refresh(obj)
+            obj.initialize;
+            becExp = obj.BecExp;
+            roiData = becExp.Od.RoiData(:,:,:,:);
+            qe = obj.QuantumEfficiency;
+            pf = obj.Prefactor;
+            obj.LightMean = squeeze(mean(roiData(:,:,:,2)/qe,[1,2])).';
+            obj.DarkMean = squeeze(mean(roiData(:,:,:,3)/qe,[1,2])).';
+            t = becExp.CiceroData.t_image;
+            obj.ImagingTime = t;
+            obj.SaturationParameterMean = pf * (obj.LightMean - obj.DarkMean) ./ t;
+            t = reshape(t,1,1,becExp.NCompletedRun);
+            obj.SaturationParameterPropagation = pf * (roiData(:,:,:,1) / qe + becExp.Od.CameraLightData(:,:,:) / qe) / 2 ./ t;
+            obj.updateFigure(1);
         end
     end
 end

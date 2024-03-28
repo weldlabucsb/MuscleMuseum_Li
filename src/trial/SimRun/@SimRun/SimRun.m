@@ -1,4 +1,4 @@
-classdef (Abstract) SimRun < handle & matlab.mixin.Heterogeneous
+classdef (Abstract) SimRun < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -45,6 +45,7 @@ classdef (Abstract) SimRun < handle & matlab.mixin.Heterogeneous
                 error("Can not find DataPath or DataPrefix. Specify DataPath or DataPrefix for SimRun.")
             end
         end
+        
         function data = readRun(obj,varName)
             data = loadVar(obj.RunPath,varName);
         end

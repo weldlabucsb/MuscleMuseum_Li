@@ -20,6 +20,7 @@ classdef Alkali < Atom
         RepumperSaturationIntensity double % Repump transition saturation intensity, in W/m^2. Assume the repumper also has sigma+ polarization
         RepumperSaturationIntensityLu double % Repump transition saturation intensity, in mW/cm^2
         RepumperCrossSection double % Repump transition resonant cross section, in m^2
+        % ScalarPolarizabilityGroundFarDetuned %Alkali D line ground state scalar polarizability, in Hz/(V/m)^2
     end
     
     methods
@@ -58,6 +59,10 @@ classdef Alkali < Atom
             obj.RepumperCrossSection = ...
                 Constants.SI("hbar") * (2*pi*obj.RepumperFrequency) *...
                 (obj.D2.NaturalLinewidth * 2 * pi) / 2 / obj.RepumperSaturationIntensity;
+
+            % %% Set polarizability properties
+            % obj.ScalarPolarizabilityGroundFarDetuned
+
         end
 
     end

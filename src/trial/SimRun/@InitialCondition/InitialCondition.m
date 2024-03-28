@@ -32,6 +32,10 @@ classdef InitialCondition < dynamicprops
                     obj.Velocity = [0;0;0];
                     pWF.SetMethod = @setWaveFunction;
                     pDM.SetMethod = @setDensityMatrix;
+                case {"SeSim1D","SeSim1DRun"}
+                    addprop(obj,"WaveFunctionFunc");
+                    pWF = addprop(obj,"WaveFunction");
+                    pWF.SetMethod = @setWaveFunction;
             end
             function obj = setWaveFunction(obj,val)
                 if ~isvector(val)
@@ -40,10 +44,13 @@ classdef InitialCondition < dynamicprops
                 val = val(:);
                 val = val/norm(val);
                 obj.WaveFunction = val;
-                if isempty(obj.DensityMatrix)
-                    obj.DensityMatrix = (val)*(val)';
+                if isprop(obj,"DensityMatrix")
+                    if isempty(obj.DensityMatrix)
+                        obj.DensityMatrix = (val)*(val)';
+                    end
                 end
             end
+            
             function obj = setDensityMatrix(obj,val)
                 if ~ishermitian(val)
                     error("Density matrix must be a Hermitian matrix.")

@@ -11,18 +11,16 @@ vid.FramesPerTrigger = 1; %Set frames per trigger
 vid.FramesAcquiredFcnCount = acq.ImageGroupSize;
 vid.LoggingMode = 'memory'; %Set logging to memory
 src = getselectedsource(vid); %Create adaptor source
-src.TMTimestampMode = 'Binary'; %Set timestamp mode
 src.ShutterMode = 'GlobalResetRelease';
 if acq.IsExternalTriggered == true
-    if obj.IsExternalTriggered == true
-        triggerconfig(vid, 'hardware', 'DeviceSpecific', 'DeviceSpecific'); %Configure trigger type and mode
-        vid.TriggerRepeat = inf;
-        src.TriggerSelector = 'FrameStart';
-        src.TriggerSource = 'Line1';
-        src.TriggerActivation = 'RisingEdge';
-        src.TriggerMode = 'on';
-        src.ExposureMode = 'Timed';
-    end
+    triggerconfig(vid, 'hardware', 'DeviceSpecific', 'DeviceSpecific'); %Configure trigger type and mode
+    vid.TriggerRepeat = inf;
+    src.TriggerSelector = 'FrameStart';
+    src.TriggerSource = 'Line1';
+    src.TriggerActivation = 'RisingEdge';
+    src.TriggerMode = 'on';
+    src.ExposureMode = 'Timed';
+    src.ExposureTime = acq.ExposureTime * 1e6;
 end
 
 end

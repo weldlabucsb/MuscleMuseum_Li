@@ -2,10 +2,6 @@ classdef MeSimRun < TimeSimRun
     %MESIMRUN Summary of this class goes here
     %   Detailed explanation goes here
     
-    % properties (Access = protected, Transient)
-    %     MeSim MeSim
-    % end
-    
     properties
         Atom Atom
         Laser Laser
@@ -29,7 +25,7 @@ classdef MeSimRun < TimeSimRun
             %MESIMRUN Construct an instance of this class
             %   Detailed explanation goes here
             arguments
-                meSim MeSim
+                meSim MeSim = MeSim.empty
                 options.atom Atom
                 options.rotatingFrequency double
                 options.totalTime double

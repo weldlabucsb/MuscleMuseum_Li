@@ -13,11 +13,19 @@ classdef Chart < handle
 
     properties
         IsEnabled logical = true
+        Monitor double = 1
     end
 
     properties (Transient)
         Figure matlab.ui.Figure
-        Image matlab.graphics.primitive.Image
+    end
+
+    properties (Hidden)
+        IsBrowser logical = false
+    end
+
+    properties (Constant,Hidden)
+        NumberOffset = 1064
     end
 
     methods
@@ -43,47 +51,52 @@ classdef Chart < handle
 
         function fig = initialize(obj)
             if ~obj.IsEnabled
-                fig = [];
+                fig = {1};
                 return
             end
-
-            obj.Figure = figure(obj.Number);
+            
+            if ~obj.IsBrowser
+                obj.Figure = figure(obj.Number);
+            else
+                obj.Figure = figure(obj.Number + obj.NumberOffset);
+            end
             clf(obj.Figure);
 
-            SS = get(0,'screensize');
+            mp = sortMonitor;
+            ss = mp(1,:);
 
             if isstring(obj.Size)
                 switch obj.Size
                     case "small"
-                        fWidth = SS(3)/4.1;
-                        fHeight = SS(4)/2.1;
+                        fWidth = ss(3)/4.1;
+                        fHeight = ss(4)/2.1;
                     case "medium"
-                        fWidth = SS(3)/3.1;
-                        fHeight = SS(4)/2.1;
+                        fWidth = ss(3)/3.1;
+                        fHeight = ss(4)/2.1;
                     case "large"
-                        fWidth = SS(3)/3.1 * 1.5;
-                        fHeight = SS(4)/2.1 *1.5;
+                        fWidth = ss(3)/3.1 * 1.5;
+                        fHeight = ss(4)/2.1 *1.5;
                     case "largetall"
-                        fWidth = SS(3)/3.1 * 1.5;
-                        fHeight = SS(4)/1.1;
+                        fWidth = ss(3)/3.1 * 1.5;
+                        fHeight = ss(4)/1.1;
                     case "full"
-                        fWidth = SS(3)/1.1;
-                        fHeight = SS(4)/1.1;
+                        fWidth = ss(3)/1.1;
+                        fHeight = ss(4)/1.1;
                 end
             else
-                fWidth = obj.Size(1) * SS(3);
-                fHeight = obj.Size(2) * SS(4);
+                fWidth = obj.Size(1) * ss(3);
+                fHeight = obj.Size(2) * ss(4);
             end
 
             if isstring(obj.Location)
                 switch obj.Location
                     case "eastnorthwest"
-                        loc = [SS(3)/2,-1];
+                        loc = [ss(3)/2,-1];
                     otherwise
                         loc = obj.Location;
                 end
             else
-                loc = [obj.Location(1) * SS(3),obj.Location(2) * SS(4)];
+                loc = [obj.Location(1) * ss(3),obj.Location(2) * ss(4)];
             end
 
             obj.Figure.OuterPosition = [200,600,fWidth,fHeight];
@@ -94,6 +107,12 @@ classdef Chart < handle
             obj.Figure.Name = obj.Name;
             movegui(obj.Figure,loc);
             fig = obj.Figure;
+            if obj.Monitor > 1 && obj.Monitor <= size(mp,1)
+                pause(0.02) % This is somehow critical
+                fig.OuterPosition = ...
+                    [fig.OuterPosition(1:2)./ss(3:4).*mp(obj.Monitor,3:4) + mp(obj.Monitor,1:2),...
+                    fig.OuterPosition(3:4)./ss(3:4).*mp(obj.Monitor,3:4)];
+            end
         end
 
         function save(obj)
@@ -139,11 +158,18 @@ classdef Chart < handle
                     copyobj(allchild(src),fig)
                     warning on
                 end
-            else
-                % gifPath = obj.Path + ".gif";
-                % if isfile(gifPath)
-                %     winopen(gifPath)
-                % end
+            end
+        end
+
+        function showGif(obj)
+            if ~obj.IsEnabled
+                return
+            end
+            if obj.IsGif
+                gifPath = obj.Path + ".gif";
+                if isfile(gifPath)
+                    winopen(gifPath)
+                end
             end
         end
     
@@ -153,9 +179,11 @@ classdef Chart < handle
             end
 
             if ~obj.IsGif
-                close(figure(obj.Number))
-            else
-
+                if ~obj.IsBrowser
+                    close(figure(obj.Number))
+                else
+                    close(figure(obj.Number + obj.NumberOffset))
+                end
             end
         end
     end

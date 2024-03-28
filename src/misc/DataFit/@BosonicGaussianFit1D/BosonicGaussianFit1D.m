@@ -17,8 +17,8 @@ classdef BosonicGaussianFit1D < FitData1D
             y = rawData(:,2);
 
             % Offset guess
-            if length(y)>21
-                guessOffset=mean([y(1:20) y(end-20:20)]);
+            if length(y)>50
+                guessOffset=mean([y(1:20);y(end-19:end)]);
             else
                 guessOffset=min(y);
             end
