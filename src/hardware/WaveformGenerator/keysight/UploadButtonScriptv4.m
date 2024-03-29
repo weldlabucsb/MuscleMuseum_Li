@@ -1,4 +1,4 @@
- 
+
 %Last edited 4/25/2022 by Eber Nolasco-Martinez
 
 %This should build the waveform (repeat whatever I do
@@ -39,93 +39,93 @@ fullsettings1=app.CurrentSequence1.settings;
 fullsettings2=app.CurrentSequence2.settings;
 
 for i=1:length(app.CurrentSequence1.step_type)
-settings=app.CurrentSequence1.settings{i};
-fullsettings1{i}=settings;
-varsettings=app.CurrentSequence1.varsettings{i};
-% disp(varsettings);
+    settings=app.CurrentSequence1.settings{i};
+    fullsettings1{i}=settings;
+    varsettings=app.CurrentSequence1.varsettings{i};
+    % disp(varsettings);
 
-% Update Sequence for Current iteration if code is in list
-% mode.
-if ~strcmp(selectedButton, 'Single Run')
-varsettingslogic=cellfun(@(c)strcmp('X',c), varsettings);
-for j=1:length(varsettings)
-    if varsettingslogic(j)
-        settings(j)=varval; %%Varval was created in rfapp before script is called
-%         disp('substituted index j');
-%         disp(settings(j));
+    % Update Sequence for Current iteration if code is in list
+    % mode.
+    if ~strcmp(selectedButton, 'Single Run')
+        varsettingslogic=cellfun(@(c)strcmp('X',c), varsettings);
+        for j=1:length(varsettings)
+            if varsettingslogic(j)
+                settings(j)=varval; %%Varval was created in rfapp before script is called
+                %         disp('substituted index j');
+                %         disp(settings(j));
+            end
+        end
     end
-end
-end
-%             disp(settings(j))
+    %             disp(settings(j))
 
-if strcmp(app.CurrentSequence1.step_type{i}, "Constant")
+    if strcmp(app.CurrentSequence1.step_type{i}, "Constant")
 
-totaltime=settings(1);
-amp=settings(2);
+        totaltime=settings(1);
+        amp=settings(2);
 
-timemax=10e-6; %10us
+        timemax=10e-6; %10us
 
-if totaltime<timemax
-    arbsList1{end+1}=amp*(0:stpSize:totaltime);
-    repeatsList1(end+1)=1;
-    playmodes1{end+1}='repeat';
-else
-    arbsList1{end+1}=amp*0:stpSize:timemax;
-    repeatnum=floor(totaltime/timemax);
-    repeatsList1(end+1)=repeatnum;
-    playmodes1{end+1}='repeat';
-%     arbsList1{end+1}=amp*((repeatnum*timemax):stpSize:totaltime);
-%     repeatsList1(end+1)=repeatnum;
-%     playmodes1{end+1}='repeat';
-end
-%Set a short time period as a default value for
-%constant time. If less, just create the step
-%once, if more, create repeat sequence and an
-%extra step for leftover time
-elseif strcmp(app.CurrentSequence1.step_type{i}, "Sinusoidal")
-% settings=app.CurrentSequence1.settings{i};
-totaltime=settings(1);
-f=settings(2); %Cyclic??
-amp=settings(3);
-phase=settings(4);
+        if totaltime<timemax
+            arbsList1{end+1}=amp*(0:stpSize:totaltime);
+            repeatsList1(end+1)=1;
+            playmodes1{end+1}='repeat';
+        else
+            arbsList1{end+1}=amp*0:stpSize:timemax;
+            repeatnum=floor(totaltime/timemax);
+            repeatsList1(end+1)=repeatnum;
+            playmodes1{end+1}='repeat';
+            %     arbsList1{end+1}=amp*((repeatnum*timemax):stpSize:totaltime);
+            %     repeatsList1(end+1)=repeatnum;
+            %     playmodes1{end+1}='repeat';
+        end
+        %Set a short time period as a default value for
+        %constant time. If less, just create the step
+        %once, if more, create repeat sequence and an
+        %extra step for leftover time
+    elseif strcmp(app.CurrentSequence1.step_type{i}, "Sinusoidal")
+        % settings=app.CurrentSequence1.settings{i};
+        totaltime=settings(1);
+        f=settings(2); %Cyclic??
+        amp=settings(3);
+        phase=settings(4);
 
-%set a minimum number of cycles. If greater
-%than, say 10, divide, repeats, 1 more for
-%leftovers. If less, just make one run.Time
-%will round up to nearest cycle down
-cyclemax=10;
-period=1/f;
-if floor(totaltime/period)<=cyclemax
-    totaltime=floor(totaltime/period)*period;
-    repeatsList1(end+1)=1;
-    playmodes1{end+1}='repeat';
-    arbsList1{end+1}=amp*sin(2*pi*f*(0:stpSize:totaltime));
-else %(This step is still buggy)
-%                     cycles=floor(totaltime/period);
-    newtime=period*cyclemax;
-    cycles=floor(totaltime/newtime);
-    repeatsList1(end+1)=cycles;
-    arbsList1{end+1}=amp*sin(2*pi*f*(0:stpSize:newtime));
-    playmodes1{end+1}='repeat';
-    extratime=floor(totaltime/period)*period-newtime*cycles;%Messed up this calculation.
-%                     repeatsList1(end+1)=1;
-%                     playmodes1{end+1}='repeat';
-%                     arbsList1{end+1}=amp*sin(2*pi*f*(0:stpSize:extratime));
-end
+        %set a minimum number of cycles. If greater
+        %than, say 10, divide, repeats, 1 more for
+        %leftovers. If less, just make one run.Time
+        %will round up to nearest cycle down
+        cyclemax=10;
+        period=1/f;
+        if floor(totaltime/period)<=cyclemax
+            totaltime=floor(totaltime/period)*period;
+            repeatsList1(end+1)=1;
+            playmodes1{end+1}='repeat';
+            arbsList1{end+1}=amp*sin(2*pi*f*(0:stpSize:totaltime));
+        else %(This step is still buggy)
+            %                     cycles=floor(totaltime/period);
+            newtime=period*cyclemax;
+            cycles=floor(totaltime/newtime);
+            repeatsList1(end+1)=cycles;
+            arbsList1{end+1}=amp*sin(2*pi*f*(0:stpSize:newtime));
+            playmodes1{end+1}='repeat';
+            extratime=floor(totaltime/period)*period-newtime*cycles;%Messed up this calculation.
+            %                     repeatsList1(end+1)=1;
+            %                     playmodes1{end+1}='repeat';
+            %                     arbsList1{end+1}=amp*sin(2*pi*f*(0:stpSize:extratime));
+        end
 
-elseif strcmp(app.CurrentSequence1.step_type{i}, "TwoFreq")
-% settings=app.CurrentSequence1.settings{i};
-totaltime=settings(1);
-f1=settings(2); %Cyclic??
-amp1=settings(3);
-f2=settings(4);
-amp2=settings(5);
-freq2delay=settings(6);
+    elseif strcmp(app.CurrentSequence1.step_type{i}, "TwoFreq")
+        % settings=app.CurrentSequence1.settings{i};
+        totaltime=settings(1);
+        f1=settings(2); %Cyclic??
+        amp1=settings(3);
+        f2=settings(4);
+        amp2=settings(5);
+        freq2delay=settings(6);
 
-%Fill out information, will not assume any periodicity
-repeatsList1(end+1)=1;
-playmodes1{end+1}='repeat';
-arbsList1{end+1}=amp1*sin(2*pi*f1*(0:stpSize:totaltime))+amp2.*sin(2*pi*f2*((0:stpSize:totaltime)-freq2delay)).*heaviside((0:stpSize:totaltime)-freq2delay);
+        %Fill out information, will not assume any periodicity
+        repeatsList1(end+1)=1;
+        playmodes1{end+1}='repeat';
+        arbsList1{end+1}=amp1*sin(2*pi*f1*(0:stpSize:totaltime))+amp2.*sin(2*pi*f2*((0:stpSize:totaltime)-freq2delay)).*heaviside((0:stpSize:totaltime)-freq2delay);
 
     elseif strcmp(app.CurrentSequence1.step_type{i}, "SineRampUp")
         % settings=app.CurrentSequence2.settings{i};
@@ -133,7 +133,7 @@ arbsList1{end+1}=amp1*sin(2*pi*f1*(0:stpSize:totaltime))+amp2.*sin(2*pi*f2*((0:s
         totaltime=settings(1);
         f=settings(2); %Cyclic??
         amp=settings(3);
-        
+
         %Fill out information, will not assume any periodicity
         repeatsList1(end+1)=1;
         playmodes1{end+1}='once';
@@ -149,7 +149,7 @@ arbsList1{end+1}=amp1*sin(2*pi*f1*(0:stpSize:totaltime))+amp2.*sin(2*pi*f2*((0:s
         totaltime=settings(1);
         f=settings(2); %Cyclic??
         amp=settings(3);
-        
+
         %Fill out information, will not assume any periodicity
         repeatsList1(end+1)=1;
         playmodes1{end+1}='once';
@@ -159,7 +159,7 @@ arbsList1{end+1}=amp1*sin(2*pi*f1*(0:stpSize:totaltime))+amp2.*sin(2*pi*f2*((0:s
         timelist=0:stpSize:actualtime;
         arbsList1{end+1}=amp.*(1-timelist./actualtime).*sin(2.*pi.*f.*timelist);
 
-elseif strcmp(app.CurrentSequence1.step_type{i}, "RFPulseWaveform")
+    elseif strcmp(app.CurrentSequence1.step_type{i}, "RFPulseWaveform")
         % settings=app.CurrentSequence2.settings{i};
         %                 disp(settings);
         totaltime=settings(1);
@@ -168,7 +168,7 @@ elseif strcmp(app.CurrentSequence1.step_type{i}, "RFPulseWaveform")
         phase=settings(4);
         rtime=settings(5);
         ftime=settings(6);
-        
+
         %Fill out information, will not assume any periodicity
         period=1/f;
         timelist=0:stpSize:totaltime;
@@ -204,7 +204,7 @@ elseif strcmp(app.CurrentSequence1.step_type{i}, "RFPulseWaveform")
                 arbsList1{end+1}=amp*sin(2*pi*f*timelistadjust2leftover+phase);
             end
         end
-        
+
         %Fall time
         actualtime=timelist3(end)-timelist3(1);
         repeatsList1(end+1)=1;
@@ -212,109 +212,109 @@ elseif strcmp(app.CurrentSequence1.step_type{i}, "RFPulseWaveform")
         arbsList1{end+1}=amp.*(1-(timelist3-timelist3(1))./actualtime).*sin(2.*pi.*f.*timelist3+phase);
 
 
-end
+    end
 end
 
 for i=1:length(app.CurrentSequence2.step_type)
 
-settings2=app.CurrentSequence2.settings{i};
-varsettings2=app.CurrentSequence2.varsettings{i};
-fullsettings2{i}=settings2;
-% Update Sequence for Current iteration if code is in list
-% mode.
-if ~strcmp(selectedButton, 'Single Run')
-varsettingslogic=cellfun(@(c)strcmp('X',c), varsettings2);
-for j=1:length(varsettings2)
-    if varsettingslogic(j)
-        settings2(j)=varval;
+    settings2=app.CurrentSequence2.settings{i};
+    varsettings2=app.CurrentSequence2.varsettings{i};
+    fullsettings2{i}=settings2;
+    % Update Sequence for Current iteration if code is in list
+    % mode.
+    if ~strcmp(selectedButton, 'Single Run')
+        varsettingslogic=cellfun(@(c)strcmp('X',c), varsettings2);
+        for j=1:length(varsettings2)
+            if varsettingslogic(j)
+                settings2(j)=varval;
+            end
+        end
     end
-end
-end
-if strcmp(app.CurrentSequence2.step_type{i}, "Constant")
-% settings=app.CurrentSequence2.settings{i};
-totaltime=settings2(1);
-amp=settings2(2);
+    if strcmp(app.CurrentSequence2.step_type{i}, "Constant")
+        % settings=app.CurrentSequence2.settings{i};
+        totaltime=settings2(1);
+        amp=settings2(2);
 
-timemax=10e-6; %10us
+        timemax=10e-6; %10us
 
-if totaltime<timemax
-    arbsList2{end+1}=amp*(0:stpSize:totaltime);
-    repeatsList2(end+1)=1;
-    playmodes2{end+1}='repeat';
-else
-    arbsList2{end+1}=amp*0:stpSize:timemax;
-    repeatnum=floor(totaltime/timemax);
-    repeatsList2(end+1)=repeatnum;
-    playmodes2{end+1}='repeat';
-    arbsList2{end+1}=amp*((repeatnum*timemax):stpSize:totaltime);
-    repeatsList2(end+1)=repeatnum;
-    playmodes2{end+1}='repeat';
-end
-%Set a short time period as a default value for
-%constant time. If less, just create the step
-%once, if more, create repeat sequence and an
-%extra step for leftover time
-elseif strcmp(app.CurrentSequence2.step_type{i}, "Sinusoidal")
-% settings=app.CurrentSequence2.settings{i};
-totaltime=settings2(1);
-f=settings2(2); %Cyclic??
-amp=settings2(3);
-phase=settings2(4);
+        if totaltime<timemax
+            arbsList2{end+1}=amp*(0:stpSize:totaltime);
+            repeatsList2(end+1)=1;
+            playmodes2{end+1}='repeat';
+        else
+            arbsList2{end+1}=amp*0:stpSize:timemax;
+            repeatnum=floor(totaltime/timemax);
+            repeatsList2(end+1)=repeatnum;
+            playmodes2{end+1}='repeat';
+            arbsList2{end+1}=amp*((repeatnum*timemax):stpSize:totaltime);
+            repeatsList2(end+1)=repeatnum;
+            playmodes2{end+1}='repeat';
+        end
+        %Set a short time period as a default value for
+        %constant time. If less, just create the step
+        %once, if more, create repeat sequence and an
+        %extra step for leftover time
+    elseif strcmp(app.CurrentSequence2.step_type{i}, "Sinusoidal")
+        % settings=app.CurrentSequence2.settings{i};
+        totaltime=settings2(1);
+        f=settings2(2); %Cyclic??
+        amp=settings2(3);
+        phase=settings2(4);
 
-%set a minimum number of cycles. If greater
-%than, say 10, divide, repeats, 1 more for
-%leftovers. If less, just make one run.Time
-%will round up to nearest cycle
-cyclemax=10;
-period=1/f;
-if floor(totaltime/period)<=cyclemax
-    totaltime=floor(totaltime/period)*period;
-    repeatsList2(end+1)=1;
-    playmodes2{end+1}='repeat';
-    arbsList2{end+1}=amp*sin(2*pi*f*(0:stpSize:totaltime));
-else %(This step is still buggy)
-%                     cycles=floor(totaltime/period);
-    newtime=period*cyclemax;
-    cycles=floor(totaltime/newtime);
-    repeatsList2(end+1)=cycles;
-    arbsList2{end+1}=amp*sin(2*pi*f*(0:stpSize:newtime));
-    playmodes2{end+1}='repeat';
-    extratime=floor(totaltime/period)*period-newtime*cycles;%Messed up this calculation.
-%                     repeatsList2(end+1)=1;
-%                     playmodes2{end+1}='repeat';
-%                     arbsList2{end+1}=amp*sin(2*pi*f*(0:stpSize:extratime));
-end
+        %set a minimum number of cycles. If greater
+        %than, say 10, divide, repeats, 1 more for
+        %leftovers. If less, just make one run.Time
+        %will round up to nearest cycle
+        cyclemax=10;
+        period=1/f;
+        if floor(totaltime/period)<=cyclemax
+            totaltime=floor(totaltime/period)*period;
+            repeatsList2(end+1)=1;
+            playmodes2{end+1}='repeat';
+            arbsList2{end+1}=amp*sin(2*pi*f*(0:stpSize:totaltime));
+        else %(This step is still buggy)
+            %                     cycles=floor(totaltime/period);
+            newtime=period*cyclemax;
+            cycles=floor(totaltime/newtime);
+            repeatsList2(end+1)=cycles;
+            arbsList2{end+1}=amp*sin(2*pi*f*(0:stpSize:newtime));
+            playmodes2{end+1}='repeat';
+            extratime=floor(totaltime/period)*period-newtime*cycles;%Messed up this calculation.
+            %                     repeatsList2(end+1)=1;
+            %                     playmodes2{end+1}='repeat';
+            %                     arbsList2{end+1}=amp*sin(2*pi*f*(0:stpSize:extratime));
+        end
 
     elseif strcmp(app.CurrentSequence2.step_type{i}, "TwoFreq")
-    % settings=app.CurrentSequence2.settings{i};
-    %                 disp(settings);
-    totaltime=settings2(1);
-    f1=settings2(2); %Cyclic??
-    amp1=settings2(3);
-    f2=settings2(4);
-    amp2=settings2(5);
-    freq2delay=settings2(6);
-    
-    %Fill out information, will not assume any periodicity
-    repeatsList2(end+1)=1;
-    playmodes2{end+1}='repeat';
-    arbsList2{end+1}=amp1*sin(2*pi*f1*(0:stpSize:totaltime))+amp2.*sin(2*pi*f2*((0:stpSize:totaltime)-freq2delay)).*heaviside((0:stpSize:totaltime)-freq2delay);
+        % settings=app.CurrentSequence2.settings{i};
+        %                 disp(settings);
+        totaltime=settings2(1);
+        f1=settings2(2); %Cyclic??
+        amp1=settings2(3);
+        f2=settings2(4);
+        amp2=settings2(5);
+        freq2delay=settings2(6);
+
+        %Fill out information, will not assume any periodicity
+        repeatsList2(end+1)=1;
+        playmodes2{end+1}='repeat';
+        arbsList2{end+1}=amp1*sin(2*pi*f1*(0:stpSize:totaltime))+amp2.*sin(2*pi*f2*((0:stpSize:totaltime)-freq2delay)).*heaviside((0:stpSize:totaltime)-freq2delay);
 
     elseif strcmp(app.CurrentSequence2.step_type{i}, "SineRampUp")
-    % settings=app.CurrentSequence2.settings{i};
-    %                 disp(settings);
-    totaltime=settings2(1);
-    f=settings2(2); %Cyclic??
-    amp=settings2(3);
-    
-    %Fill out information, will not assume any periodicity
-    repeatsList2(end+1)=1;
-    playmodes2{end+1}='repeat';
-    period=1/f;
-    cycles=floor(totaltime/period);
-    actualtime=period*cycles;
-    timelist=0:stpSize:actualtime;
-    arbsList2{end+1}=amp.*timelist./actualtime.*sin(2.*pi.*f.*timelist);
+        % settings=app.CurrentSequence2.settings{i};
+        %                 disp(settings);
+        totaltime=settings2(1);
+        f=settings2(2); %Cyclic??
+        amp=settings2(3);
+
+        %Fill out information, will not assume any periodicity
+        repeatsList2(end+1)=1;
+        playmodes2{end+1}='repeat';
+        period=1/f;
+        cycles=floor(totaltime/period);
+        actualtime=period*cycles;
+        timelist=0:stpSize:actualtime;
+        arbsList2{end+1}=amp.*timelist./actualtime.*sin(2.*pi.*f.*timelist);
 
     elseif strcmp(app.CurrentSequence2.step_type{i}, "SineRampDown")
         % settings=app.CurrentSequence2.settings{i};
@@ -322,7 +322,7 @@ end
         totaltime=settings2(1);
         f=settings2(2); %Cyclic??
         amp=settings2(3);
-        
+
         %Fill out information, will not assume any periodicity
         repeatsList2(end+1)=1;
         playmodes2{end+1}='repeat';
@@ -332,7 +332,7 @@ end
         timelist=0:stpSize:actualtime;
         arbsList2{end+1}=amp.*(1-timelist./actualtime).*sin(2.*pi.*f.*timelist);
 
-elseif strcmp(app.CurrentSequence2.step_type{i}, "RFPulseWaveform")
+    elseif strcmp(app.CurrentSequence2.step_type{i}, "RFPulseWaveform")
         % settings=app.CurrentSequence2.settings{i};
         %                 disp(settings);
         totaltime=settings2(1);
@@ -341,7 +341,7 @@ elseif strcmp(app.CurrentSequence2.step_type{i}, "RFPulseWaveform")
         phase=settings2(4);
         rtime=settings2(5);
         ftime=settings2(6);
-        
+
         %Fill out information, will not assume any periodicity
         period=1/f;
         timelist=0:stpSize:totaltime;
@@ -377,14 +377,14 @@ elseif strcmp(app.CurrentSequence2.step_type{i}, "RFPulseWaveform")
                 arbsList2{end+1}=amp*sin(2*pi*f*timelistadjust2leftover+phase);
             end
         end
-        
+
         %Fall time
         actualtime=timelist3(end)-timelist3(1);
         repeatsList2(end+1)=1;
         playmodes2{end+1}='repeat';
         arbsList2{end+1}=amp.*(1-(timelist3-timelist3(1))./actualtime).*sin(2.*pi.*f.*timelist3+phase);
 
-    
+
     end
 
 end
