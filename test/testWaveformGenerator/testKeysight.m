@@ -1,0 +1,1 @@
+wgObj = getWG("LatticeMod");

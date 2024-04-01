@@ -107,6 +107,22 @@ AcquisitionConfig = table(Name,CameraType,AdaptorName,DeviceID,...
     ImageSize,BadRow,Magnification,ImageGroupSize,ConfigFun,QuantumEfficiencyData,BitsPerSample);
 save(configName,"AcquisitionConfig",'-mat','-append')
 
+%% Set the waveform generator configuration
+Name = [
+    "LatticeMod";...
+    "GreenWallMod"
+    ];
+DeviceModel = [
+"Keysight33600A";
+"SpectrumAWG"
+];
+ResourceName = [
+"USB0::0x0957::0x5607::MY59000681::0::INSTR";...
+"TCPIP::172.16.0.0::inst0"
+];
+WaveformGeneratorConfig = table(Name,DeviceModel,ResourceName);
+save(configName,"WaveformGeneratorConfig",'-mat','-append')
+
 %% Set the ROI configuration
 RoiConfig = readtable("roi.csv.xlsx",'TextType','string');
 RoiConfig.SubRoiSeparation = cell2mat(arrayfun(@str2num,RoiConfig.SubRoiSeparation,'UniformOutput',false));
