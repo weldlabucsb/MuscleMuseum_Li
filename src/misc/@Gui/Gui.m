@@ -42,11 +42,11 @@ classdef Gui < handle
             % allfigs = findall(0,'Type','figure'); 
             % app2Handle = findall(allfigs, 'Name', obj.Name);
             % close(app2Handle)
-            try
+            % try
                 obj.App = feval(obj.Name,varargin{:});
-            catch
-                obj.App = eval(obj.Name);
-            end
+            % catch
+                % obj.App = eval(obj.Name);
+            % end
 
             mp = sortMonitor;
             ss = mp(1,:);
