@@ -1,22 +1,46 @@
-classdef SineWave < WaveForm
+classdef SineWave < PeriodicWaveform
     %SINEWAVE Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
-        Property1
+        
     end
     
     methods
-        function obj = SineWave(inputArg1,inputArg2)
+        function obj = SineWave(options)
             %SINEWAVE Construct an instance of this class
             %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
+            arguments
+                options.amplitude double = [];
+                options.frequency double = [];
+                options.phase double = 0;
+                options.timing double = 0;
+                options.duration double = [];
+                options.offset double = 0;
+                options.samplingRate double = [];
+            end
+            field = string(fieldnames(options));
+            for ii = 1:numel(field)
+                if ~isempty(options.(field(ii)))
+                    obj.(capitalizeFirst(field(ii))) = options.(field(ii));
+                end
+            end
         end
         
-        function outputArg = method1(obj,inputArg)
+        function func = TimeFunc(obj)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+            amp = obj.Amplitude;
+            freq = obj.Frequency;
+            td = obj.Duration;
+            t0 = obj.Timing;
+            phi = obj.Phase;
+            off = obj.Offset;
+            func = @tFunc;
+            function modAmp = tFunc(t)
+                modAmp = (t>=t0 & t<=(t0+td)) .* ...
+                    (amp .* sin(2 * pi .* freq .* (t-t0) + phi) + off);
+            end
         end
     end
 end
