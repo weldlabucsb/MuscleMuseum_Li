@@ -3,7 +3,6 @@ disp(newline + "Setting Python...")
 %% Find the repo path
 configPath = findFunctionPath();
 [repoPath,~,~] = fileparts(configPath);
-homePath = getHome;
 
 %% Set python search path
 setenv("PYTHONPATH",fullfile(repoPath,"toolbox","py"));
@@ -26,11 +25,11 @@ else
         return
     end
     disp("ARC is installed.")
-    arc.("Lithium7");
+    atom = arc.AlkaliAtom;
 
     % Copy ARC data file
     copyfile(fullfile(repoPath,"toolbox","py","lithium7_literature_dme.csv"),...
-        fullfile(homePath,".arc-data","lithium7_literature_dme.csv"))
+        fullfile(py2Mat(atom.dataFolder),"lithium7_literature_dme.csv"))
     disp("Done.")
 end
 end

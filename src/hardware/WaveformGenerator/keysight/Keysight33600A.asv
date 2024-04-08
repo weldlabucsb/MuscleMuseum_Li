@@ -81,38 +81,14 @@ classdef Keysight33600A < WaveformGenerator
             % s = obj.VisaDevice;
 
             for ii = 1:obj.NChannel
-                if isempty(obj.WaveformList{ii})
+                if isempty(obj.WaveformList
+ii))
                     continue
                 end
-                obj.WaveformList{ii}.SamplingRate = obj.SamplingRate;
-
-
-                t = obj.WaveformList{ii}.WaveformPrepared;
-
-                Sample = {zeros(1,35)};
-                PlayMode = "OnceWaitTrigger";
-                NRepeat = 0;
-                t0 = table(Sample,PlayMode,NRepeat);
-
-                Sample = {zeros(1,35)};
-                PlayMode = "Repeat";
-                NRepeat = 0;
-                te = table(Sample,PlayMode,NRepeat);
-
-                t = [t0;t;te];
-
+                obj.WaveformList(ii).SamplingRate = obj.SamplingRate;
+                t = obj.WaveformList(ii).WaveformPrepared;
                 nWave = size(t,1);
                 arbName = "MMARB_ch" + string(ii) + "_" + string(1:nWave)';
-
-                playMode = t.PlayMode;
-                playMode = strrep(playMode,"Once","once");
-                playMode = strrep(playMode,"OnceWaitTrigger","onceWaitTrig");
-                playMode = strrep(playMode,"Repeat","repeat");
-                playMode = strrep(playMode,"RepeatInf","repeatInf");
-                playMode = strrep(playMode,"RepeatTilTrigger","repeatTilTrig");
-
-                arbToSeq = cell(1,nWave);
-
                 for jj = 1:nWave
                     dataBlock = t.Sample{jj};
                     dataBlock = dataBlock(:).';
@@ -123,14 +99,11 @@ classdef Keysight33600A < WaveformGenerator
                             dataBlock = typecast(dataBlock, "uint8");
                             header = uint8(header);
                     end
-                    writebinblock(s,[header,dataBlock]) % Write data into arb files
-                    arbToSeq{jj}=sprintf('%s,%d,%s',arbName(jj),t.NRepeat(jj),playMode(jj));
+                    % writebinblock(s,[header,dataBlock]) % Write data into arb files
+                    arbToSeq{ii}=sprintf('%s,%d,%s',arbName(jj),t.NRepeat(ii),t.PlayMode(ii));
                 end
-
                 allArbsToSeq=sprintf(strcat('arbSeq',',%s'),sprintf('%s,',arbToSeq{1:end}));
                 allArbsToSeq=allArbsToSeq(1:end-1); %remove final comma
-                header2 = char(strcat(['SOURce', num2str(ii)],pad(":DATA:SEQuence ")));
-                writebinblock(s,[header2,allArbsToSeq],obj.DataType); 
             end
         end
     end

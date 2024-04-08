@@ -11,13 +11,14 @@ classdef SineWave < PeriodicWaveform
             %SINEWAVE Construct an instance of this class
             %   Detailed explanation goes here
             arguments
+                options.samplingRate double = [];
+                options.startTime double = 0;
+                options.duration double = [];
                 options.amplitude double = [];
+                options.offset double = 0;
+
                 options.frequency double = [];
                 options.phase double = 0;
-                options.timing double = 0;
-                options.duration double = [];
-                options.offset double = 0;
-                options.samplingRate double = [];
             end
             field = string(fieldnames(options));
             for ii = 1:numel(field)
@@ -33,13 +34,13 @@ classdef SineWave < PeriodicWaveform
             amp = obj.Amplitude;
             freq = obj.Frequency;
             td = obj.Duration;
-            t0 = obj.Timing;
+            t0 = obj.StartTime;
             phi = obj.Phase;
-            off = obj.Offset;
+            offset = obj.Offset;
             func = @tFunc;
             function modAmp = tFunc(t)
                 modAmp = (t>=t0 & t<=(t0+td)) .* ...
-                    (amp .* sin(2 * pi .* freq .* (t-t0) + phi) + off);
+                    (amp ./2 .* sin(2 * pi .* freq .* (t-t0) + phi) + offset);
             end
         end
     end

@@ -4,9 +4,10 @@ classdef (Abstract) WaveformGenerator < handle
     
     properties
         SamplingRate double
-        TriggerSource string
-        TriggerMode string
-        WaveformList
+        TriggerSource string {mustBeMember(TriggerSource,{'External','Software','Immediate'})} = "External"
+        TriggerSlope string {mustBeMember(TriggerSlope,{'Rise','Fall'})} = "Rise"
+        OutputMode string {mustBeMember(OutputMode,{'Gated','Normal'})} = "Normal"
+        WaveformList cell
     end
     
     properties(SetAccess = protected)
@@ -16,6 +17,7 @@ classdef (Abstract) WaveformGenerator < handle
         Memory double % How many sample points the device can store
         NChannel double % How many channels the device has
         ResourceName string % Interfaces (like VISA) require a resource name to identify the device
+        DataType string {mustBeMember(DataType,{'uint8','double'})}= "uint8"
     end
     
     methods

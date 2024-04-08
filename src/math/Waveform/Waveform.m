@@ -3,14 +3,15 @@ classdef (Abstract) Waveform < handle
     %   Detailed explanation goes here
     
     properties
-        SamplingRate % In Hz
-        Timing double = 0 % Start time, in s
-        Duration % How long of the waveform, in s
+        SamplingRate double % In Hz
+        StartTime double = 0 % Start time, in s
+        Duration double {mustBePositive}% How long of the waveform, in s
         Amplitude double = 0 % Peak-to-peak amplitude, usually in Volts.
         Offset double = 0 % Offest, usually in Volts.
     end
 
     properties (Dependent)
+        EndTime
         TimeStep
         NSample
         Sample
@@ -23,6 +24,10 @@ classdef (Abstract) Waveform < handle
             
         end
 
+        function te = get.EndTime(obj)
+            te = obj.StartTime + obj.Duration;
+        end
+
         function nS = get.NSample(obj)
             nS = floor(obj.Duration * obj.SamplingRate) + 1;
         end
@@ -33,12 +38,12 @@ classdef (Abstract) Waveform < handle
 
         function s = get.Sample(obj)
             tFunc = obj.TimeFunc;
-            t = obj.Timing : obj.TimeStep : (obj.Duration + obj.Timing);
+            t = obj.StartTime : obj.TimeStep : obj.EndTime;
             s = tFunc(t);
         end
         
         function plot(obj)
-            t = obj.Timing : obj.TimeStep : (obj.Duration + obj.Timing);
+            t = obj.StartTime : obj.TimeStep : obj.EndTime;
             s = obj.Sample;
             plot(t,s)
             xlabel("Time [s]",Interpreter="latex")
