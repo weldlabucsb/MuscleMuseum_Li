@@ -5,5 +5,7 @@ wfl = WaveformList;
 wfl.SamplingRate = 64e6;
 wfl.WaveformOrigin = wf;
 ks = getWG("LatticeMod");
+ks.connect;
+ks.set;
 ks.WaveformList = {wfl,wfl};
 ks.upload

@@ -36,6 +36,7 @@ classdef (Abstract) WaveformGenerator < handle
         connect(obj)
         set(obj)
         upload(obj)
+        close(obj)
     end
 end
 

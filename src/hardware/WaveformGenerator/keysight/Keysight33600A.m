@@ -78,7 +78,7 @@ classdef Keysight33600A < WaveformGenerator
                 return
             end
             
-            % s = obj.VisaDevice;
+            s = obj.VisaDevice;
 
             for ii = 1:obj.NChannel
                 if isempty(obj.WaveformList{ii})
@@ -116,14 +116,15 @@ classdef Keysight33600A < WaveformGenerator
                 for jj = 1:nWave
                     dataBlock = t.Sample{jj};
                     dataBlock = dataBlock(:).';
-                    header = char(sprintf("SOURce" + string(ii)+':DATA:ARBitrary %s,',arbName(jj)));
+                    header = char(sprintf("SOURce" + string(ii)+":DATA:ARBitrary" + " %s,",arbName(jj)));
                     switch obj.DataType
                         case "uint8"
                             dataBlock = single(dataBlock);
                             dataBlock = typecast(dataBlock, "uint8");
                             header = uint8(header);
                     end
-                    writebinblock(s,[header,dataBlock]) % Write data into arb files
+                    writelines(s,header,obj.DataType)
+                    write(s,[header,dataBlock],obj.DataType) % Write data into arb files
                     arbToSeq{jj}=sprintf('%s,%d,%s',arbName(jj),t.NRepeat(jj),playMode(jj));
                 end
 
@@ -132,6 +133,15 @@ classdef Keysight33600A < WaveformGenerator
                 header2 = char(strcat(['SOURce', num2str(ii)],pad(":DATA:SEQuence ")));
                 writebinblock(s,[header2,allArbsToSeq],obj.DataType); 
             end
+        end
+
+        function close(obj)
+            v = obj.VisaDevice;
+            write(v, '*WAI');
+            write(v, ':ABORt');
+            delete(v);
+            clear v;
+            clear instrument
         end
     end
 end
