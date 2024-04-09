@@ -121,17 +121,17 @@ classdef Keysight33600A < WaveformGenerator
                         case "uint8"
                             dataBlock = single(dataBlock);
                             dataBlock = typecast(dataBlock, "uint8");
-                            header = uint8(header);
+                            header2 = [' #' , num2str(numel(num2str(numel(dataBlock)))) , num2str(numel(dataBlock))];
+                            header = uint8([header,header2]);
                     end
-                    writelines(s,header,obj.DataType)
                     write(s,[header,dataBlock],obj.DataType) % Write data into arb files
                     arbToSeq{jj}=sprintf('%s,%d,%s',arbName(jj),t.NRepeat(jj),playMode(jj));
                 end
 
                 allArbsToSeq=sprintf(strcat('arbSeq',',%s'),sprintf('%s,',arbToSeq{1:end}));
                 allArbsToSeq=allArbsToSeq(1:end-1); %remove final comma
-                header2 = char(strcat(['SOURce', num2str(ii)],pad(":DATA:SEQuence ")));
-                writebinblock(s,[header2,allArbsToSeq],obj.DataType); 
+                header3 = char(strcat(['SOURce', num2str(ii)],pad(":DATA:SEQuence ")));
+                write(s,[header3,allArbsToSeq],obj.DataType); 
             end
         end
 
