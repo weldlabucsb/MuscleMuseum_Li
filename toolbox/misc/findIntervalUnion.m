@@ -30,7 +30,7 @@ end
 
 %% Initialization
 nInterval = size(intervalList,2);
-[~,idx] = sort(intervalList(2,:));
+[~,idx] = sort(intervalList(1,:));
 intervalList = intervalList(:,idx);
 unionList = {idx(1)};
 unionLimit = intervalList(:,1);
@@ -40,10 +40,7 @@ unionIdx = 1;
 for ii = 2:nInterval
     if intervalList(1,ii) < unionLimit(2,unionIdx)
         unionList{unionIdx} = [unionList{unionIdx},idx(ii)];
-        unionLimit(2,unionIdx) = intervalList(2,ii);
-        if intervalList(1,ii) < unionLimit(1,unionIdx)
-            unionLimit(1,unionIdx) = intervalList(1,ii);
-        end
+        unionLimit(2,unionIdx) = max(intervalList(2,ii),unionLimit(2,unionIdx));
     else
         unionIdx = unionIdx + 1;
         unionList{unionIdx} = idx(ii);

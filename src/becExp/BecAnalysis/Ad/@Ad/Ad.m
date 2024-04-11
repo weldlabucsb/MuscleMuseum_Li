@@ -132,6 +132,8 @@ classdef Ad < BecAnalysis
 
             if isempty(obj.Gui(1).App) || ~isvalid(obj.Gui(1).App)
                 obj.Gui(1).initialize(obj.BecExp)
+            else
+                obj.Gui(1).update
             end
 
             for ii = 1:nRun

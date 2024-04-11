@@ -2,12 +2,14 @@ function setAnalyzer(obj)
 obj.Analyzer = addlistener(obj,'NewRunFinished',@(src,event) onChanged(src,event,obj));
 obj.Analyzer.Enabled = false;
     function onChanged(~,~,obj)
+        obj.IsAcquiring = true;
         obj.NCompletedRun = obj.NCompletedRun + 1;
         if obj.NCompletedRun > obj.NRun
             obj.NRun = obj.NCompletedRun;
         end
         currentRunNumber = obj.NCompletedRun;
         obj.displayLog("Run #" + string(currentRunNumber) + " is acquired.")
+
         %% Rename images and write TempData if not Auto acquire
         if ~obj.IsAutoAcquire
             pause(0.1)
@@ -42,5 +44,6 @@ obj.Analyzer.Enabled = false;
             obj.(obj.AnalysisMethod(ii)).update(currentRunNumber)
         end
 
+        obj.IsAcquiring = false;
     end
 end

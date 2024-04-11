@@ -12,6 +12,7 @@ classdef BecExp < Trial
     properties(Hidden)
         IsAutoAcquire logical = false %If we want to automatically set the camera through MATLAB
         IsHoldRefresh logical = false
+        IsAcquiring logical = false %If the program is still acquiring images
     end
 
     properties (Hidden,Transient)

@@ -3,6 +3,9 @@ function deleteRun(obj,runIdx)
 %   Detailed explanation goes here
 if isempty(runIdx)
     return
+elseif obj.IsAcquiring
+    obj.displayLog("Still saving images. Can not delete now.")
+    return
 end
 obj.displayLog("Deleting Run " + join("#"+string(runIdx),", ") + ".")
 runIdx = round(runIdx);
@@ -125,6 +128,9 @@ end
 
 %% Reset exist log file number
 obj.ExistedCiceroLogNumber = countFileNumber(obj.CiceroLogOrigin,".clg");
+
+%% Refresh
+obj.refresh;
 
 end
 
