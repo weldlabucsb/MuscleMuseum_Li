@@ -32,6 +32,12 @@ else
     obj.NCompletedRun = NComp - numel(runIdx);
 end
 
+if obj.NCompletedRun > 0
+    obj.NRun = obj.NCompletedRun;
+else
+    obj.NRun = 1;
+end
+
 %% Delete image files
 fList = dir(fullfile(dataPath,"*"+dataFormat));
 imageList = string({fList.name});
