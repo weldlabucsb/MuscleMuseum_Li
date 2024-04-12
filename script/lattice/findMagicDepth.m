@@ -12,8 +12,8 @@ Er = ol.RecoilEnergy;
 
 nDepth = 100;
 nq = 200;
-qmin = 0.3 * kL;
-qmax = 0.7 * kL;
+qmin = 0.4 * kL;
+qmax = 1.6 * kL;
 Vmin = 0;
 Vmax = 10 * Er;
 depthList = linspace(0,Vmax,nDepth);
@@ -34,5 +34,6 @@ render
 [~,idx] = min(abs(gradient(UList)));
 magicDepth = depthList(idx);
 disp("Magic depth: " + string(magicDepth/Er) + " Er")
+ol.DepthSpec = magicDepth;
 disp("Modulation Frequency: " + string(ol.computeTransitionFrequency1D(qmin,1,2) / 1e3) + " kHz")
 

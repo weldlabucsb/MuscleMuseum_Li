@@ -38,8 +38,8 @@ classdef SineWave < PeriodicWaveform
             phi = obj.Phase;
             offset = obj.Offset;
             func = @tFunc;
-            function modAmp = tFunc(t)
-                modAmp = (t>=t0 & t<=(t0+td)) .* ...
+            function waveOut = tFunc(t)
+                waveOut = (t>=t0 & t<=(t0+td)) .* ...
                     (amp ./2 .* sin(2 * pi .* freq .* (t-t0) + phi) + offset);
             end
         end

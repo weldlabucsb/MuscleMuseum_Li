@@ -1,4 +1,4 @@
-function [unionList,unionLimit] = findIntervalUnion(intervalList)
+function [unionList,unionLimit,patchLimit] = findIntervalUnion(intervalList)
 %SORTOVERLAPRANGE Summary of this function goes here
 %   sortOverlapRange computes the unions of a list of intervals.
 %   intervalList: a list of intervals. Must be a 2*N or N*2 matrix. For
@@ -48,6 +48,13 @@ for ii = 2:nInterval
     end
 end
 
+%% Compute patches
+nUnion = size(unionLimit,2);
+patchLimit = zeros(2,nUnion-1);
+for ii = 1:(nUnion-1)
+    patchLimit(:,ii) = [unionLimit(2,ii);unionLimit(1,ii+1)];
+end
+
 %% Organize output
 for ii = 1:unionIdx
     unionList{ii} = sort(unionList{ii});
@@ -59,6 +66,7 @@ end
 if isTrans
     unionList = unionList.';
     unionLimit = unionLimit.';
+    patchLimit = patchLimit.';
 end
 
 end

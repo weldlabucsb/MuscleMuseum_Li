@@ -7,6 +7,7 @@ classdef (Abstract) WaveformGenerator < handle
         TriggerSource string {mustBeMember(TriggerSource,{'External','Software','Immediate'})} = "External"
         TriggerSlope string {mustBeMember(TriggerSlope,{'Rise','Fall'})} = "Rise"
         OutputMode string {mustBeMember(OutputMode,{'Gated','Normal'})} = "Normal"
+        IsOutput logical
         WaveformList cell
     end
     
@@ -37,6 +38,7 @@ classdef (Abstract) WaveformGenerator < handle
         set(obj)
         upload(obj)
         close(obj)
+        check(obj)
     end
 end
 

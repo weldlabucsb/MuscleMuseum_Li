@@ -18,11 +18,13 @@ classdef Keysight33600A < WaveformGenerator
             obj.Manufacturer = "Keysight";
             obj.Model = "33600A";
             obj.NChannel = 2;
+            obj.IsOutput = [true,true];
             obj.Memory = 4e6;
             obj.SamplingRate = 64e6;
             obj.TriggerSource = "External";
             obj.TriggerSlope = "Rise";
             obj.DataType = "uint8";
+            obj.WaveformList = cell(1,obj.NChannel);
         end
         
         function connect(obj)
@@ -30,6 +32,7 @@ classdef Keysight33600A < WaveformGenerator
         end
 
         function set(obj)
+            obj.check
             v = obj.VisaDevice;
             v.ByteOrder = "little-endian";
             configureTerminator(v,"LF")
@@ -74,78 +77,81 @@ classdef Keysight33600A < WaveformGenerator
         end
 
         function upload(obj)
-            if isempty(obj.WaveformList)
-                return
-            end
-            
+            %% Check connection to the device
+            obj.check
             v = obj.VisaDevice;
 
+            %% Upload to channels
             for ii = 1:obj.NChannel
+                %% Check waveform and output
                 if isempty(obj.WaveformList{ii})
                     continue
+                elseif obj.IsOutput(ii) == false
+                    continue
                 end
+
+                %% Add begining and ending zero waveforms for triggering
                 obj.WaveformList{ii}.SamplingRate = obj.SamplingRate;
-
                 t = obj.WaveformList{ii}.WaveformPrepared;
-
-                % Sample = {0.000.*sin(2*pi*5000*linspace(1,35,35))};
                 Sample = {zeros(1,35)};
                 PlayMode = "OnceWaitTrigger";
                 NRepeat = 0;
                 t0 = table(Sample,PlayMode,NRepeat);
-
-                % Sample = {0.000.*sin(2*pi*5000*linspace(1,35,35))};
-                Sample = {zeros(1,35)};
                 PlayMode = "Repeat";
-                NRepeat = 0;
                 te = table(Sample,PlayMode,NRepeat);
-
                 t = [t0;t;te];
 
+                %% Initialize parameters
                 nWave = size(t,1);
-                arbName = "MMARB_ch" + string(ii) + "_" + string(1:nWave)';
-
-                playMode = t.PlayMode;
-                % playMode = strrep(playMode,"Once","once");
-                playMode = strrep(playMode,"OnceWaitTrigger","onceWaitTrig");
-                playMode = strrep(playMode,"Repeat","repeat");
-                playMode = strrep(playMode,"RepeatInf","repeatInf");
-                playMode = strrep(playMode,"RepeatTilTrigger","repeatTilTrig");
-
+                arbSegName = "MMARB_ch" + string(ii) + "_" + string(1:nWave)';
+                arbFileName = "MMARB_ch" + string(ii);
                 arbToSeq = cell(1,nWave);
-
                 markerModeList=repmat({'lowAtStart'}, 1, nWave);
                 markerLocList=linspace(10,10,nWave);
+                sourceStr = "SOURce" + string(ii);
+                outputStr = "OUTPut" + string(ii);
 
+                %% Upload
                 for jj = 1:nWave
                     dataBlock = t.Sample{jj};
-                    dataBlock = dataBlock(:).';
-                    header = char(sprintf("SOURce" + string(ii)+":DATA:ARBitrary" + " %s,",arbName(jj)));
-                    switch obj.DataType
-                        case "uint8"
-                            dataBlock = single(dataBlock);
-                            dataBlock = typecast(dataBlock, "uint8");
-                            header2 = ['#' , num2str(numel(num2str(numel(dataBlock)))) , num2str(numel(dataBlock))];
-                            header = uint8([header,header2]);
+                    dataBlock = dataBlock(:).'; % data block has to be a row vector
+                    dataBlock = single(dataBlock); % reduce memory use
+
+                    %% Map play mode string
+                    switch t.PlayMode(jj)
+                        case "Once"
+                            playMode = "once";
+                        case "OnceWaitTrigger"
+                            playMode = "onceWaitTrig";
+                        case "Repeat"
+                            playMode = "repeat";
+                        case "RepeatInf"
+                            playMode = "repeatInf";
+                        case "RepeatTilTrigger"
+                            playMode = "repeatTilTrig";
                     end
-                    write(v,[header,dataBlock],obj.DataType) % Write data into arb files
-                    arbToSeq{jj}=sprintf('%s,%d,%s,%s,%d',arbName(jj),t.NRepeat(jj),playMode(jj),markerModeList{jj},markerLocList(jj));
+
+                    %% Write arb segment data into the device
+                    header = char(sprintf(sourceStr+":DATA:ARBitrary" + " %s,",arbSegName(jj)));
+                    writebinblock2(v,dataBlock,obj.DataType,header) % Write data into arb segment
+                    arbToSeq{jj}=sprintf('%s,%d,%s,%s,%d',arbSegName(jj),t.NRepeat(jj),playMode,markerModeList{jj},markerLocList(jj));
                 end
 
-                allArbsToSeq=sprintf(strcat('arbSeq',',%s'),sprintf('%s,',arbToSeq{1:end}));
+                %% Concatenate arb segments into an arb sequence
+                allArbsToSeq=sprintf(strcat(arbFileName,',%s'),sprintf('%s,',arbToSeq{1:end}));
                 allArbsToSeq=allArbsToSeq(1:end-1); %remove final comma
-                allArbsToSeq = uint8(allArbsToSeq);
-                header3 = char(strcat(['SOURce', num2str(ii)],pad(":DATA:SEQuence ")));
-                header4 = ['#' , num2str(numel(num2str(numel(allArbsToSeq)))) , num2str(numel(allArbsToSeq))];
-                write(v,[uint8([header3,header4]),allArbsToSeq],obj.DataType);
-                writeline(v,sprintf(strcat(['SOURce', num2str(ii)],':FUNCtion:ARBitrary "%s"'), 'arbSeq'))
-                writeline(v,strcat(['SOURce', num2str(ii),':FUNCtion ARB']))
-                writeline(v, sprintf(':OUTPut1 %d', 0));
-                writeline(v, sprintf(':OUTPut2 %d', 1));
+                header2 = char(sourceStr + pad(":DATA:SEQuence "));
+                writebinblock2(v,allArbsToSeq,obj.DataType,header2)
+
+                %% Tell the device to output the arb sequence
+                writeline(v,sprintf(sourceStr + ':FUNCtion:ARBitrary "%s"', arbFileName)) % Change ARB source file
+                writeline(v,sourceStr + ":FUNCtion ARB") % Change output mode to ARB
+                writeline(v,outputStr + " 1") % Start to output
             end
         end
 
         function close(obj)
+            obj.check
             v = obj.VisaDevice;
             write(v, '*WAI');
             write(v, ':ABORt');
@@ -153,6 +159,15 @@ classdef Keysight33600A < WaveformGenerator
             clear v;
             clear instrument
         end
+    
+        function check(obj)
+            if isempty(obj.VisaDevice)
+                error("VISA device is not connected.")
+            elseif ~isvalid(obj.VisaDevice)
+                error("VISA device was deleted.")
+            end
+        end
+    
     end
 end
 
