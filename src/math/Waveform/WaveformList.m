@@ -142,6 +142,22 @@ classdef WaveformList < handle
             NRepeat = NRepeat.';
             t = table(Sample,PlayMode,NRepeat);
         end
+
+        function plot(obj)
+            t = obj.WaveformPrepared;
+            dt = obj.TimeStep;
+            sample = [];
+            for ii = 1:size(t,1)
+                sample = [sample,repmat(t.Sample{ii},1,t.NRepeat(ii))];
+            end
+            time = 0:(numel(sample)-1);
+            time = time * dt;
+            figure(14739)
+            plot(time,sample)
+            xlabel("Time [s]",'Interpreter','latex')
+            ylabel("Waveform Sample",'Interpreter','latex')
+            render
+        end
         
     end
 end

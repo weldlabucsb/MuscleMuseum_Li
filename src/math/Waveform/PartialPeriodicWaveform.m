@@ -5,11 +5,13 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
     properties
         Frequency % In Hz
         Phase % In radians
-        PeriodicStartTime
-        PeriodicDuration
+        RiseTime
+        FallTime
     end
 
     properties (Dependent)
+        PeriodicStartTime
+        PeriodicDuration
         PeriodicEndTime
         Period % In s
         NPeriod
@@ -32,6 +34,14 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
             %   Detailed explanation goes here
         end
         
+        function t0P = get.PeriodicStartTime(obj)
+            t0P = obj.StartTime + obj.RiseTime;
+        end
+
+        function tdP = get.PeriodicDuration(obj)
+            tdP = obj.Duration - obj.RiseTime - obj.FallTime;
+        end
+
         function teP = get.PeriodicEndTime(obj)
             teP = obj.PeriodicStartTime + obj.PeriodicDuration;
         end
@@ -41,7 +51,7 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
         end
 
         function nP = get.NPeriod(obj)
-            nP = obj.Duration / obj.Period;
+            nP = obj.PeriodicDuration / obj.Period;
         end
 
         function nR = get.NRepeat(obj)
