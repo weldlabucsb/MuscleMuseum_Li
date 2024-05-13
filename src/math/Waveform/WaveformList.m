@@ -16,10 +16,29 @@ classdef WaveformList < handle
         RepeatMode string
         WaveformPrepared Table
     end
+
+    properties (SetAccess = protected)
+        Name string
+    end
     
     methods
-        function obj = WaveformList()
-            
+        function obj = WaveformList(name,options)
+            arguments
+                name string
+                options.samplingRate double = 1e3
+                options.concatMethod string = "Sequential"
+                options.patchMethod string = "Continue"
+                options.patchConstant double = 0
+                options.isTriggerAdvance logical = false
+                options.waveformOrigin cell = {}
+            end
+            obj.Name = name;
+            field = string(fieldnames(options));
+            for ii = 1:numel(field)
+                if ~isempty(options.(field(ii)))
+                    obj.(capitalizeFirst(field(ii))) = options.(field(ii));
+                end
+            end
         end
 
         function dt = get.TimeStep(obj)
@@ -141,6 +160,22 @@ classdef WaveformList < handle
             PlayMode = PlayMode.';
             NRepeat = NRepeat.';
             t = table(Sample,PlayMode,NRepeat);
+        end
+
+        function plot(obj)
+            t = obj.WaveformPrepared;
+            dt = obj.TimeStep;
+            sample = [];
+            for ii = 1:size(t,1)
+                sample = [sample,repmat(t.Sample{ii},1,t.NRepeat(ii))];
+            end
+            time = 0:(numel(sample)-1);
+            time = time * dt;
+            figure(14739)
+            plot(time,sample)
+            xlabel("Time [s]",'Interpreter','latex')
+            ylabel("Waveform Sample",'Interpreter','latex')
+            render
         end
         
     end

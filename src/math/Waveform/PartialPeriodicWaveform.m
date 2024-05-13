@@ -3,13 +3,15 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
     %   Detailed explanation goes here
     
     properties
-        Frequency % In Hz
-        Phase % In radians
-        PeriodicStartTime
-        PeriodicDuration
+        Frequency double {mustBePositive} % In Hz
+        Phase double % In radians
+        RiseTime double {mustBeNonnegative} % In s
+        FallTime double {mustBeNonnegative} % In s
     end
 
     properties (Dependent)
+        PeriodicStartTime
+        PeriodicDuration
         PeriodicEndTime
         Period % In s
         NPeriod
@@ -32,16 +34,28 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
             %   Detailed explanation goes here
         end
         
+        function t0P = get.PeriodicStartTime(obj)
+            t0P = obj.StartTime + obj.RiseTime;
+        end
+
+        function tdP = get.PeriodicDuration(obj)
+            tdP = obj.Duration - obj.RiseTime - obj.FallTime;
+        end
+
         function teP = get.PeriodicEndTime(obj)
             teP = obj.PeriodicStartTime + obj.PeriodicDuration;
         end
         
         function T = get.Period(obj)
-            T = 1 / obj.Frequency;
+            if isa(obj,"ConstantTop")
+                T = 1 / obj.SamplingRate;
+            else
+                T = 1 / obj.Frequency;
+            end
         end
 
         function nP = get.NPeriod(obj)
-            nP = obj.Duration / obj.Period;
+            nP = obj.PeriodicDuration / obj.Period;
         end
 
         function nR = get.NRepeat(obj)
@@ -76,7 +90,9 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
 
         function s = get.SampleExtra(obj)
             tFunc = obj.TimeFunc;
-            if abs(obj.PeriodicEndTime - obj.EndTimeAllCycle) <= obj.TimeStep
+            if isa(obj,"ConstantTop")
+                s = [];
+            elseif abs(obj.PeriodicEndTime - obj.EndTimeAllCycle) <= obj.TimeStep
                 s = [];
             else
                 t = (obj.EndTimeAllCycle + obj.TimeStep) : obj.TimeStep : obj.PeriodicEndTime;

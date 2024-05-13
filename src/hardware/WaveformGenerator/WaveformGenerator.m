@@ -19,6 +19,8 @@ classdef (Abstract) WaveformGenerator < handle
         NChannel double % How many channels the device has
         ResourceName string % Interfaces (like VISA) require a resource name to identify the device
         DataType string {mustBeMember(DataType,{'uint8','double'})}= "uint8"
+        ParentPath string
+        DataPath string % Folder to save the object
     end
     
     methods
@@ -29,8 +31,21 @@ classdef (Abstract) WaveformGenerator < handle
             end
             obj.ResourceName = resourceName;
             obj.Name = name;
+
+            % Set logging folder
+            load("Config.mat","ComputerConfig")
+            obj.ParentPath = ComputerConfig.HardwareLogOrigin;
+            obj.DataPath = fullfile(obj.ParentPath,name);
+            % createFolder(obj.DataPath);
         end
         
+    end
+
+    methods (Access = protected)
+        function saveObject(obj)
+            t = string(datetime('now','Format','yyyyMMddHHmmss'));
+            save(fullfile(obj.DataPath,obj.Name + "_" + t),'obj')
+        end
     end
 
     methods (Abstract)

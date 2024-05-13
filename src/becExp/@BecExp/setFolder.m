@@ -56,10 +56,12 @@ obj.DataAnalysisPath = fullfile(obj.DataPath,'dataAnalysis');
 obj.ObjectPath = fullfile(obj.DataAnalysisPath, ...
     obj.Name+yyyy+mm+dd+trialDelimiter+num2str(obj.TrialIndex)+'.mat');
 obj.CiceroLogPath = fullfile(obj.DataPath,'logFiles');
+obj.HardwareLogPath = fullfile(obj.DataPath,'hardwareLogFiles');
 
 createFolder(obj.DataPath);
 createFolder(obj.DataAnalysisPath);
 createFolder(obj.CiceroLogPath);
+createFolder(obj.HardwareLogPath);
 
 end
 

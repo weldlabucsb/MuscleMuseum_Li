@@ -8,6 +8,17 @@ classdef OpticalLattice < OpticalPotential
         RadialFrequencySlosh
     end
 
+    properties (SetAccess = protected)
+        SpaceList
+        QuasiMomentumList
+        BandIndexMax
+        BandEnergyList 
+        BlochStateList
+        BlochStatePeriodicList
+        BoCouplingList
+        ModCouplingList
+    end
+
     properties (Dependent)
         LatticeSpacing % in meters
         DepthLaser % in Hz, calculated from laser power and waists
@@ -157,10 +168,13 @@ classdef OpticalLattice < OpticalPotential
             obj.Laser.Intensity = abs(v0 / alpha) / 2 / Constants.SI("Z0");
         end
 
-        [E,u] = computeBand1D(obj,q,n,x)
+        [E,phi,u] = computeBand1D(obj,q,n,x)
+        X = computeBoCoupling1D(obj,q,n,x)
+        A = computeModCoupling1D(obj,q,n,x)
         plotBand1D(obj,n)
         pop = computeBandPopulation1D(obj,psi,x,n)
         freq = computeTransitionFrequency1D(obj,n1,n2,q)
+        computeAll1D(obj,q,n,x)
     end
 end
 
