@@ -17,6 +17,7 @@ classdef BecExp < Trial
 
     properties (Hidden,Transient)
         ExistedCiceroLogNumber %Count the number of log files that are already in the Origin folder.
+        ExistedHardwareLogNumber %Count the number of hardware log files that are already in the folder.
     end
 
     properties (SetAccess = private, Hidden)
@@ -25,10 +26,13 @@ classdef BecExp < Trial
         CiceroLogTime datetime
         DeletedRunParameterList
         ParameterUnitConfig
+        HardwareList
+        HardwareLogPath string
     end
 
     properties(SetAccess = private)
         CiceroData struct
+        HardwareData struct
         Atom Atom
     end
 
@@ -63,7 +67,9 @@ classdef BecExp < Trial
                 config = options.config;
             end
             obj@Trial(trialName,config);
-            obj.ParameterUnitConfig = loadVar("Config.mat","BecExpParameterUnit");
+            load("Config.mat","BecExpParameterUnit","HardwareList")
+            obj.ParameterUnitConfig = BecExpParameterUnit;
+            obj.HardwareList = HardwareList;
 
             % Atom setting
             try
@@ -112,8 +118,10 @@ classdef BecExp < Trial
                         paraList = [];
                     end
                 otherwise
-                    if ~isempty(obj.CiceroData)
+                    if isfield(obj.CiceroData,obj.ScannedParameter)
                         paraList = obj.CiceroData.(obj.ScannedParameter);
+                    elseif isfield(obj.HardwareData,obj.ScannedParameter)
+                        paraList = obj.HardwareData.(obj.ScannedParameter);
                     else
                         paraList = [];
                     end
@@ -172,6 +180,8 @@ classdef BecExp < Trial
         deleteRun(obj,runIdx)
         sData = readCiceroLog(obj,runIdx)
         fetchCiceroLog(obj,runIdx)
+        fetchHardwareLog(obj,runIdx)
+        updateHardware(obj)
         writeDatabase(obj)
         updateDatabase(obj)
     end

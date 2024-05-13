@@ -110,7 +110,7 @@ if ~isempty(cLogList)
     end
 end
 
-%% Rename the rest of the image files
+%% Rename the rest of the Cicero files
 fList = dir(fullfile(ciceroLogPath,"*.clg"));
 oldCLogList = string({fList.name});
 if ~isempty(oldCLogList)
@@ -134,6 +134,7 @@ end
 
 %% Reset exist log file number
 obj.ExistedCiceroLogNumber = countFileNumber(obj.CiceroLogOrigin,".clg");
+obj.ExistedHardwareLogNumber = arrayfun(@countFileNumber,obj.HardwareList.DataPath);
 
 %% Refresh
 obj.refresh;

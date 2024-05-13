@@ -3,10 +3,10 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
     %   Detailed explanation goes here
     
     properties
-        Frequency % In Hz
-        Phase % In radians
-        RiseTime
-        FallTime
+        Frequency double {mustBePositive} % In Hz
+        Phase double % In radians
+        RiseTime double {mustBeNonnegative} % In s
+        FallTime double {mustBeNonnegative} % In s
     end
 
     properties (Dependent)
@@ -47,7 +47,11 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
         end
         
         function T = get.Period(obj)
-            T = 1 / obj.Frequency;
+            if isa(obj,"ConstantTop")
+                T = 1 / obj.SamplingRate;
+            else
+                T = 1 / obj.Frequency;
+            end
         end
 
         function nP = get.NPeriod(obj)
@@ -86,7 +90,9 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
 
         function s = get.SampleExtra(obj)
             tFunc = obj.TimeFunc;
-            if abs(obj.PeriodicEndTime - obj.EndTimeAllCycle) <= obj.TimeStep
+            if isa(obj,"ConstantTop")
+                s = [];
+            elseif abs(obj.PeriodicEndTime - obj.EndTimeAllCycle) <= obj.TimeStep
                 s = [];
             else
                 t = (obj.EndTimeAllCycle + obj.TimeStep) : obj.TimeStep : obj.PeriodicEndTime;

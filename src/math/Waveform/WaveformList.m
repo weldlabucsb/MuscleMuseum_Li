@@ -16,10 +16,29 @@ classdef WaveformList < handle
         RepeatMode string
         WaveformPrepared Table
     end
+
+    properties (SetAccess = protected)
+        Name string
+    end
     
     methods
-        function obj = WaveformList()
-            
+        function obj = WaveformList(name,options)
+            arguments
+                name string
+                options.samplingRate double = 1e3
+                options.concatMethod string = "Sequential"
+                options.patchMethod string = "Continue"
+                options.patchConstant double = 0
+                options.isTriggerAdvance logical = false
+                options.waveformOrigin cell = {}
+            end
+            obj.Name = name;
+            field = string(fieldnames(options));
+            for ii = 1:numel(field)
+                if ~isempty(options.(field(ii)))
+                    obj.(capitalizeFirst(field(ii))) = options.(field(ii));
+                end
+            end
         end
 
         function dt = get.TimeStep(obj)

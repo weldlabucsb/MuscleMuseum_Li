@@ -1,20 +1,24 @@
-classdef ConstantWave < PeriodicWaveform & ConstantTop
-    %CONSTANTWAVE Summary of this class goes here
+classdef TrapezoidalPulse < PartialPeriodicWaveform & ConstantTop
+    %SINEWAVE Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
-        
+
     end
     
     methods
-        function obj = ConstantWave(options)
-            %CONSTANTWAVE Construct an instance of this class
+        function obj = TrapezoidalPulse(options)
+            %SINEWAVE Construct an instance of this class
             %   Detailed explanation goes here
             arguments
                 options.samplingRate double = [];
                 options.startTime double = 0;
                 options.duration double = [];
+                options.amplitude double = [];
                 options.offset double = 0;
+
+                options.riseTime double = 0;
+                options.fallTime double = 0;
             end
             field = string(fieldnames(options));
             for ii = 1:numel(field)
@@ -22,18 +26,22 @@ classdef ConstantWave < PeriodicWaveform & ConstantTop
                     obj.(capitalizeFirst(field(ii))) = options.(field(ii));
                 end
             end
-            if ~isempty(obj.SamplingRate)
-                obj.Frequency = obj.SamplingRate;
-            end
         end
         
         function func = TimeFunc(obj)
-            td = obj.Duration;
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            amp = obj.Amplitude;
             t0 = obj.StartTime;
+            te = obj.EndTime;
             offset = obj.Offset;
+            tr = obj.RiseTime;
+            tf = obj.FallTime;
             func = @tFunc;
             function waveOut = tFunc(t)
-                waveOut = (t>=t0 & t<=(t0+td)) .* offset;
+                waveOut = (t>=t0 & t<=(te)) .* ...
+                    (((t-t0)./(tr)-1) .* (t<=(t0+tr)) - (t-(te-tf))./(tf) .* (t>=(te-tf)) + 1) .*...
+                    (amp ./2 + offset);
             end
         end
     end

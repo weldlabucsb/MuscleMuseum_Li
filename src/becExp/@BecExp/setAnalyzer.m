@@ -38,6 +38,12 @@ obj.Analyzer.Enabled = false;
             end
         end
 
+        %% Fetch Hardware log data
+        obj.fetchHardwareLog(currentRunNumber);
+
+        %% Update Hardware
+        obj.updateHardware
+
         %% Show Images
         obj.displayLog("Updating the figures.")
         for ii = 1:numel(obj.AnalysisMethod)

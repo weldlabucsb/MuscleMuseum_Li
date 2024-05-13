@@ -17,8 +17,10 @@ BecExpDatabaseName = "lithium_experiment";
 BecExpDatabaseTableName = "main";
 CiceroComputerName = "GOB";
 CiceroLogOrigin = "\\169.254.203.255\RunLogs";
+HardwareLogOrigin = "B:\_Li\_LithiumData\HardwareLogs";
 ComputerConfig = table(BecExpControlComputerName,BecExpParentPath,...
-    BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,CiceroLogOrigin);
+    BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,...
+    CiceroLogOrigin,HardwareLogOrigin);
 save(configName,"ComputerConfig",'-mat')
 
 %% Set the database configuration
@@ -110,18 +112,28 @@ save(configName,"AcquisitionConfig",'-mat','-append')
 %% Set the waveform generator configuration
 Name = [
     "LatticeMod";...
+    "XvWingsMod";...
     "GreenWallMod"
     ];
 DeviceModel = [
-"Keysight33600A";
+"Keysight33600A";...
+"Keysight33500B";...
 "SpectrumAWG"
 ];
 ResourceName = [
 "USB0::0x0957::0x5607::MY59000681::0::INSTR";...
+"0";...
 "TCPIP::172.16.0.0::inst0"
 ];
 WaveformGeneratorConfig = table(Name,DeviceModel,ResourceName);
 save(configName,"WaveformGeneratorConfig",'-mat','-append')
+
+%% Set the hardware list
+Name = WaveformGeneratorConfig.Name;
+Type = repmat("WaveformGenerator",numel(Name),1);
+DataPath = fullfile(ComputerConfig.HardwareLogOrigin,Name);
+HardwareList = table(Name,Type,DataPath);
+save(configName,"HardwareList",'-mat','-append')
 
 %% Set the ROI configuration
 RoiConfig = readtable("roi.csv.xlsx",'TextType','string');
@@ -173,7 +185,7 @@ save(configName,"BecExpConfig","BecExpParameterUnit",'-mat','-append')
 %% Set the BEC experiment local test configuration
 BecExpLocalTestConfig = BecExpConfig;
 BecExpLocalTestConfig.DatabaseName(:) = "lithium_experiment_local";
-BecExpLocalTestConfig.ParentPath(:) = fullfile("C:\data","becExp");
+BecExpLocalTestConfig.ParentPath(:) = fullfile(mainPath,"becExp");
 BecExpLocalTestConfig.CiceroLogOrigin(:) = fullfile(repoPath,"test","testData","testLogFiles");
 BecExpLocalTestConfig.IsAutoAcquire(:) = false;
 BecExpLocalTestConfig.IsAutoDelete(:) = false;
@@ -181,7 +193,7 @@ BecExpLocalTestConfig.IsAutoDelete(:) = false;
 save(configName,"BecExpLocalTestConfig",'-mat','-append')
 
 %% Set the master equation simulation configuration
-MeSimConfig.ParentPath = fullfile("C:\data","meSim");
+MeSimConfig.ParentPath = fullfile(mainPath,"meSim");
 MeSimConfig.DataPrefix = "run";
 MeSimConfig.DataFormat = ".mat";
 MeSimConfig.IsAutoDelete = false;
@@ -196,7 +208,7 @@ MeSimOutput = readtable("meSimOutput.csv.xlsx",'TextType','string');
 save(configName,"MeSimConfig","MeSimOutput",'-mat','-append')
 
 %% Set the lattice schrodinger equation simulation configuration
-% LatticeSeSim1DConfig.ParentPath = fullfile("C:\data","latticeSeSim1D");
+% LatticeSeSim1DConfig.ParentPath = fullfile(mainPath,"latticeSeSim1D");
 % LatticeSeSim1DConfig.DatabaseName = "simulation";
 LatticeSeSim1DConfig.ParentPath = fullfile("B:\__Lab Member Folders\Xiao\SimulationData","latticeSeSim1D");
 LatticeSeSim1DConfig.DatabaseName = "simulation";
