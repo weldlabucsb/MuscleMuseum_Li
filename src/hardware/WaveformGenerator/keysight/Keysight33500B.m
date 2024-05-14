@@ -139,7 +139,7 @@ classdef Keysight33500B < WaveformGenerator
 
                 %% Concatenate arb segments into an arb sequence
                 allArbsToSeq=sprintf(strcat(arbFileName,',%s'),sprintf('%s,',arbToSeq{1:end}));
-                allArbsToSeq=allArbsToSeq(1:end-1); %remove final comma
+                allArbsToSeq=allArbsToSeq{1}(1:end-1); %remove final comma
                 header2 = char(sourceStr + pad(":DATA:SEQuence "));
                 writebinblock2(v,allArbsToSeq,obj.DataType,header2)
 
@@ -148,6 +148,7 @@ classdef Keysight33500B < WaveformGenerator
                 writeline(v,sourceStr + ":FUNCtion ARB") % Change output mode to ARB
                 writeline(v,outputStr + " 1") % Start to output
             end
+            obj.check;
             obj.saveObject;
         end
 
@@ -166,6 +167,11 @@ classdef Keysight33500B < WaveformGenerator
                 error("VISA device is not connected.")
             elseif ~isvalid(obj.VisaDevice)
                 error("VISA device was deleted.")
+            else
+                em = query(obj.VisaDevice, ':SYSTem:ERRor?');
+                if em(1:2)~="+0"
+                    disp("Hardware error. Message: "+ newline + em)
+                end
             end
         end
     

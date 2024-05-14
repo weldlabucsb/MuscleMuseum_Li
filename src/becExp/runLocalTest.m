@@ -4,20 +4,32 @@ function runLocalTest(testCiceroLogOrigin,samplePath,dataPath,pauseTime)
 sampleLogPath = fullfile(samplePath,"logfiles");
 sampleLogPath2 = fullfile(samplePath,"logFiles");
 
-sampleDataList = dir(samplePath);
+dataFormat = ".tif";
+sampleDataList = dir(fullfile(samplePath,"*" + dataFormat));
 sampleDataList = sampleDataList(~[sampleDataList.isdir]);
+time = [sampleDataList.datenum];
 sampleDataList = struct2cell(sampleDataList);
 [~,sampleDataName,~] = fileparts(sampleDataList(1,:));
-[~,idx] = sort(str2double(string((regexp(sampleDataName,'[^\_]*$','match')))));
+[~,idx] = sort(time);
+% [~,idx] = sort(str2double(string((regexp(sampleDataName,'[^\_]*$','match')))));
 sampleDataName = string(sampleDataName(idx));
 
-sampleLogList = string(ls(sampleLogPath));
-sampleLogList = sampleLogList(3:end);
-sampleLogList = sort(sampleLogList);
+sampleLogList = dir(fullfile(sampleLogPath,"*" + ".clg"));
+time = [sampleLogList.datenum];
+[~,idx] = sort(time);
+sampleLogList = string({sampleLogList.name});
+sampleLogList = sampleLogList(idx);
 
-sampleLogList2 = string(ls(sampleLogPath2));
-sampleLogList2 = sampleLogList2(3:end);
-sampleLogList2 = sort(sampleLogList2);
+sampleLogList2 = dir(fullfile(sampleLogPath,"*" + ".clg"));
+time = [sampleLogList2.datenum];
+[~,idx] = sort(time);
+sampleLogList2 = string({sampleLogList2.name});
+sampleLogList2 = sampleLogList2(idx);
+
+
+% sampleLogList2 = string(ls(sampleLogPath2));
+% sampleLogList2 = sampleLogList2(3:end);
+% sampleLogList2 = sort(sampleLogList2);
 
 
 
