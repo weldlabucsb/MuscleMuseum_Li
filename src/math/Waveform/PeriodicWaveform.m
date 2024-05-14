@@ -29,7 +29,7 @@ classdef (Abstract) PeriodicWaveform < Waveform
         
         function T = get.Period(obj)
             if isa(obj,"ConstantTop")
-                T = 1 / obj.SamplingRate;
+                T = 1 / obj.SamplingRate * 10;
             else
                 T = 1 / obj.Frequency;
             end

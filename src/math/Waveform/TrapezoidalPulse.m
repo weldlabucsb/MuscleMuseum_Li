@@ -37,11 +37,27 @@ classdef TrapezoidalPulse < PartialPeriodicWaveform & ConstantTop
             offset = obj.Offset;
             tr = obj.RiseTime;
             tf = obj.FallTime;
-            func = @tFunc;
+            if tf == 0
+                func = @trFunc;
+            elseif tr == 0
+                func = @tfFunc;
+            else
+                func = @tFunc;
+            end
             function waveOut = tFunc(t)
                 waveOut = (t>=t0 & t<=(te)) .* ...
                     (((t-t0)./(tr)-1) .* (t<=(t0+tr)) - (t-(te-tf))./(tf) .* (t>=(te-tf)) + 1) .*...
-                    (amp ./2 + offset);
+                    amp  + offset;
+            end
+            function waveOut = trFunc(t)
+                waveOut = (t>=t0 & t<=(te)) .* ...
+                    (((t-t0)./(tr)-1) .* (t<=(t0+tr)) + 1) .*...
+                    amp  + offset;
+            end
+            function waveOut = tfFunc(t)
+                waveOut = (t>=t0 & t<=(te)) .* ...
+                    (- (t-(te-tf))./(tf) .* (t>=(te-tf)) + 1) .*...
+                    amp  + offset;
             end
         end
     end
