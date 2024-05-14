@@ -8,6 +8,7 @@ classdef (Abstract) WaveformGenerator < handle
         TriggerSlope string {mustBeMember(TriggerSlope,{'Rise','Fall'})} = "Rise"
         OutputMode string {mustBeMember(OutputMode,{'Gated','Normal'})} = "Normal"
         IsOutput logical
+        OutputLoad string {mustBeMember(OutputLoad,{'50','Infinity'})} = "50"
         WaveformList cell
     end
     
@@ -36,7 +37,7 @@ classdef (Abstract) WaveformGenerator < handle
             load("Config.mat","ComputerConfig")
             obj.ParentPath = ComputerConfig.HardwareLogOrigin;
             obj.DataPath = fullfile(obj.ParentPath,name);
-            % createFolder(obj.DataPath);
+            createFolder(obj.DataPath);
         end
         
     end
