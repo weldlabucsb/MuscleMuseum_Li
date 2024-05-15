@@ -37,7 +37,7 @@ classdef (Abstract) WaveformGenerator < handle
             load("Config.mat","ComputerConfig")
             obj.ParentPath = ComputerConfig.HardwareLogOrigin;
             obj.DataPath = fullfile(obj.ParentPath,name);
-            createFolder(obj.DataPath);
+            % createFolder(obj.DataPath);
         end
         
     end
