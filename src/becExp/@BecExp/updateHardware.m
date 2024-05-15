@@ -4,17 +4,19 @@ function updateHardware(obj)
 hwApp = get(findall(0, 'Tag', "HwControlPanel"), 'RunningAppInstance');
 if ~isempty(hwApp)
     if isvalid(hwApp)
-        hardwareData = table2cell(hwApp.CurrentVariableList);
-        hardwareData = cell2struct(hardwareData(:,2),string(hardwareData(:,1)));
-        if isempty(obj.HardwareData)
-            obj.HardwareData = hardwareData;
-        else
-            f = fields(obj.HardwareData);
-            for ii = 1:numel(f)
-                obj.HardwareData.(f{ii}) = [obj.HardwareData.(f{ii}),hardwareData.(f{ii})];
+        if hwApp.IsBecExpScanned
+            hardwareData = table2cell(hwApp.CurrentVariableList);
+            hardwareData = cell2struct(hardwareData(:,2),string(hardwareData(:,1)));
+            if isempty(obj.HardwareData)
+                obj.HardwareData = hardwareData;
+            else
+                f = fields(obj.HardwareData);
+                for ii = 1:numel(f)
+                    obj.HardwareData.(f{ii}) = [obj.HardwareData.(f{ii}),hardwareData.(f{ii})];
+                end
             end
+            hwApp.update
         end
-        hwApp.update
     end
 end
 

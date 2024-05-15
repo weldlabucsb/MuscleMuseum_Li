@@ -17,7 +17,7 @@ if ~isempty(wgConfig)
         wgObj.TriggerSource = setting.TriggerSource;
         wgObj.OutputMode = setting.OutputMode;
         wgObj.IsOutput = setting.IsOutput{1};
-        wfName = setting.WaveformName{1};
+        wfName = setting.WaveformListName{1};
         for ii = 1:numel(wfName)
             if any(wfName(ii) == [WaveformLibrary.Name])
                 wgObj.WaveformList{ii} = WaveformLibrary([WaveformLibrary.Name] == wfName(ii));
