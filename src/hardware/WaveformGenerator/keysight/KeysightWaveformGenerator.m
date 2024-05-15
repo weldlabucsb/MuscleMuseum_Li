@@ -16,9 +16,6 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
             end
             obj@WaveformGenerator(resourceName,name);
             obj.Manufacturer = "Keysight";
-            obj.TriggerSource = "External";
-            obj.TriggerSlope = "Rise";
-            obj.DataType = "uint8";
         end
         
         function connect(obj)
@@ -26,7 +23,7 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
         end
 
         function set(obj)
-            obj.check
+            obj.check;
             v = obj.VisaDevice;
             v.ByteOrder = "little-endian";
             configureTerminator(v,"LF")
@@ -80,7 +77,7 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
 
         function upload(obj)
             %% Check connection to the device
-            obj.check
+            obj.check;
             v = obj.VisaDevice;
 
             %% Upload to channels
@@ -149,8 +146,16 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
                 writeline(v,sprintf(sourceStr + ':FUNCtion:ARBitrary "%s"', arbFileName)) % Change ARB source file
                 writeline(v,sourceStr + ":FUNCtion ARB") % Change output mode to ARB
                 writeline(v,outputStr + " 1") % Start to output
+
+                %% Check if upload is successful
+                s = obj.check;
+                if s
+                    disp(obj.Name + " channel" + num2str(ii) + " uploaded successfully.")
+                else
+                    obj.set
+                end
             end
-            obj.check;
+
             obj.saveObject;
         end
 
@@ -176,7 +181,8 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
             clear instrument
         end
     
-        function check(obj)
+        function status = check(obj)
+            status = false;
             if isempty(obj.VisaDevice)
                 error("VISA device is not connected.")
             elseif ~isvalid(obj.VisaDevice)
@@ -185,6 +191,8 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
                 em = query(obj.VisaDevice, ':SYSTem:ERRor?');
                 if em(1:2)~="+0"
                     disp("Hardware error. Message: "+ newline + em)
+                else
+                    status = true;
                 end
             end
         end

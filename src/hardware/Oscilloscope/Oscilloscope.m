@@ -1,4 +1,4 @@
-classdef (Abstract) WaveformGenerator < handle
+classdef (Abstract) Oscilloscope < handle
     %WAVEFORMGENERATOR Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -25,7 +25,7 @@ classdef (Abstract) WaveformGenerator < handle
     end
     
     methods
-        function obj = WaveformGenerator(resourceName,name)
+        function obj = Oscilloscope(resourceName,name)
             arguments
                 resourceName string
                 name string = string.empty
@@ -37,7 +37,7 @@ classdef (Abstract) WaveformGenerator < handle
             load("Config.mat","ComputerConfig")
             obj.ParentPath = ComputerConfig.HardwareLogOrigin;
             obj.DataPath = fullfile(obj.ParentPath,name);
-            createFolder(obj.DataPath);
+            % createFolder(obj.DataPath);
         end
         
     end

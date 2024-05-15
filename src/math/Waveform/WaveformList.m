@@ -14,11 +14,12 @@ classdef WaveformList < handle
     properties (Dependent)
         TimeStep
         RepeatMode string
-        WaveformPrepared Table
+        WaveformPrepared Table 
     end
 
     properties (SetAccess = protected)
         Name string
+        NSample double
     end
     
     methods
@@ -160,6 +161,7 @@ classdef WaveformList < handle
             PlayMode = PlayMode.';
             NRepeat = NRepeat.';
             t = table(Sample,PlayMode,NRepeat);
+            obj.NSample = sum(cellfun(@numel,Sample));
         end
 
         function plot(obj)
