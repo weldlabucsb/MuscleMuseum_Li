@@ -39,7 +39,7 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
                 writeline(v, sprintf(sourceStr + ':VOLTage:HIGH %g', 2.0)); % Voltage high
                 writeline(v, sprintf(sourceStr + ':VOLTage:LOW %g', -2.0)); % Voltage low
                 writeline(v, sprintf(sourceStr + ':VOLTage:OFFset %g', 0)); % Voltage offset
-                writeline(v, sprintf(sourceStr + ':FUNCtion:ARBitrary:PTPeak %g', 2)); % Set arbitray waveform p2p
+                writeline(v, sprintf(sourceStr + ':FUNCtion:ARBitrary:PTPeak %g', 1)); % Set arbitray waveform p2p
                 
                 % Trigger source
                 switch obj.TriggerSource
@@ -110,9 +110,14 @@ classdef (Abstract) KeysightWaveformGenerator < WaveformGenerator
                 sourceStr = "SOURce" + string(ii);
                 outputStr = "OUTPut" + string(ii);
 
+                %% Set PTP value
+                scaleFactor = max(cellfun(@(x) max(abs(x)),t.Sample));
+                ptp = 2 * scaleFactor;
+                writeline(v, sprintf(sourceStr + ':FUNCtion:ARBitrary:PTPeak %g', ptp)); % Set arbitray waveform p2p
+
                 %% Upload
                 for jj = 1:nWave
-                    dataBlock = t.Sample{jj};
+                    dataBlock = t.Sample{jj} ./ scaleFactor;
                     dataBlock = dataBlock(:).'; % data block has to be a row vector
                     dataBlock = single(dataBlock); % reduce memory use
 
