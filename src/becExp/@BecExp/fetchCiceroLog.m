@@ -5,6 +5,7 @@ t = 0; % Total pause time.
 tPause = 0.1; % Pause time.
 existedLogNum = obj.ExistedCiceroLogNumber; % Number of old log files.
 originPath = obj.CiceroLogOrigin;
+dataPrefix = obj.DataPrefix;
 
 % Scan the origin folder to find if a new log file is created.
 while newLogNum<1 && t<10
@@ -35,7 +36,7 @@ while t<5 && ~moveStatus
     pause(tPause2)
     try
         moveStatus = movefile(newLogPath,...
-            fullfile(obj.CiceroLogPath,"run_"+num2str(runIdx)+".clg"),'f');
+            fullfile(obj.CiceroLogPath,dataPrefix + "_" + num2str(runIdx)+".clg"),'f');
     catch
     end
     t = t+tPause2;

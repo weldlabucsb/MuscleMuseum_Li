@@ -16,6 +16,8 @@ obj.BandEnergyList = E;
 obj.BlochStateList = phi;
 obj.BlochStatePeriodicList = u;
 obj.BoCouplingList = obj.computeBoCoupling1D;
+obj.removeGauge;
+obj.BoCouplingList = obj.computeBoCoupling1D;
 obj.ModCouplingList = obj.computeModCoupling1D;
 
 end

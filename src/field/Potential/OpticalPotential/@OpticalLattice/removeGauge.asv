@@ -1,0 +1,23 @@
+function removeGauge(obj)
+%REMOVEGAUGE Summary of this function goes here
+%   Detailed explanation goes here
+X = obj.computeModCoupling1D;
+q = obj.QuasiMomentumList;
+sz = size(X);
+nBand = sz(1);
+nq = sz(3);
+dq = q(2) - q(1);
+phase = zeros(nBand,nq);
+for nIdx = 1:nBand
+    Xnn = X(nIdx,nIdx,:);
+    phase(nIdx,:) = cumsum(Xnn) * dq;
+end
+phase = exp(1i * phase);
+
+phi = obj.BlochStateList;
+u = obj.BlochStatePeriodicList;
+
+for nIdx = 1:nBand
+
+end
+

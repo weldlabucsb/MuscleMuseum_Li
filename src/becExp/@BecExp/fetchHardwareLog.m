@@ -2,6 +2,7 @@ function fetchHardwareLog(obj,runIdx)
 obj.displayLog("Fetching the hardware log files for run #" + num2str(runIdx) + ".")
 existedLogNum = obj.ExistedHardwareLogNumber; % Number of old log files.
 hardwareList = obj.HardwareList;
+dataPrefix = obj.DataPrefix;
 
 % Scan the origin folder to find if a new log file is created.
 newLogNum = arrayfun(@countFileNumberJava,hardwareList.DataPath) - existedLogNum;
@@ -23,7 +24,7 @@ for ii = 1:numel(newLogPath)
         obj.displayLog("Fetching " + hardwareList.Name(ii))
         [~,~,ext] = fileparts(newLogPath{ii});
         movefile(newLogPath{ii},...
-            fullfile(obj.HardwareLogPath,hardwareList.Name(ii) + "_" + num2str(runIdx)) + ext,'f');
+            fullfile(obj.HardwareLogPath,dataPrefix + "_" + num2str(runIdx)) + "_" + hardwareList.Name(ii) + ext,'f');
     end
 end
 
