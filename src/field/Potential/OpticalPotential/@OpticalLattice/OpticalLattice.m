@@ -12,6 +12,7 @@ classdef OpticalLattice < OpticalPotential
         SpaceList
         QuasiMomentumList
         BandIndexMax
+        FourierComponentList
         BandEnergyList 
         BlochStateList
         BlochStatePeriodicList
@@ -175,6 +176,7 @@ classdef OpticalLattice < OpticalPotential
         pop = computeBandPopulation1D(obj,psi,x,n)
         freq = computeTransitionFrequency1D(obj,n1,n2,q)
         computeAll1D(obj,q,n,x)
+        removeGauge(obj)
     end
 end
 

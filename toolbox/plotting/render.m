@@ -91,7 +91,8 @@ for ii = 1:numel(p)
     if p(ii).LineStyle == "none"
         p(ii).Marker = markers{ii};
         p(ii).MarkerSize = msz;
-        p(ii).Color = colors{numel(p)-ii+1};
+        % p(ii).Color = colors{numel(p)-ii+1};
+        p(ii).Color = co(mod(ii-1,nCo)+1,:);
     elseif p(ii).Marker == "none"
         % if numel(p)<=4
             % p(ii).Color = colors{numel(p)-ii+1};
@@ -107,7 +108,8 @@ for ii = 1:numel(p)
         end
     else
         p(ii).Marker = markers{ii};
-        p(ii).Color = colors{numel(p)-ii+1};
+        % p(ii).Color = colors{numel(p)-ii+1};
+        p(ii).Color = co(mod(ii-1,nCo)+1,:);
         p(ii).MarkerSize = msz;
     end
 end

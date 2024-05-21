@@ -14,6 +14,7 @@ dataPath = obj.DataPath;
 dataFormat = obj.DataFormat;
 dataPrefix = obj.DataPrefix;
 ciceroLogPath = obj.CiceroLogPath;
+hardwareLogPath = obj.HardwareLogPath;
 
 %% Validate input run numbers
 if any(runIdx<1)
@@ -125,9 +126,64 @@ if ~isempty(oldCLogList)
     for ii = 1:numel(oldCLogList)
         str = split(oldCLogList(ii),"_");
         str(2) = newCLogNumbers(ii);
-        newCLogName = strjoin(str,"_");
+        newCLogName = strjoin(str,"_") + ".clg";
         if oldCLogList(ii) ~= newCLogName
             movefile(fullfile(ciceroLogPath,oldCLogList(ii)),fullfile(ciceroLogPath,newCLogName),'f')
+        end
+    end
+end
+
+%% Delete HardwareData
+if ~isempty(obj.HardwareData)
+    sData = obj.HardwareData;
+    mData = cell2mat(struct2cell(sData));
+    if size(mData,2) ~= NComp
+        warning("HardwareData size is different from the completed run number. Will not delete corresponding data in HardwareData.")
+    else
+        deleteIdx = runIdx(runIdx<=NComp);
+        mData(:,deleteIdx) = [];
+        obj.HardwareData = cell2struct(num2cell(mData,2),fieldnames(obj.HardwareData));
+    end
+end
+
+%% Delete hardware log files
+fList = dir(fullfile(hardwareLogPath));
+fList = fList(~[fList.isdir]);
+hLogList = string({fList.name});
+if ~isempty(hLogList)
+    for ii = 1:numel(runIdx)
+        prefix = dataPrefix + "_" + string(runIdx(ii));
+        deleteIdx = arrayfun(@(x) contains(x,prefix),hLogList);
+        deleteList = hLogList(deleteIdx);
+        for jj = 1:numel(deleteList)
+            deleteFile(fullfile(hardwareLogPath,deleteList(jj)))
+        end
+    end
+end
+
+%% Rename the rest of the hardware log files
+fList = dir(fullfile(hardwareLogPath));
+fList = fList(~[fList.isdir]);
+oldHLogList = string({fList.name});
+if ~isempty(oldHLogList)
+    oldHLogNumbers = zeros(1,numel(oldHLogList));
+    for ii = 1:numel(oldHLogList)
+        str = split(oldHLogList(ii),"_");
+        oldHLogNumbers(ii) = str2double(regexp(str(2),'\d*','match'));
+    end
+    [oldHLogNumbers,idx] = sort(oldHLogNumbers);
+    oldHLogList = oldHLogList(idx);
+    newHLogNumbers = cumsum([1,logical(diff(oldHLogNumbers))]);
+    for ii = 1:numel(oldHLogList)
+        str = split(oldHLogList(ii),"_");
+        str(2) = newHLogNumbers(ii);
+        newHLogName = strjoin(str,"_");
+        if oldHLogList(ii) ~= newHLogName
+            try
+                movefile(fullfile(hardwareLogPath,oldHLogList(ii)),fullfile(hardwareLogPath,newHLogName),'f')
+            catch me
+                warning(me.message)
+            end
         end
     end
 end

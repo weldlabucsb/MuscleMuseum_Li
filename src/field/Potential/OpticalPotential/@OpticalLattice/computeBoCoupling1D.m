@@ -32,14 +32,20 @@ xIdx = x < lambda/4 & x >= -lambda/4;
 % dudqreal = DGradient(real(u),dq,2);
 % dudq = dudqreal + dudqimag * 1i;
 
-
+xInt = x(xIdx);
 
 for qq = 1:nq
     for mm = 1:nBand
         for nn = 1:nBand
             uu = conj(u(:,qq,mm)) .* 1i .* dudq(:,qq,nn);
             uu = uu(xIdx);
-            X(mm,nn,qq) = sum(uu) * dx;
+            X(mm,nn,qq) = trapz(xInt,uu);
+            % if qq ~= nq
+            %     uu = conj(u(:,qq,mm)) .* u(:,qq+1,nn);
+            % else
+            %     uu = conj(u(:,qq,mm)) .* u(:,1,nn);
+            % end
+            % X(mm,nn,qq) = 1i * log(sum(uu(xIdx)) * dx) / dq;
         end
     end
 end
