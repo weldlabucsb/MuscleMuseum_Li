@@ -43,13 +43,10 @@ end
 fList = dir(fullfile(dataPath,"*"+dataFormat));
 imageList = string({fList.name});
 if ~isempty(imageList)
-    for ii = 1:numel(runIdx)
-        prefix = dataPrefix + "_" + string(runIdx(ii));
-        deleteIdx = arrayfun(@(x) contains(x,prefix),imageList);
-        deleteList = imageList(deleteIdx);
-        for jj = 1:numel(deleteList)
-            deleteFile(fullfile(dataPath,deleteList(jj)))
-        end
+    imageNumberList = arrayfun(@(x) str2double(regexp(x,'\d*','match')),imageList);
+    deleteList = imageList(ismember(imageNumberList,runIdx));
+    for ii = 1:numel(deleteList)
+        deleteFile(fullfile(dataPath,deleteList(ii)))
     end
 end
 
@@ -101,13 +98,10 @@ end
 fList = dir(fullfile(ciceroLogPath,"*.clg"));
 cLogList = string({fList.name});
 if ~isempty(cLogList)
-    for ii = 1:numel(runIdx)
-        prefix = dataPrefix + "_" + string(runIdx(ii));
-        deleteIdx = arrayfun(@(x) contains(x,prefix),cLogList);
-        deleteList = cLogList(deleteIdx);
-        for jj = 1:numel(deleteList)
-            deleteFile(fullfile(ciceroLogPath,deleteList(jj)))
-        end
+    cLogNumberList = arrayfun(@(x) str2double(regexp(x,'\d*','match')),cLogList);
+    deleteList = cLogList(ismember(cLogNumberList,runIdx));
+    for ii = 1:numel(deleteList)
+        deleteFile(fullfile(ciceroLogPath,deleteList(ii)))
     end
 end
 
@@ -151,13 +145,10 @@ fList = dir(fullfile(hardwareLogPath));
 fList = fList(~[fList.isdir]);
 hLogList = string({fList.name});
 if ~isempty(hLogList)
-    for ii = 1:numel(runIdx)
-        prefix = dataPrefix + "_" + string(runIdx(ii));
-        deleteIdx = arrayfun(@(x) contains(x,prefix),hLogList);
-        deleteList = hLogList(deleteIdx);
-        for jj = 1:numel(deleteList)
-            deleteFile(fullfile(hardwareLogPath,deleteList(jj)))
-        end
+    hLogNumberList = arrayfun(@(x) str2double(regexp(x,'\d*','match')),hLogList);
+    deleteList = hLogList(ismember(hLogNumberList,runIdx));
+    for ii = 1:numel(deleteList)
+        deleteFile(fullfile(hardwareLogPath,deleteList(ii)))
     end
 end
 
