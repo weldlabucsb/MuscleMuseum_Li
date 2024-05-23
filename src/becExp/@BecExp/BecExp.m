@@ -162,7 +162,7 @@ classdef BecExp < Trial
         end
     end
 
-    methods
+    methods %functions saved in B:\_Li\Machine Code\MuscleMuseum\src\becExp\@BecExp
         setAnalyzer(obj)
         addAnalysis(obj,newAnalysisList)
         removeAnalysis(obj,removeAnalysisList)
