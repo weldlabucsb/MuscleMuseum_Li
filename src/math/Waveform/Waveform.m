@@ -6,8 +6,6 @@ classdef (Abstract) Waveform < handle
         SamplingRate double {mustBePositive} = 1 % In Hz
         StartTime double = 0 % Start time, in s
         Duration double {mustBePositive} % How long of the waveform, in s
-        Amplitude double = 0 % Peak-to-peak amplitude, usually in Volts.
-        Offset double = 0 % Offest, usually in Volts.
         Scan table = table(string.empty,string.empty, 'VariableNames',{'ParameterName','VariableName'}) % For scanning in Hardware control
     end
 

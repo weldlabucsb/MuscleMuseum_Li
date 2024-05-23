@@ -5,7 +5,7 @@ s4 = SineWave(amplitude=0.2,duration=20e-3,startTime=30e-3,frequency=2e3);
 tw = TrapezoidalSinePulse(amplitude=1,duration=10e-3,riseTime=1e-3,fallTime=2e-3,frequency=10e3,startTime=0);
 tanhw = TanhSinePulse(amplitude=1,duration=10e-3,riseTime=1e-3,fallTime=2e-3,frequency=30e3,startTime=0);
 pchipw = PchipSinePulse(amplitude=1,duration=10e-3,riseTime=1e-3,fallTime=2e-3,frequency=30e3,startTime=0);
-ramp = LinearFrequencyRamp(amplitude=1,duration=2e-3,startFrequency=100e3,stopFrequency=110e3,startTime=0);
+ramp = LinearRamp(duration=2e-3,startValue=0.1,stopValue=0.2,startTime=0,rampTime = 1e-3);
 % wf = {s1,s2,s3,s4};
 wf = {ramp};
 wfl = WaveformList("tt");
