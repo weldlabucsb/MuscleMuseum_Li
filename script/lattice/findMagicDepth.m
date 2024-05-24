@@ -11,10 +11,10 @@ kL = laser.AngularWavenumber;
 Er = ol.RecoilEnergy;
 
 nDepth = 1000;
-nq = 500;
+nq = 1000;
 qmin = 0.8 * kL;
-qmax = 1.2 * kL;
-Vmin = 8 * Er;
+qmax = 2.2 * kL;
+Vmin = 1 * Er;
 Vmax = 9 * Er;
 depthList = linspace(Vmin,Vmax,nDepth);
 qList = linspace(qmin,qmax,nq);
