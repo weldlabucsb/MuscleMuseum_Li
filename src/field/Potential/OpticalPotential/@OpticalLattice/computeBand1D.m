@@ -36,21 +36,21 @@ for qIdx = 1:length(q)
 end
 E = E * Er;
 
-% % Phase convention
-% for nIdx = 1:nmax
-%     m = sum(abs(diff((squeeze(ck(:,nIdx,:))),1,2))>0.1,1);
-%     % m = m > 2 ;
-%     m(1) = 0;
-%     if all(m==0)
-%         continue
-%     else
-%         flipPos = find(m,1);
-%         flipPos(abs(flipPos - qCenterIdx) <= 1) = [];
-%         if ~isempty(flipPos)
-%             ck(:,nIdx,flipPos+1:end) = -ck(:,nIdx,flipPos+1:end);
-%         end
-%     end
-% end
+% Phase convention
+for nIdx = 1:nmax
+    m = sum(abs(diff((squeeze(ck(:,nIdx,:))),1,2))>0.1,1);
+    % m = m > 2 ;
+    m(1) = 0;
+    if all(m==0)
+        continue
+    else
+        flipPos = find(m,1);
+        flipPos(abs(flipPos - qCenterIdx) <= 1) = [];
+        if ~isempty(flipPos)
+            ck(:,nIdx,flipPos+1:end) = -ck(:,nIdx,flipPos+1:end);
+        end
+    end
+end
 
 obj.FourierComponentList = ck;
 
@@ -103,14 +103,14 @@ if nargout >= 2
                     %     u(:,qIdx,nIdx) = u(:,qIdx,nIdx) + vn(ii)*exp(1i*k(ii)*x);
                     % end
                 % end
-                if mod(n(nIdx),2) == 0
-                    dPhi = squeeze(gradient(phi(:,qIdx,nIdx)));
-                    dPhi0 = dPhi(centerIdx);
-                    phi(:,qIdx,nIdx) = phi(:,qIdx,nIdx) ./ exp(1i * angle(dPhi0));
-                else
-                    phi0 = squeeze(phi(centerIdx,qIdx,nIdx));
-                    phi(:,qIdx,nIdx) = phi(:,qIdx,nIdx) ./ exp(1i * angle(phi0));
-                end
+                % if mod(n(nIdx),2) == 0
+                %     dPhi = squeeze(gradient(phi(:,qIdx,nIdx)));
+                %     dPhi0 = dPhi(centerIdx);
+                %     phi(:,qIdx,nIdx) = phi(:,qIdx,nIdx) ./ exp(1i * angle(dPhi0));
+                % else
+                %     phi0 = squeeze(phi(centerIdx,qIdx,nIdx));
+                %     phi(:,qIdx,nIdx) = phi(:,qIdx,nIdx) ./ exp(1i * angle(phi0));
+                % end
                 if nargout == 3
                     u(:,qIdx,nIdx) = phi(:,qIdx,nIdx) ./ exp(1i * q(qIdx) * x);
                 end

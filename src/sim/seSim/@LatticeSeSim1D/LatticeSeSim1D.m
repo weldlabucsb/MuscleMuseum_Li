@@ -140,7 +140,7 @@ classdef LatticeSeSim1D < SpaceTimeSim
                 varargin = struct2pairs(options);
                 obj.SimRun(ii) = SeSim1DRun(obj,varargin{:});
                 obj.SimRun(ii).RunIndex = ii;
-                if scannedParameterName == "initialCondition"
+                if scannedParameterName == "initialCondition" || numel(obj.InitialCondition) == obj.NRun
                     obj.SimRun(ii).InitialCondition = obj.InitialCondition(ii);
                 else
                     obj.SimRun(ii).InitialCondition = obj.InitialCondition;
