@@ -12,12 +12,12 @@ classdef OpticalLattice < OpticalPotential
         SpaceList
         QuasiMomentumList
         BandIndexMax
-        FourierComponentList
-        BandEnergyList 
-        BlochStateList
-        BlochStatePeriodicList
-        BoCouplingList
-        ModCouplingList
+        BandEnergy
+        BlochState
+        BlochStateFourier
+        BlochStatePeriodic
+        BerryConnection
+        AmpModCoupling
     end
 
     properties (Dependent)
@@ -169,13 +169,14 @@ classdef OpticalLattice < OpticalPotential
             obj.Laser.Intensity = abs(v0 / alpha) / 2 / Constants.SI("Z0");
         end
 
-        [E,phi,u] = computeBand1D(obj,q,n,x)
-        X = computeBoCoupling1D(obj,q,n,x)
-        A = computeModCoupling1D(obj,q,n,x)
+        [E,Fjn,phi,u] = computeBand1D(obj,q,n,x)
+        X = computeBerryConnection1D(obj,q,n)
+        A = computeAmpModCoupling1D(obj,q,n)
         plotBand1D(obj,n)
         pop = computeBandPopulation1D(obj,psi,x,n)
         freq = computeTransitionFrequency1D(obj,n1,n2,q)
-        computeAll1D(obj,q,n,x)
+        qRes = computeTransitionQuasiMomentum1D(obj,freq,n1,n2)
+        computeAll1D(obj,nq,n)
         removeGauge(obj)
     end
 end
