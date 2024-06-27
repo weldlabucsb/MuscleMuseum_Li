@@ -3,10 +3,10 @@ function [E,Fjn,phi,u] = computeBand1D(obj,q,n,x)
 % q: Sampling quasimomentum [p/hbar] in unit of 1/meter.
 % n: Band index. Start from zero. So n = 0 means the s band.
 % x: Optional. The sampling 1D spatial grids in unit of meter.
-% E: Band energy given as a nmax * length(q) matrix, where nmax
+% E: Band energy given as a length(n) * length(q) matrix, where nmax
 % is the band index cutoff = 2*(max(n)+1)+49. In Hz.
 % Fjn: Bloch states in Fourier space. Fjn is a matrix of dimension
-% nmax * nmax * length(q). The first dimension denotes band indexes.
+% nmax * length(n) * length(q). The first dimension denotes band indexes.
 % phi: Bloch states in real space. If x is given, phi is a matrix of
 % dimension length(x) * length(q) * length(n). If not, phi is a
 % cell of function handles with dimension length(q) *
@@ -24,24 +24,24 @@ kL = obj.Laser.AngularWavenumber;
 lambda = 2 * pi / kL;
 q = q / kL; % Dimensionless quasi-momentum.
 n = n + 1; % For easier indexing.
-nmax = max(2 * max(n)+49,101); % Band index cutoff. Making sure its an odd number
-nCenterIdx = round(nmax / 2);
+nMax = max(2 * max(n)+49,obj.BandIndexMaxFourierDefault); % Band index cutoff. Making sure its an odd number
+nCenterIdx = round(nMax / 2);
 [~,qCenterIdx] = min(abs(q));
-j = 1-nmax:2:nmax-1;
-Vmat = -v0/4*gallery('tridiag',nmax,1,2,1); % I added a minus sign here
-E = zeros(nmax,length(q)); % Band energy
-Fjn = zeros(nmax,nmax,length(q)); % Bloch states in the plane wave basis.
+j = 1-nMax:2:nMax-1;
+Vmat = -v0/4*gallery('tridiag',nMax,1,2,1); % I added a minus sign here
+E = zeros(nMax,length(q)); % Band energy
+Fjn = zeros(nMax,nMax,length(q)); % Bloch states in the plane wave basis.
 for qIdx = 1:length(q)
-    Tmat = sparse(1:nmax,1:nmax,(q(qIdx)+j).^2,nmax,nmax);
+    Tmat = sparse(1:nMax,1:nMax,(q(qIdx)+j).^2,nMax,nMax);
     [Fjn(:,:,qIdx),tempE] = eig(full(Vmat+Tmat));
     E(:,qIdx) = diag(tempE);
 end
-E = E * Er; % United in Hz
+E = E(n,:) * Er; % United in Hz
 Fjn = Fjn * sqrt(2 / lambda); % Normalization
 
 % Phase convention. Making sure the eigenstates are continuously varying along q
 if numel(q) >= 3
-    for nIdx = 1:nmax
+    for nIdx = 1:nMax
         m = sum(abs(diff((squeeze(Fjn(:,nIdx,:))),1,2))>0.1 * sqrt(2 / lambda),1);
         % m = m > 2 ;
         m(1) = 0;
@@ -56,9 +56,10 @@ if numel(q) >= 3
         end
     end
 end
+Fjn = Fjn(:,n,:);
 
 if nargout >= 3
-    k = (1-nmax:2:nmax-1) * kL;
+    k = (1-nMax:2:nMax-1) * kL;
     q = q * kL;
     if isempty(x)
         phiFunc = cell(numel(q),numel(n));
@@ -67,8 +68,8 @@ if nargout >= 3
             for qIdx = 1:numel(q)
                 phiFunc{qIdx,nIdx} = @(x) 0;
                 uFunc{qIdx,nIdx} = @(x) 0;
-                vn = Fjn(:,n(nIdx),qIdx);
-                for ii = 1:nmax
+                vn = Fjn(:,nIdx,qIdx);
+                for ii = 1:nMax
                     phiFunc{qIdx,nIdx} = @(x) phiFunc{qIdx,nIdx}(x) + vn(ii)*exp(1i*(k(ii)+q(qIdx))*x);
                     if nargout == 4
                         uFunc{qIdx,nIdx} = @(x) uFunc{qIdx,nIdx}(x) + vn(ii)*exp(1i*k(ii)*x);
@@ -95,7 +96,7 @@ if nargout >= 3
         k = repmat(k,nx,1);
         for nIdx = 1:numel(n)
             for qIdx = 1:numel(q)
-                vn = Fjn(:,n(nIdx),qIdx).';
+                vn = Fjn(:,nIdx,qIdx).';
                 vn = repmat(vn,nx,1);
 
                 temp = vn.* exp(1i*(k+q(qIdx)).* x);

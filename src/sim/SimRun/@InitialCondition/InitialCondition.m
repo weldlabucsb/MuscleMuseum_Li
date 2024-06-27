@@ -36,7 +36,12 @@ classdef InitialCondition < dynamicprops
                     addprop(obj,"WaveFunctionFunc");
                     pWF = addprop(obj,"WaveFunction");
                     pWF.SetMethod = @setWaveFunction;
+                case{"LatticeFourierSeSim1D","LatticeFourierSeSim1DRun"}
+                    pWF = addprop(obj,"WaveFunction");
+                    pWF.SetMethod = @setWaveFunction;
+                    addprop(obj,"QuasiMomentum")
             end
+
             function obj = setWaveFunction(obj,val)
                 if ~isvector(val)
                     error("Wave function must be a vector.")

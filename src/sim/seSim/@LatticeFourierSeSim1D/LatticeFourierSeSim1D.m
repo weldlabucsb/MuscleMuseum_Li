@@ -1,56 +1,77 @@
-classdef MeSim < TimeSim
-    %SIMULATION Summary of this class goes here
+classdef LatticeFourierSeSim1D < TimeSim
+    %SESIM Summary of this class goes here
     %   Detailed explanation goes here
     
     properties(SetAccess = private)
         Atom Atom
         Manifold (1,1) string
-        RotatingFrequency (1,1) double
+        StateIndex double
+        Laser cell
+        MagneticField cell
+        LatticeModulation cell
+        FieldModulation cell
+        OpticalLattice OpticalLattice
+        MagneticPotential MagneticPotential
+        InitialCondition InitialCondition
+    end
+
+    properties
+        ScannedParameterList
     end
     
     methods
-        
-        function obj = MeSim(trialName,options1,options2)
+        function obj = LatticeFourierSeSim1D(trialName,options1,options2)
             arguments
                 trialName string
                 options1.atom Atom
-                options1.rotatingFrequency double
+                options1.manifold string
+                options1.stateIndex double
                 options1.totalTime double
                 options1.timeStep double
-                options1.manifold string
                 options1.output string
                 options2.laser cell
                 options2.magneticField cell
-                options2.transformation cell
+                options2.latticeModulation cell
+                options2.fieldModulation cell
                 options2.initialCondition InitialCondition
             end
-            obj@TimeSim(trialName,"MeSimConfig");
+            obj@TimeSim(trialName,"LatticeFourierSeSim1DConfig");
 
-            %Change parameters if they are manually set
+            %% Atom setting
+            try
+                obj.Atom = Alkali(obj.ConfigParameter.AtomName);
+            catch
+                obj.Atom = Divalent(obj.ConfigParameter.AtomName);
+            end
+
+            %% Change parameters if they are manually set
             field1 = string(fieldnames(options1));
             for ii = 1:numel(field1)
                 if ~isempty(options1.(field1(ii)))
                     obj.(capitalizeFirst(field1(ii))) = options1.(field1(ii));
                 end
             end
+            field2 = string(fieldnames(options2));
+            for ii = 1:numel(field2)
+                if ~isempty(options2.(field2(ii)))
+                    obj.(capitalizeFirst(field2(ii))) = options2.(field2(ii));
+                end
+            end
 
+            %% Set output parameter
             if ~isempty(obj.Output)
                 output = rmmissing(["Time";strtrim(split(obj.Output,";"))]);
             else
                 error("No output variable specified")
             end
-            load("Config.mat","MeSimOutput")
-            output = MeSimOutput(ismember(MeSimOutput.VariableName,output),:);
-            if ~isempty(output(output.VariableName == "Population",:))
-                output(output.VariableName == "Population",:).Size = obj.Atom.(obj.Manifold).NNState;
+            load("Config.mat","LatticeFourierSeSim1DOutput")
+            output = LatticeFourierSeSim1DOutput(ismember(LatticeFourierSeSim1DOutput.VariableName,output),:);
+            if ~isempty(output(output.VariableName == "WaveFunction",:))
+                output(output.VariableName == "WaveFunction",:).Size = numel(obj.InitialCondition(1).WaveFunction);
             end
             obj.Output = output;
 
-            %Initialize parameters for each run
-            field2 = string(fieldnames(options2));
-            if isempty(field2)
-                error("Must specify Initial conditions")
-            end
+            %% Find scanned parameter
             nPara = cellfun(@numel,struct2cell(options2));
             obj.NRun = max(nPara);
             if any(nPara(nPara~=obj.NRun)>1)
@@ -58,11 +79,14 @@ classdef MeSim < TimeSim
             else
                 scannedParaIdx = find(nPara==obj.NRun);
             end
+
+            %% Set LatticeFourierSeSim1DRun parameters
             options0.atom = obj.Atom;
-            options0.rotatingFrequency = obj.RotatingFrequency;
+            options0.manifold = obj.Manifold;
+            options0.stateIndex = obj.StateIndex;
             options0.totalTime = obj.TotalTime;
             options0.timeStep = obj.TimeStep;
-            options0.manifold = obj.Manifold;
+            obj.SimRun = LatticeFourierSeSim1DRun.empty;
             for ii = 1:obj.NRun
                 options = options0;
                 for jj = 1:numel(field2)
@@ -81,38 +105,28 @@ classdef MeSim < TimeSim
                     end
                 end
                 varargin = struct2pairs(options);
-                obj.SimRun(ii) = MeSimRun(obj,varargin{:});
+                obj.SimRun(ii) = LatticeFourierSeSim1DRun(obj,varargin{:});
                 obj.SimRun(ii).RunIndex = ii;
             end
             obj.update
         end
         
-
-        
-        function [sp,sigmaNorm] = showCrossSection(obj)
-            sigma0 = obj.Atom.CyclerCrossSection;
-            Isat = obj.Atom.CyclerSaturationIntensity;
-            intensity = zeros(1,obj.NRun);
-            sr = zeros(1,obj.NRun);
-            for ii = 1:obj.NRun
-                intensity(ii) = obj.SimRun(ii).Laser(1).Intensity;
-                sr(ii) = loadVar(obj.SimRun(ii).RunPath,"AverageScatteringRate");
-            end
-            sp = intensity/Isat;
-            sigma = Constants.SI('hbar') * 2 * pi * obj.Atom.CyclerFrequency * sr ./ intensity;
-            close(figure(2000))
-            figure(2000)
-            sigmaNorm = sigma/sigma0;
-            plot(sp,sigmaNorm,'.')
-            xlabel("Saturation parameter",Interpreter="latex")
-            ylabel("$\sigma / \sigma_0$",Interpreter="latex")
+        function plotBand(obj,runIdx,bandNumber)
+            psi = obj.SimRun(runIdx).readRun("WaveFunction");
+            x = obj.SimRun(1).SpaceList;
+            t = obj.SimRun(1).TimeListAvg * 1e3;
+            pop = obj.OpticalLattice.computeBandPopulation1D(psi.',max(bandNumber),x);
+            bandNumber = bandNumber + 1;
+            pop = pop(:,bandNumber);
+            figure(2943)
+            plot(t,pop)
             render
         end
+        setConfigProperty(obj,s)
+        updateDatabase(obj)
+        writeDatabase(obj)
     end
 
-    methods (Hidden)
-        setConfigProperty(obj,s)
-    end
-    
+
 end
 

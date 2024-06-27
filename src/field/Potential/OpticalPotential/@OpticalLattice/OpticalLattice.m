@@ -12,12 +12,17 @@ classdef OpticalLattice < OpticalPotential
         SpaceList
         QuasiMomentumList
         BandIndexMax
+        BandIndexMaxFourier = 101
         BandEnergy
         BlochState
         BlochStateFourier
         BlochStatePeriodic
         BerryConnection
         AmpModCoupling
+    end
+
+    properties (Constant)
+        BandIndexMaxFourierDefault = 101
     end
 
     properties (Dependent)
@@ -173,7 +178,8 @@ classdef OpticalLattice < OpticalPotential
         X = computeBerryConnection1D(obj,q,n)
         A = computeAmpModCoupling1D(obj,q,n)
         plotBand1D(obj,n)
-        pop = computeBandPopulation1D(obj,psi,x,n)
+        pop = computeBandPopulation1D(obj,psicj,x,n)
+        pop = computeBandPopulationFourier1D(obj,ucj,q,n)
         freq = computeTransitionFrequency1D(obj,n1,n2,q)
         qRes = computeTransitionQuasiMomentum1D(obj,freq,n1,n2)
         computeAll1D(obj,nq,n)

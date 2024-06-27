@@ -13,6 +13,7 @@ obj.QuasiMomentumList = q;
 obj.BandIndexMax = n;
 
 [E,Fjn] = computeBand1D(obj,q,0:n);
+obj.BandIndexMaxFourier = size(Fjn,1);
 obj.BandEnergy = E;
 obj.BlochStateFourier = Fjn;
 obj.AmpModCoupling = obj.computeAmpModCoupling1D;

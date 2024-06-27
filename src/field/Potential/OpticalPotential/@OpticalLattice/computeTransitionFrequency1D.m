@@ -11,6 +11,6 @@ arguments
     n1 double {mustBeVector,mustBeInteger,mustBeNonnegative}
     n2 double {mustBeVector,mustBeInteger,mustBeNonnegative}
 end
-E = obj.computeBand1D(q,max([n1,n2]));
-freq = abs(E(n1+1,:) - E(n2+1,:));
+E = obj.computeBand1D(q,[n1,n2]);
+freq = abs(E(2,:) - E(1,:));
 end

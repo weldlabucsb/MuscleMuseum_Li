@@ -19,7 +19,7 @@ else
     kL = obj.Laser.AngularWavenumber;
     q = linspace(-kL,kL,nq+1);
     q(end) = [];
-    E = obj.computeBand1D(q,max([n1,n2]));
+    E = obj.computeBand1D(q,0:max([n1,n2]));
 end
 
 qIdx = q<=0;
@@ -43,7 +43,7 @@ for ii = 1:numel(freq)
         E2err = abs(dE(resIdx(2)) - freq(ii));
         while err > tol
             qResTemp = (q1 + q2) / 2;
-            EE = obj.computeBand1D(qResTemp,max([n1,n2]));
+            EE = obj.computeBand1D(qResTemp,0:max([n1,n2]));
             Emid = abs(EE(n2+1,:) - EE(n1+1,:));
             err = abs(Emid - freq(ii));
             if E1err > E2err
