@@ -34,7 +34,8 @@ Table = {
     "gross_pitaevskii_equation_simulation",...
     "schrodinger_equation_simulation",...
     "fokker_planck_equation_simulation",...
-    "lattice_schrodinger_equation_simulation_1d"]...
+    "lattice_schrodinger_equation_simulation_1d",...
+    "lattice_fourier_simulation_1d"]...
     };
 DatabaseConfig = table(Name,Table);
 
@@ -223,6 +224,24 @@ LatticeSeSim1DConfig = [LatticeSeSim1DType,repmat(struct2table(LatticeSeSim1DCon
 
 LatticeSeSim1DOutput = readtable("latticeSeSim1DOutput.csv.xlsx",'TextType','string');
 save(configName,"LatticeSeSim1DConfig","LatticeSeSim1DOutput",'-mat','-append')
+
+%% Set the lattice Fourier schrodinger equation simulation configuration
+% LatticeFourierSeSim1DConfig.ParentPath = fullfile(mainPath,"latticeFourierSeSim1D");
+% LatticeFourierSeSim1DConfig.DatabaseName = "simulation_local";
+LatticeFourierSeSim1DConfig.ParentPath = fullfile("B:\__Lab Member Folders\Xiao\SimulationData","latticeFourierSeSim1D");
+LatticeFourierSeSim1DConfig.DatabaseName = "simulation";
+LatticeFourierSeSim1DConfig.DataPrefix = "run";
+LatticeFourierSeSim1DConfig.DataFormat = ".mat";
+LatticeFourierSeSim1DConfig.IsAutoDelete = false;
+LatticeFourierSeSim1DConfig.DatabaseTableName = "lattice_fourier_simulation_1d";
+LatticeFourierSeSim1DConfig.DataGroupSize = 1;
+
+LatticeFourierSeSim1DType = readtable("latticeFourierSeSim1DType.csv.xlsx",'TextType','string');
+LatticeFourierSeSim1DConfig = [LatticeFourierSeSim1DType,repmat(struct2table(LatticeFourierSeSim1DConfig),size(LatticeFourierSeSim1DConfig,1),1)];
+
+LatticeFourierSeSim1DOutput = readtable("latticeFourierSeSim1DOutput.csv.xlsx",'TextType','string');
+save(configName,"LatticeFourierSeSim1DConfig","LatticeFourierSeSim1DOutput",'-mat','-append')
+
 
 disp("Done.")
 end

@@ -140,7 +140,7 @@ classdef LatticeSeSim1D < SpaceTimeSim
                 varargin = struct2pairs(options);
                 obj.SimRun(ii) = SeSim1DRun(obj,varargin{:});
                 obj.SimRun(ii).RunIndex = ii;
-                if scannedParameterName == "initialCondition"
+                if scannedParameterName == "initialCondition" || numel(obj.InitialCondition) == obj.NRun
                     obj.SimRun(ii).InitialCondition = obj.InitialCondition(ii);
                 else
                     obj.SimRun(ii).InitialCondition = obj.InitialCondition;
@@ -189,9 +189,22 @@ classdef LatticeSeSim1D < SpaceTimeSim
             obj.update
         end
         
+        function plotBand(obj,runIdx,bandNumber)
+            psicj = obj.SimRun(runIdx).readRun("WaveFunction");
+            x = obj.SimRun(1).SpaceList;
+            t = obj.SimRun(1).TimeListAvg * 1e3;
+            pop = obj.OpticalLattice.computeBandPopulation1D(psicj,max(bandNumber),x);
+            bandNumber = bandNumber + 1;
+            pop = pop(:,bandNumber);
+            figure(2943)
+            plot(t,pop)
+            render
+        end
         setConfigProperty(obj,s)
         updateDatabase(obj)
         writeDatabase(obj)
     end
+
+
 end
 

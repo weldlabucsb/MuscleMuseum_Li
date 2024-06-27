@@ -7,12 +7,19 @@ tanhw = TanhSinePulse(amplitude=1,duration=10e-3,riseTime=1e-3,fallTime=2e-3,fre
 pchipw = PchipSinePulse(amplitude=1,duration=10e-3,riseTime=1e-3,fallTime=2e-3,frequency=30e3,startTime=0);
 ramp = LinearRamp(duration=2e-3,startValue=0.1,stopValue=0.2,startTime=0,rampTime = 1e-3);
 % wf = {s1,s2,s3,s4};
-wf = {ramp};
+wf = {ramp,tw,tanhw};
 wfl = WaveformList("tt");
 wfl.SamplingRate = 64e6;
 wfl.WaveformOrigin = wf;
-wfl.ConcatMethod = "Sequential";
+wfl.ConcatMethod = "Simultaneous";
 wfl.IsTriggerAdvance = true;
-wfl.plot
+
+t0 = 0;
+te = 0.02;
+dt = 1/wfl.SamplingRate;
+t = t0:dt:te;
+tFunc = wfl.TimeFunc;
+plot(t,tFunc(t))
+% wfl.plot
 % s1.plotOneCycle
 % s1.plotExtra

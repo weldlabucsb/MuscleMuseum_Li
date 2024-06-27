@@ -14,6 +14,7 @@ classdef (Abstract) TimeSimRun < SimRun
     properties(Dependent)
         NTimeStep
         TimeList
+        TimeListAvg
         NDataRow
         NDataRowMemory
     end
@@ -43,6 +44,12 @@ classdef (Abstract) TimeSimRun < SimRun
 
         function tList = get.TimeList(obj)
             tList = obj.InitialTime : obj.TimeStep : obj.TotalTime;
+        end
+        function tListAvg = get.TimeListAvg(obj)
+            aP = obj.AveragePeriod;
+            tList = obj.TimeList;
+            nt = obj.NTimeStep;
+            tListAvg = tList(aP:aP:nt);
         end
 
         function nDataRow = get.NDataRow(obj)

@@ -12,6 +12,7 @@ classdef WaveformList < handle
     end
 
     properties (Dependent)
+        Sample
         TimeStep
         RepeatMode string
         WaveformPrepared Table 
@@ -78,7 +79,7 @@ classdef WaveformList < handle
             
             %% Construct waveform sequence from segments
             switch obj.ConcatMethod
-                case "Sequential"      
+                case "Sequential"
                     for ii = 1:nWave
                         sampleIdx = sampleIdx + 1;
                         if isa(obj.WaveformOrigin{ii},"PeriodicWaveform")
@@ -164,13 +165,49 @@ classdef WaveformList < handle
             obj.NSample = sum(cellfun(@numel,Sample));
         end
 
-        function plot(obj)
+        function sample = get.Sample(obj)
             t = obj.WaveformPrepared;
-            dt = obj.TimeStep;
             sample = [];
             for ii = 1:size(t,1)
                 sample = [sample,repmat(t.Sample{ii},1,t.NRepeat(ii))];
             end
+        end
+
+        function func = TimeFunc(obj)
+            %% Check waveform origin
+            if isempty(obj.WaveformOrigin)
+                return
+            else
+                nWave = numel(obj.WaveformOrigin);
+                if nWave == 0
+                    return
+                end
+            end
+
+            %% Construct waveform time function handle
+            if obj.ConcatMethod == "Sequential"
+                ti = obj.WaveformOrigin{1}.StartTime;
+                for ii = 2:nWave
+                    ti = ti + obj.WaveformOrigin{ii-1}.Duration;
+                    obj.WaveformOrigin{ii}.StartTime = ti;
+                end
+            end
+            funcList = cell(1,nWave);
+            for ii = 1:nWave
+                funcList{ii} = obj.WaveformOrigin{ii}.TimeFunc;
+            end
+            function out = timeFunc(t)
+                out = 0;
+                for jj = 1:nWave
+                    out = out + funcList{jj}(t);
+                end
+            end
+            func = @(t) timeFunc(t);
+        end
+
+        function plot(obj)
+            dt = obj.TimeStep;
+            sample = obj.Sample;
             time = 0:(numel(sample)-1);
             time = time * dt;
             figure(14739)

@@ -51,12 +51,12 @@ classdef SeSim1DRun < TimeSimRun & SpaceSimRun
             tList = obj.TimeList;
             nt = obj.NTimeStep;
             dt = obj.TimeStep;
-            psiFunc = obj.InitialCondition.WaveFunctionFunc;
+            % psiFunc = obj.InitialCondition.WaveFunctionFunc;
             V = obj.Potential;
             Uk = obj.KineticPropagator;
             x = obj.SpaceList;
             dx = obj.SpaceStep;
-            psi = psiFunc(x).';
+            psi = obj.InitialCondition.WaveFunction;
             psi = psi ./ sqrt(sum(abs(psi).^2*dx));
 
             savePeriod = obj.SavePeriod;

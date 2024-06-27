@@ -7,7 +7,9 @@ classdef MagneticPotential < Potential & matlab.mixin.Heterogeneous
     end
 
     properties (Dependent)
-        
+        EnergyFactor
+        EnergyFactorLowField
+        EnergyFactorHighField
     end
     
     methods
@@ -32,19 +34,17 @@ classdef MagneticPotential < Potential & matlab.mixin.Heterogeneous
             end
         end
 
-        function func = spaceFuncLowField(obj)
+        function eFactL = get.EnergyFactorLowField(obj)
             stateIdx = obj.StateIndex;
             stateList = obj.Atom.(obj.Manifold).StateList;
             mF = stateList.MF(stateIdx);
             gF = stateList.gF(stateIdx);
             muB = Constants.SI("muB");
             h = Constants.SI("hbar") * 2 * pi;
-            prefactor = mF * gF * muB / h;
-            bSpaceFunc = obj.MagneticField.spaceFunc;
-            func = @(r) prefactor * vecnorm(bSpaceFunc(r));
+            eFactL = mF * gF * muB / h;
         end
 
-        function func = spaceFuncHighField(obj)
+        function eFactH = get.EnergyFactorHighField(obj)
             stateIdx = obj.StateIndex;
             stateList = obj.Atom.(obj.Manifold).StateList;
             mJ = stateList.MJ(stateIdx);
@@ -53,7 +53,30 @@ classdef MagneticPotential < Potential & matlab.mixin.Heterogeneous
             gI = stateList.gI(stateIdx);
             muB = Constants.SI("muB");
             h = Constants.SI("hbar") * 2 * pi;
-            prefactor = (mJ * gJ + mI * gI) * muB / h;
+            eFactH = (mJ * gJ + mI * gI) * muB / h;
+        end
+
+        function eFact = get.EnergyFactor(obj)
+            energyList = obj.Atom.(obj.Manifold).StateList.Energy;
+            hfs = max(energyList) - min(energyList);
+            bias = vecnorm(obj.MagneticField.Bias);
+            eFactL = obj.EnergyFactorLowField;
+            eFactH = obj.EnergyFactorHighField;
+            if abs(bias * eFactL) < hfs / 10
+                eFact = eFactL;
+            else
+                eFact = eFactH;
+            end
+        end
+
+        function func = spaceFuncLowField(obj)
+            prefactor = obj.EnergyFactorLowField;
+            bSpaceFunc = obj.MagneticField.spaceFunc;
+            func = @(r) prefactor * vecnorm(bSpaceFunc(r));
+        end
+
+        function func = spaceFuncHighField(obj)
+            prefactor = obj.EnergyFactorHighField;
             bSpaceFunc = obj.MagneticField.spaceFunc;
             func = @(r) prefactor * vecnorm(bSpaceFunc(r));
         end

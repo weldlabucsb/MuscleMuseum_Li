@@ -1,24 +1,26 @@
-function computeAll1D(obj,q,n,x)
+function computeAll1D(obj,nq,n)
 %COMPUTEALL1D Summary of this function goes here
 %   Detailed explanation goes here
 arguments
     obj OpticalLattice
-    q double {mustBeVector}
+    nq double {mustBeInteger,mustBePositive}
     n double {mustBeVector,mustBeInteger,mustBeNonnegative}
-    x double
 end
+kL = obj.Laser.AngularWavenumber;
+q = linspace(-kL,kL,nq + 1);
+q(end) = [];
 obj.QuasiMomentumList = q;
-obj.SpaceList = x;
 obj.BandIndexMax = n;
 
-[E,phi,u] = computeBand1D(obj,q,0:n,x);
-obj.BandEnergyList = E;
-obj.BlochStateList = phi;
-obj.BlochStatePeriodicList = u;
-obj.BoCouplingList = obj.computeBoCoupling1D;
-obj.removeGauge;
-obj.BoCouplingList = obj.computeBoCoupling1D;
-obj.ModCouplingList = obj.computeModCoupling1D;
+[E,Fjn] = computeBand1D(obj,q,0:n);
+obj.BandIndexMaxFourier = size(Fjn,1);
+obj.BandEnergy = E;
+obj.BlochStateFourier = Fjn;
+obj.AmpModCoupling = obj.computeAmpModCoupling1D;
+obj.BerryConnection = obj.computeBerryConnection1D;
+% obj.removeGauge;
+% obj.BerryConnection = obj.computeBerryConnection1D;
+
 
 end
 

@@ -1,7 +1,7 @@
-function pop = computeBandPopulation1D(obj,psi,n,x)
+function pop = computeBandPopulation1D(obj,psicj,n,x)
 % Calculate band population for wavefunction psi.
-% psi: The wavefunctions. It is recommended to input the
-% conjugate of psi. psi is assumed to be a npsi * length(x)
+% psicj: The wavefunctions. It is recommended to input the
+% conjugate of psi. psicj is assumed to be a npsi * length(x)
 % matrix, where npsi the number of wavefunctions we want to
 % compute band population.
 % n: Maximum band index. By default we calculate up to the d
@@ -11,13 +11,13 @@ function pop = computeBandPopulation1D(obj,psi,n,x)
 % pop: Output band population as a npsi * n+1 matrix.
 arguments
     obj OpticalLattice
-    psi double
+    psicj double
     n double {mustBeInteger,mustBeNonnegative} = 2
     x double {mustBeVector} = []
 end
 
 %% Input validation
-if ~ismatrix(psi)
+if ~ismatrix(psicj)
     error("Incorrect dimension of psi.")
 elseif isempty(x)
     if ~isempty(obj.SpaceList)
@@ -28,9 +28,9 @@ elseif isempty(x)
 else
     nx = numel(x);
 end
-if size(psi,1) == nx
-    psi = psi'; % The spatial dimension of psi must be the second dimension.
-elseif size(psi,2) ~= nx
+if size(psicj,1) == nx
+    psicj = psicj'; % The spatial dimension of psi must be the second dimension.
+elseif size(psicj,2) ~= nx
     error("Incorrect dimension of psi.")
 end
 
@@ -40,7 +40,7 @@ if ~isempty(x)
     kL = obj.Laser.AngularWavenumber;
     dk = 2 * pi / numel(x) / dx; % Momentum grid size
     q = -kL:dk:kL; % Sampling quasi-momentum
-    [~,phi] = obj.computeBand1D(q,0:n,x);
+    [~,~,phi] = obj.computeBand1D(q,0:n,x);
 else
     phi = obj.BlochStateList;
     if n > max(obj.BandIndexMax)
@@ -49,9 +49,9 @@ else
 end
 
 %% Compute population
-pop = zeros(size(psi,1),n+1);
+pop = zeros(size(psicj,1),n+1);
 for nIdx = 1:(n+1)
-    pop(:,nIdx) = sum(abs(psi * phi(:,:,nIdx) * dx).^2,2);
+    pop(:,nIdx) = sum(abs(psicj * phi(:,:,nIdx) * dx).^2,2);
 end
 
 end
