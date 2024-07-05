@@ -139,11 +139,12 @@ classdef OneJManifold < AtomManifold
              Ham = (Ham + Ham')/2;
         end
 
-        function [dressedStateList,U,brMap] = BiasDressedStateList(obj,B,isPlot)
+        function [dressedStateList,U,brMap] = BiasDressedStateList(obj,B,isPlot,options)
             arguments
                 obj OneJManifold
                 B MagneticField
                 isPlot logical = false
+                options.samplingSize double = []
             end
             bias = B.Bias;
             if ~(bias(1) == 0 && bias(2) ==0 && bias(3) > 0) %check if quantization axis is aligned with the bias magnetic field
@@ -156,8 +157,13 @@ classdef OneJManifold < AtomManifold
             dEdB = gF * Constants.SI("muB") / Constants.SI("hbar") / 2 / pi;
             dB = energyGap / dEdB;
 
-            samplingSize = max(round(bias(3)/ dB *20),1000);
-            samplingSize = min(samplingSize,5000);
+            if ~isempty(options.samplingSize)
+                samplingSize = options.samplingSize;
+            else
+                samplingSize = max(round(bias(3)/ dB *20),1000);
+                samplingSize = min(samplingSize,5000);
+            end
+            
             BList = arrayfun(@(b) MagneticField(bias=[0;0;b]),linspace(0,bias(3),samplingSize));
             HList = arrayfun(@(b) obj.HamiltonianAtom + obj.HamiltonianAtomBiasField(b),BList,UniformOutput=false);
             HMatrix = zeros([size(HList{1}),samplingSize]);

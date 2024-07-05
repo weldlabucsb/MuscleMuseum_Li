@@ -3,8 +3,8 @@ function computeAll1D(obj,nq,n)
 %   Detailed explanation goes here
 arguments
     obj OpticalLattice
-    nq double {mustBeInteger,mustBePositive}
-    n double {mustBeVector,mustBeInteger,mustBeNonnegative}
+    nq double {mustBeInteger,mustBePositive} = 1e4
+    n double {mustBeVector,mustBeInteger,mustBeNonnegative} = 3
 end
 kL = obj.Laser.AngularWavenumber;
 q = linspace(-kL,kL,nq + 1);

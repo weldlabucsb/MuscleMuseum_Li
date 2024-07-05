@@ -323,19 +323,37 @@ classdef TwoJManifold < AtomManifold
             Ham = U'*Ham*U;
             Ham = (Ham + Ham')/2;
         end
-        function [dressedStateList,U] = BiasDressedStateList(obj,B)
+        function [dressedStateList,U,brMap] = BiasDressedStateList(obj,B,isPlot,options)
             arguments
                 obj TwoJManifold
                 B MagneticField
+                isPlot logical = false
+                options.samplingSize double = []
             end
+
+            sList = obj.StateList;
             maniG = OneJManifold(obj.Atom,obj.NGround,obj.LGround,obj.JGround);
             maniE = OneJManifold(obj.Atom,obj.NExcited,obj.LExcited,obj.JExcited);
-            sListG = maniG.BiasDressedStateList(B);
-            sListE = maniE.BiasDressedStateList(B);
+            if ~isempty(options.samplingSize)
+                samplingSize = options.samplingSize;
+            else
+                energy = sList.Energy;
+                gF = max(abs(sList.gF));
+                energyGap = min(abs(diff(sort(energy))));
+                dEdB = gF * Constants.SI("muB") / Constants.SI("hbar") / 2 / pi;
+                dB = energyGap / dEdB;
+                samplingSize = max(round(B.Bias(3)/ dB *20),1000);
+                samplingSize = min(samplingSize,5000);
+            end
+            
+            [sListG,~,brMapG] = maniG.BiasDressedStateList(B,samplingSize = samplingSize);
+            [sListE,~,brMapE] = maniE.BiasDressedStateList(B,samplingSize = samplingSize);
+            brMap = {brMapG{1},[brMapG{2};brMapE{2}]};
+
             sListG.Index = sListG.Index + numel(obj.MFExcited);
             sListE.Energy = sListE.Energy + obj.Frequency;
             dressedStateList = [sListE;sListG];
-            sList = obj.StateList;
+            
             dressedStateList.IsExcited = sList.IsExcited;
             nExcited = sum(sList.IsExcited);
             nGround = sum(~sList.IsExcited);
@@ -351,6 +369,16 @@ classdef TwoJManifold < AtomManifold
             end
             U = dressedStateList.DressedState;
             U = horzcat(U{:}); %Unitary operator the connect to the dressed states
+
+            if isPlot
+                close(figure(2034))
+                figure(2034)
+                plot(brMap{1}*1e4,brMap{2}*1e-6)
+                xlabel('Bias field [Gauss]',Interpreter='latex')
+                ylabel('Energy [MHz]',Interpreter='latex')
+                legend(sList.Label(:),'interpreter','latex')
+                render
+            end
         end
 
         function mimjList = getMIMJ(obj)
