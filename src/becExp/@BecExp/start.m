@@ -1,8 +1,7 @@
 function start(obj)
 obj.displayLog(" ")
 obj.displayLog("Trial #" + string(obj.SerialNumber) + ": Starting data acquisition and real-time analysis.")
-obj.ExistedCiceroLogNumber = countFileNumber(obj.CiceroLogOrigin,".clg");
-obj.ExistedHardwareLogNumber = arrayfun(@countFileNumber,obj.HardwareList.DataPath);
+obj.countExistedLog
 
 if obj.IsAutoAcquire
     obj.Acquisition.connectCamera;

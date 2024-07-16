@@ -8,6 +8,9 @@ function saveBecImage(vid,~,becExp)
 % that, it transfers the data to becExp and triggers the event
 % "NewRunFinished" for the following data analysis.
 
+%% Set BecExp to be at acquiring
+becExp.IsAcquiring = true;
+
 %% Get data from camera
 mData = getdata(vid,3);
 
@@ -40,5 +43,6 @@ end
 %% Transfer data to becExp and trigger the event
 becExp.TempData = becExp.Acquisition.killBadPixel(double(mData));
 notify(becExp,'NewRunFinished')
+becExp.IsAcquiring = false;
 
 end

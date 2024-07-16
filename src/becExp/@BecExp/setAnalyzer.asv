@@ -29,7 +29,7 @@ obj.Analyzer.Enabled = false;
         %% Fetch Cicero log data and write into CiceroData
         isFetched = obj.fetchCiceroLog(currentRunNumber);
         if ~isFetched %Error handling when Cicero crashes
-            obj.displayLog("Failed fatching the Cicero data. Deleting the latest images")
+            obj.displayLog("Failed fatching the Cicero data. Deleting the latest images...")
             fList = dir(fullfile(obj.DataPath,"*"+obj.DataFormat));
             imageList = string({fList.name});
             if ~isempty(imageList)
@@ -42,11 +42,8 @@ obj.Analyzer.Enabled = false;
             obj.countExistedLog
             obj.IsAcquiring = false;
             obj.NCompletedRun = obj.NCompletedRun - 1;
-            if obj.NCompletedRun > 0
-                obj.NRun = obj.NCompletedRun;
-            else
-                obj.NRun = 1;
-            end
+            obj.NRun
+            obj.displayLog("Done.")
             return
         end
 

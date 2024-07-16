@@ -1,4 +1,4 @@
-function fetchCiceroLog(obj,runIdx)
+function isFetched = fetchCiceroLog(obj,runIdx)
 obj.displayLog("Fetching the Cicero log file for run #" + num2str(runIdx) + ".")
 newLogNum = 0; % Number of new log files.
 t = 0; % Total pause time.
@@ -6,19 +6,22 @@ tPause = 0.1; % Pause time.
 existedLogNum = obj.ExistedCiceroLogNumber; % Number of old log files.
 originPath = obj.CiceroLogOrigin;
 dataPrefix = obj.DataPrefix;
+isFetched = false; % Error flag
 
 % Scan the origin folder to find if a new log file is created.
 while newLogNum<1 && t<10
     pause(tPause)
     newLogNum = countFileNumberJava(originPath,".clg") - existedLogNum;
     if newLogNum>1
-        error('>1 log files found')
+        obj.displayLog(">1 log files found")
+        return
     end
     t = t + tPause;
 end
 
 if t>= 10
-    error('Can not find a log file in 10 seconds')
+    obj.displayLog("Can not find a log file in 10 seconds")
+    return
 end
 
 % Get the newest log file.
@@ -43,7 +46,10 @@ while t<5 && ~moveStatus
 end
 
 if t >= 5
-    error("Can not move the log file in 5 seconds")
+    obj.displayLog("Can not move the log file in 5 seconds")
+    return
 end
+
+isFetched = true;
 
 end

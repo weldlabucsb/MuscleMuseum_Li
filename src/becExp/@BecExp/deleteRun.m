@@ -179,9 +179,8 @@ if ~isempty(oldHLogList)
     end
 end
 
-%% Reset exist log file number
-obj.ExistedCiceroLogNumber = countFileNumber(obj.CiceroLogOrigin,".clg");
-obj.ExistedHardwareLogNumber = arrayfun(@countFileNumber,obj.HardwareList.DataPath);
+%% Reset existed log file number
+obj.countExistedLog
 
 %% Refresh
 obj.refresh;
