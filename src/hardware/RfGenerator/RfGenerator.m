@@ -1,4 +1,4 @@
-classdef (Abstract) WaveformGenerator < Hardware
+classdef (Abstract) RfGenerator < Hardware
     %WAVEFORMGENERATOR Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -13,7 +13,7 @@ classdef (Abstract) WaveformGenerator < Hardware
     end
     
     methods
-        function obj = WaveformGenerator(resourceName,name)
+        function obj = RfGenerator(resourceName,name)
             arguments
                 resourceName string
                 name string = string.empty

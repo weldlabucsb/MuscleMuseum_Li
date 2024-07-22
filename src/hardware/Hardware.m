@@ -1,17 +1,7 @@
-classdef (Abstract) Oscilloscope < handle
-    %WAVEFORMGENERATOR Summary of this class goes here
+classdef (Abstract) Hardware < handle
+    %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
-    
-    properties
-        SamplingRate double
-        TriggerSource string {mustBeMember(TriggerSource,{'External','Software','Immediate'})} = "External"
-        TriggerSlope string {mustBeMember(TriggerSlope,{'Rise','Fall'})} = "Rise"
-        OutputMode string {mustBeMember(OutputMode,{'Gated','Normal'})} = "Normal"
-        IsOutput logical
-        OutputLoad string {mustBeMember(OutputLoad,{'50','Infinity'})} = "50"
-        WaveformList cell
-    end
-    
+
     properties(SetAccess = protected)
         Name string % Nickname of the device
         Manufacturer string % Manufacturer of the device
@@ -23,9 +13,9 @@ classdef (Abstract) Oscilloscope < handle
         ParentPath string
         DataPath string % Folder to save the object
     end
-    
+
     methods
-        function obj = Oscilloscope(resourceName,name)
+        function obj = Hardware(resourceName,name)
             arguments
                 resourceName string
                 name string = string.empty
@@ -37,9 +27,8 @@ classdef (Abstract) Oscilloscope < handle
             load("Config.mat","ComputerConfig")
             obj.ParentPath = ComputerConfig.HardwareLogOrigin;
             obj.DataPath = fullfile(obj.ParentPath,name);
-            % createFolder(obj.DataPath);
+            createFolder(obj.DataPath);
         end
-        
     end
 
     methods (Access = protected)
@@ -47,14 +36,6 @@ classdef (Abstract) Oscilloscope < handle
             t = string(datetime('now','Format','yyyyMMddHHmmss'));
             save(fullfile(obj.DataPath,obj.Name + "_" + t),'obj')
         end
-    end
-
-    methods (Abstract)
-        connect(obj)
-        set(obj)
-        upload(obj)
-        close(obj)
-        status = check(obj)
     end
 end
 
