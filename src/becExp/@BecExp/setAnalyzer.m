@@ -50,6 +50,7 @@ obj.Analyzer.Enabled = false;
             return
         end
 
+        % Update cicero data
         ciceroData = obj.readCiceroLog(currentRunNumber);
         if isempty(obj.CiceroData)
             obj.CiceroData = ciceroData;
