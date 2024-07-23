@@ -2,11 +2,28 @@ classdef (Abstract) Scope < Hardware
     %WAVEFORMGENERATOR Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties
-        SamplingRate double
-        TriggerSource string {mustBeMember(TriggerSource,{'External','Software','Immediate'})} = "External"
+    properties 
+        Duration double {mustBePositive} = 0.1 %The time in seconds that corresponds to the record length
+        NSample double {mustBeInteger,mustBePositive} = 2000 % How many data points to collect
+        TriggerMode string {mustBeMember(TriggerMode,{'Normal','Auto'})} = "Normal"
+        TriggerSource string = "External"
         TriggerSlope string {mustBeMember(TriggerSlope,{'Rise','Fall'})} = "Rise"
-        OutputLoad string {mustBeMember(OutputLoad,{'50','Infinity'})} = "50"
+        TriggerLevel double = 0.1
+        IsEnabled logical
+        VerticalCoupling string {mustBeMember(VerticalCoupling,{'DC','AC'})} = "DC"
+        VerticalOffset double = 0
+        VerticalRange double = 10
+    end
+
+    properties (SetAccess = protected)
+        SamplingRateMax
+        Sample
+        SampleUnit
+    end
+
+    properties (Dependent)
+        TimeList
+        SamplingRate
     end
     
     methods
@@ -17,13 +34,21 @@ classdef (Abstract) Scope < Hardware
             end
             obj@Hardware(resourceName,name)
         end
+
+        function tL = get.TimeList(obj)
+            tL = linspace(0,obj.Duration,obj.NSample);
+        end
+
+        function sR = get.SamplingRate(obj)
+            sR = obj.NSample / obj.Duration;
+        end
         
     end
 
     methods (Abstract)
         connect(obj)
         set(obj)
-        upload(obj)
+        read(obj)
         close(obj)
         status = check(obj)
     end
