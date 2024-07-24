@@ -18,11 +18,13 @@ classdef (Abstract) TektronixScope < Scope
 
         function connect(obj)
             obj.Oscilloscope = oscilloscope;
+            obj.Oscilloscope.Timeout = 2;
             obj.Oscilloscope.Resource = obj.ResourceName;
-            obj.Oscilloscope.connect
+            obj.Oscilloscope.connect;
         end
 
         function set(obj)
+            obj.check;
             obj.Oscilloscope.AcquisitionTime = obj.Duration;
             obj.Oscilloscope.WaveformLength = obj.NSample;
             obj.Oscilloscope.TriggerMode = lowerFirst(obj.TriggerMode);
@@ -47,15 +49,42 @@ classdef (Abstract) TektronixScope < Scope
         end
 
         function read(obj)
-            obj.Sample = obj.Oscilloscope.readWaveform;
+            obj.check;
+            ChannelName = obj.Oscilloscope.ChannelsEnabled;
+            SampleData = cell(1,numel(ChannelName));
+            [SampleData{:}] = obj.Oscilloscope.readWaveform;
+            obj.Sample = table(string(ChannelName.'),cell2mat(SampleData.'));
         end
 
         function close(obj)
+            if isempty(obj.Oscilloscope)
+                warning("Scope is not connected.")
+                return
+            elseif ~isvalid(obj.Oscilloscope)
+                warning("Scope was deleted.")
+                return
+            elseif string(obj.Oscilloscope.Status) == "close"
+                warning("Scope was closed.")
+                return
+            end
             obj.Oscilloscope.disconnect
+            delete(obj.Oscilloscope)
         end
 
         function status = check(obj)
-
+            if isempty(obj.Oscilloscope)
+                error("Scope is not connected.")   
+            elseif ~isvalid(obj.Oscilloscope)
+                error("Scope object was deleted.")
+            elseif string(obj.Oscilloscope.Status) == "close"
+                error("Scope object was closed.")
+            elseif obj.SamplingRateMax < obj.SamplingRate
+                error("Scope sampling rate exceeds the limit")
+            elseif obj.NSampleMax < obj.NSample
+                error("Scope sampling number exceeds the limit")
+            else
+                status = true;
+            end
         end
     end
 end

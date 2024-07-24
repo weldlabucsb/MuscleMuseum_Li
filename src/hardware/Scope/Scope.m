@@ -19,6 +19,7 @@ classdef (Abstract) Scope < Hardware
         SamplingRateMax
         Sample
         SampleUnit
+        NSampleMax
     end
 
     properties (Dependent)
@@ -41,6 +42,32 @@ classdef (Abstract) Scope < Hardware
 
         function sR = get.SamplingRate(obj)
             sR = obj.NSample / obj.Duration;
+        end
+
+        function plot(obj,ax)
+            arguments
+                obj Scope
+                ax = []
+            end
+            t = obj.TimeList;
+            data = obj.Sample.SampleData;
+            if isempty(ax)
+                figure(8672)
+                plot(t,data)
+                xlabel("Time [s]",'Interpreter','latex')
+                ylabel("Sample Data ["+ obj.SampleUnit + "]",'Interpreter','latex')
+                cName = "Channel " + string(find(obj.IsEnabled));
+                legend(cName(:),'Interpreter','latex')
+                render
+            elseif isa(ax,"matlab.graphics.axis.Axes")
+                plot(ax,t,data)
+                xlabel("Time [s]",'Interpreter','latex')
+                ylabel("Sample Data ["+ obj.SampleUnit + "]",'Interpreter','latex')
+                cName = "Channel " + string(find(obj.IsEnabled));
+                legend(cName(:),'Interpreter','latex')
+            else
+                error("ax must be a MATLAB graphicx axis object.")
+            end
         end
         
     end

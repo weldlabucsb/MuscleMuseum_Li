@@ -15,6 +15,7 @@ classdef TekTronix1104 < TektronixScope
             obj@TektronixScope(resourceName,name)
             obj.Model = "1104";
             obj.SamplingRateMax = 1e9;
+            obj.NSampleMax = 2.5e3;
             obj.NChannel = 4;
             obj.IsEnabled = true(1,obj.NChannel);
             obj.VerticalOffset = zeros(1,obj.NChannel);
