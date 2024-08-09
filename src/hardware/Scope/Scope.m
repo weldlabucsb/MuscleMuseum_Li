@@ -4,7 +4,7 @@ classdef (Abstract) Scope < Hardware
     
     properties 
         Duration double {mustBePositive} = 0.1 %The time in seconds that corresponds to the record length
-        NSample double {mustBeInteger,mustBePositive} = 2000 % How many data points to collect
+        NSample double {mustBeInteger,mustBePositive} = 2500 % How many data points to collect
         TriggerMode string {mustBeMember(TriggerMode,{'Normal','Auto'})} = "Normal"
         TriggerSource string = "External"
         TriggerSlope string {mustBeMember(TriggerSlope,{'Rise','Fall'})} = "Rise"

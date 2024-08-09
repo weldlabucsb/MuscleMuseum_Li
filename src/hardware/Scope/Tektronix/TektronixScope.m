@@ -2,7 +2,7 @@ classdef (Abstract) TektronixScope < Scope
     %TEKTRONIXOSCILLOSCOPE Summary of this class goes here
     %   Detailed explanation goes here
     properties (SetAccess = protected,Transient)
-        Oscilloscope Oscilloscope % MATLAB Quick-Control Oscilloscope object
+        Oscilloscope  % MATLAB Quick-Control Oscilloscope object
     end
 
     methods
@@ -18,7 +18,7 @@ classdef (Abstract) TektronixScope < Scope
 
         function connect(obj)
             obj.Oscilloscope = oscilloscope;
-            obj.Oscilloscope.Timeout = 2;
+            obj.Oscilloscope.Timeout = 5;
             obj.Oscilloscope.Resource = obj.ResourceName;
             obj.Oscilloscope.connect;
         end
@@ -34,16 +34,20 @@ classdef (Abstract) TektronixScope < Scope
                 obj.Oscilloscope.TriggerSlope = "falling";
             end
             obj.Oscilloscope.TriggerLevel = obj.TriggerLevel;
-            obj.Oscilloscope.TriggerSource = obj.TriggerSource;
+            if obj.TriggerSource == "External"
+                obj.Oscilloscope.TriggerSource = 'EXT';
+            else
+                obj.Oscilloscope.TriggerSource = obj.TriggerSource;
+            end
             for ii = 1:obj.NChannel
-                cName = "Channel" + num2str(ii);
+                cName = "CH" + num2str(ii);
                 if ~obj.IsEnabled(ii)
                     disableChannel(obj.Oscilloscope,cName)
                 else
                     enableChannel(obj.Oscilloscope,cName)
-                    setVerticalCoupling(obj.Oscilloscope,cName,obj.VerticalCoupling(ii))
-                    setVerticalOffset(obj.Oscilloscope,cName,obj.VerticalOffset(ii))
-                    setVerticalRange(obj.Oscilloscope,cName,obj.VerticalRange(ii))
+                    configureChannel(obj.Oscilloscope,cName,'VerticalCoupling',obj.VerticalCoupling(ii))
+                    configureChannel(obj.Oscilloscope,cName,'VerticalOffset',obj.VerticalOffset(ii))
+                    configureChannel(obj.Oscilloscope,cName,'VeticalRange',obj.VerticalRange(ii))
                 end
             end
         end
@@ -51,9 +55,11 @@ classdef (Abstract) TektronixScope < Scope
         function read(obj)
             obj.check;
             ChannelName = obj.Oscilloscope.ChannelsEnabled;
+            ChannelName = string(ChannelName.');
             SampleData = cell(1,numel(ChannelName));
             [SampleData{:}] = obj.Oscilloscope.readWaveform;
-            obj.Sample = table(string(ChannelName.'),cell2mat(SampleData.'));
+            SampleData = cell2mat(SampleData.');
+            obj.Sample = table(ChannelName,SampleData);
         end
 
         function close(obj)
