@@ -129,9 +129,23 @@ ResourceName = [
 WaveformGeneratorConfig = table(Name,DeviceModel,ResourceName);
 save(configName,"WaveformGeneratorConfig",'-mat','-append')
 
+%% Set the scope configuration
+Name = [
+    "LatticeScope"
+    ];
+DeviceModel = [
+"TekTronix1104"
+];
+ResourceName = [
+"USB0::0x0699::0x03B4::C011351::0::INSTR"
+];
+ScopeConfig = table(Name,DeviceModel,ResourceName);
+save(configName,"ScopeConfig",'-mat','-append')
+
 %% Set the hardware list
-Name = WaveformGeneratorConfig.Name;
-Type = repmat("WaveformGenerator",numel(Name),1);
+Name = [WaveformGeneratorConfig.Name;ScopeConfig.Name];
+Type = [repmat("WaveformGenerator",numel(WaveformGeneratorConfig.Name),1);...
+    repmat("Scope",numel(ScopeConfig.Name),1)];
 DataPath = fullfile(ComputerConfig.HardwareLogOrigin,Name);
 HardwareList = table(Name,Type,DataPath);
 save(configName,"HardwareList",'-mat','-append')
