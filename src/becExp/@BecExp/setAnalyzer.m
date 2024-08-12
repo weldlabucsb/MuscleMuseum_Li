@@ -67,6 +67,9 @@ obj.Analyzer.Enabled = false;
         %% Update Hardware
         obj.updateHardware
 
+        %% Update ScopeData
+        obj.updateScopeData
+        
         %% Show Images
         obj.displayLog("Updating the figures.")
         for ii = 1:numel(obj.AnalysisMethod)

@@ -33,6 +33,7 @@ classdef BecExp < Trial
     properties(SetAccess = private)
         CiceroData struct
         HardwareData struct
+        ScopeData struct
         Atom Atom
     end
 
@@ -123,10 +124,14 @@ classdef BecExp < Trial
                     elseif isfield(obj.HardwareData,obj.ScannedParameter)
                         paraList = obj.HardwareData.(obj.ScannedParameter);
                     else
-                        paraList = [];
+                        obj.updateScopeData
+                        if isfield(obj.ScopeData,obj.ScannedParameter)
+                            paraList = obj.ScopeData.(obj.ScannedParameter);
+                        else
+                            paraList = [];
+                        end
                     end
             end
-        end
 
         function runListSorted = get.RunListSorted(obj)
             paraList = obj.ScannedParameterList;
@@ -183,6 +188,7 @@ classdef BecExp < Trial
         isFetched = fetchCiceroLog(obj,currentRunNumber)
         fetchHardwareLog(obj,runIdx)
         updateHardware(obj)
+        updateScopeData(obj)
         writeDatabase(obj)
         updateDatabase(obj)
     end

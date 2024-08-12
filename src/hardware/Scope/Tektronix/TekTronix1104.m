@@ -22,6 +22,7 @@ classdef TekTronix1104 < TektronixScope
             obj.VerticalOffset = zeros(1,obj.NChannel);
             obj.VerticalCoupling = repmat("DC",1,obj.NChannel);
             obj.VerticalRange = repmat(10,1,obj.NChannel);
+            obj.DisabledProperty = ["NSample","TriggerSource","TriggerLevel","VerticalOffset","VerticalRange"];
         end
 
         function set(obj)

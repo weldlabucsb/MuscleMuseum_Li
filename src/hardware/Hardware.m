@@ -12,6 +12,7 @@ classdef (Abstract) Hardware < handle
         DataType string {mustBeMember(DataType,{'uint8','double'})}= "uint8"
         ParentPath string
         DataPath string % Folder to save the object
+        DisabledProperty string % Properties that are not implemented for specific models
     end
 
     methods
@@ -26,15 +27,21 @@ classdef (Abstract) Hardware < handle
             % Set logging folder
             load("Config.mat","ComputerConfig")
             obj.ParentPath = ComputerConfig.HardwareLogOrigin;
-            obj.DataPath = fullfile(obj.ParentPath,name);
-            createFolder(obj.DataPath);
+            if isfolder(obj.ParentPath)
+                obj.DataPath = fullfile(obj.ParentPath,name);
+                createFolder(obj.DataPath);
+            else
+                warning("Can not find the hardware log folder. Check your setConfig")
+            end
         end
     end
 
     methods (Access = protected)
         function saveObject(obj)
-            t = string(datetime('now','Format','yyyyMMddHHmmss'));
-            save(fullfile(obj.DataPath,obj.Name + "_" + t),'obj')
+            if isfolder(obj.DataPath)
+                t = string(datetime('now','Format','yyyyMMddHHmmss'));
+                save(fullfile(obj.DataPath,obj.Name + "_" + t),'obj')
+            end
         end
     end
 end

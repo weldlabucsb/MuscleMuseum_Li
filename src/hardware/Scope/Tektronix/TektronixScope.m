@@ -60,6 +60,7 @@ classdef (Abstract) TektronixScope < Scope
             [SampleData{:}] = obj.Oscilloscope.readWaveform;
             SampleData = cell2mat(SampleData.');
             obj.Sample = table(ChannelName,SampleData);
+            obj.saveObject;
         end
 
         function close(obj)

@@ -15,10 +15,12 @@ if ~isempty(hwApp)
                     obj.HardwareData.(f{ii}) = [obj.HardwareData.(f{ii}),hardwareData.(f{ii})];
                 end
             end
-            
         end
         if hwApp.IsBecExpScanned
             hwApp.update
+        end
+        for ii = 1:numel(hwApp.RunningScopeControl)
+            hwApp.RunningScopeControl(ii).ReadButtonPushed
         end
     end
 end
