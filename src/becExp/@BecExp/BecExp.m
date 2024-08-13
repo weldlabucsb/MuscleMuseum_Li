@@ -132,6 +132,7 @@ classdef BecExp < Trial
                         end
                     end
             end
+        end
 
         function runListSorted = get.RunListSorted(obj)
             paraList = obj.ScannedParameterList;

@@ -1,4 +1,11 @@
 function fetchHardwareLog(obj,runIdx)
+obj.displayLog("Reading scope data for run #" + num2str(runIdx) + ".")
+hwApp = get(findall(0, 'Tag', "HwControlPanel"), 'RunningAppInstance');
+if ~isempty(hwApp)
+    if isvalid(hwApp)
+        hwApp.readScope;
+    end
+end
 obj.displayLog("Fetching the hardware log files for run #" + num2str(runIdx) + ".")
 existedLogNum = obj.ExistedHardwareLogNumber; % Number of old log files.
 hardwareList = obj.HardwareList;
