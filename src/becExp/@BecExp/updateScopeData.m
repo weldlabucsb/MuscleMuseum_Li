@@ -17,14 +17,14 @@ for kk = 1:numel(fullValueName)
     scopeName = C(1);
     channelName = C(2);
     valueName = C(3);
-    channelNumber = regexp(channelName,'\d*','Match');
+    channelNumber = double(regexp(channelName,'\d*','Match'));
     if isfield(obj.ScopeData,fullValueName(kk)) && numel(obj.ScopeData.(fullValueName(kk))) == (currentRunNumber - 1)
         obj.ScopeData.(fullValueName(kk))(end+1) = readRun(currentRunNumber,scopeName,valueName,channelNumber);
     elseif isfield(obj.ScopeData,fullValueName(kk)) && numel(obj.ScopeData.(fullValueName(kk))) == currentRunNumber
         continue
     else
         for ii = 1:currentRunNumber
-            obj.ScopeData.(fullValueName(kk))(ii) = readRun(ii,scopeName,valueName,channelNumber);
+            obj.ScopeData(1).(fullValueName(kk))(ii) = readRun(ii,scopeName,valueName,channelNumber);
         end
     end
 end

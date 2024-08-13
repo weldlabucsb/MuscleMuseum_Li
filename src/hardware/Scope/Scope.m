@@ -143,11 +143,14 @@ classdef (Abstract) Scope < Hardware
                 legend(cName(:),'Interpreter','latex')
                 render
             elseif isa(ax,"matlab.graphics.axis.Axes")
-                plot(ax,t,data)
-                xlabel("Time [s]",'Interpreter','latex')
-                ylabel("Sample Data ["+ obj.SampleUnit + "]",'Interpreter','latex')
+                l = plot(ax,t,data);
+                xlabel(ax,"Time [s]",'Interpreter','latex')
+                ylabel(ax,"Sample Data ["+ obj.SampleUnit + "]",'Interpreter','latex')
                 cName = "Channel " + string(find(obj.IsEnabled));
-                legend(cName(:),'Interpreter','latex')
+                legend(ax,cName(:),'Interpreter','latex')
+                for ii = 1:numel(l)
+                    l(ii).LineWidth = 2;
+                end
             else
                 error("ax must be a MATLAB graphicx axis object.")
             end

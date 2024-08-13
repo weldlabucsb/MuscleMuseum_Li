@@ -16,12 +16,7 @@ if ~isempty(hwApp)
                 end
             end
         end
-        if hwApp.IsBecExpScanned
-            hwApp.update
-        end
-        for ii = 1:numel(hwApp.RunningScopeControl)
-            hwApp.RunningScopeControl(ii).ReadButtonPushed
-        end
+        hwApp.update
     end
 end
 
