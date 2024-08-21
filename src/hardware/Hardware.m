@@ -1,4 +1,4 @@
-classdef (Abstract) Hardware < handle
+classdef (Abstract) Hardware < handle & matlab.mixin.SetGetExactNames
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
 

@@ -16,10 +16,10 @@ classdef (Abstract) Scope < Hardware
     end
 
     properties (SetAccess = protected)
-        SamplingRateMax
-        Sample
-        SampleUnit
-        NSampleMax
+        SamplingRateMax double
+        Sample double
+        SampleUnit string
+        NSampleMax double
     end
 
     properties (Dependent)
@@ -56,37 +56,37 @@ classdef (Abstract) Scope < Hardware
         end
 
         function p2p = get.PeakToPeak(obj)
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             p2p = max(data,[],2) - min(data,[],2);
         end
 
         function maxV = get.Max(obj)
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             maxV = max(data,[],2);
         end
 
         function minV = get.Min(obj)
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             minV = min(data,[],2);
         end
 
         function meanV = get.Mean(obj)
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             meanV = mean(data,2);
         end
 
         function rmsV = get.Rms(obj)
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             rmsV = rms(data,2);
         end
 
         function stdV = get.Std(obj)
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             stdV = std(data,0,2);
         end
 
         function sineFit = get.SineFit(obj)
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             t = obj.TimeList;
             sineFit = SineFit1D.empty;
             for ii = 1:size(data,1)
@@ -133,7 +133,7 @@ classdef (Abstract) Scope < Hardware
                 ax = []
             end
             t = obj.TimeList;
-            data = obj.Sample.SampleData;
+            data = obj.Sample;
             if isempty(ax)
                 figure(8672)
                 plot(t,data)

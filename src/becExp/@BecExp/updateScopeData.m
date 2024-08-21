@@ -38,7 +38,11 @@ end
             error("Channel"+cNumber+" of "+sName+" was disabled.")
         end
         valueIdx = (cNumber == find(scopeData.IsEnabled));
-        valueList = scopeData.(vName);
+        try
+            valueList = scopeData.(vName);
+        catch
+            error(vName + " is not a valid scope value.")
+        end
         value = valueList(valueIdx);
     end
 end

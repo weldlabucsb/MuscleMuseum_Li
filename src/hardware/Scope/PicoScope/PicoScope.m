@@ -1,4 +1,4 @@
-classdef (Abstract) TektronixScope < Scope
+classdef (Abstract) PicoScope < Scope
     %TEKTRONIXOSCILLOSCOPE Summary of this class goes here
     %   Detailed explanation goes here
     properties (SetAccess = protected,Transient)
@@ -6,7 +6,7 @@ classdef (Abstract) TektronixScope < Scope
     end
 
     methods
-        function obj = TektronixScope(resourceName,name)
+        function obj = PicoScope(resourceName,name)
             arguments
                 resourceName string
                 name string = string.empty

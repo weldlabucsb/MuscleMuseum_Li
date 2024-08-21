@@ -1,11 +1,11 @@
 classdef BecExp < Trial
-    %BECEXP Summary of this class goes here
+    %BecExp Summary of this class goes here
     %   Detailed explanation goes here
     properties
         Roi Roi
         SubRoi Roi
         Acquisition Acquisition
-        AnalysisMethod string
+        AnalysisMethod string % List of analysis methods
         CloudCenter double % Cloud center [y_0,x_0] from previous measurement, in pixels
     end
 
