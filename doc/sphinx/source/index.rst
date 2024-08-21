@@ -3,11 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-MuscleMuseum documentation
+MuscleMuseum
 ==========================
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    intro/introduction
+   intro/install
+   intro/quick
+   api/api
+   sup/support

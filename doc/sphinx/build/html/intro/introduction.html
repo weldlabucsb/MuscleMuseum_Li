@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="MuscleMuseum documentation" href="../index.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Installation and Setup" href="install.html" /><link rel="prev" title="MuscleMuseum" href="../index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Introduction - MuscleMuseum 0.1 documentation</title>
@@ -201,6 +201,10 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sup/support.html">Support</a></li>
 </ul>
 
 </div>
@@ -243,178 +247,35 @@
         <article role="main" id="furo-main-content">
           <section id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
-<dl class="mat class">
-<dt class="sig sig-object mat" id="BecExp">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">BecExp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trialName</span></em>, <em class="sig-param"><span class="pre">options</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp" title="Link to this definition">¶</a></dt>
-<dd><p>BecExp Summary of this class goes here
-Detailed explanation goes here</p>
-<div class="members docutils container">
-<dl>
-<dt>Constructor Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.BecExp">
-<span class="sig-name descname"><span class="pre">BecExp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trialName</span></em>, <em class="sig-param"><span class="pre">options</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.BecExp" title="Link to this definition">¶</a></dt>
-<dd><p>BECEXP Construct an instance of this class
-Detailed explanation goes here</p>
-</dd></dl>
-
-</dd>
-<dt>Property Summary</dt><dd><dl class="mat attribute">
-<dt class="sig sig-object mat" id="BecExp.AnalysisMethod">
-<span class="sig-name descname"><span class="pre">AnalysisMethod</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#BecExp.AnalysisMethod" title="Link to this definition">¶</a></dt>
-<dd><p>List of analysis methods</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="BecExp.CloudCenter">
-<span class="sig-name descname"><span class="pre">CloudCenter</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#BecExp.CloudCenter" title="Link to this definition">¶</a></dt>
-<dd><p>Cloud center [y_0,x_0] from previous measurement, in pixels</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="BecExp.ExistedCiceroLogNumber">
-<span class="sig-name descname"><span class="pre">ExistedCiceroLogNumber</span></span><a class="headerlink" href="#BecExp.ExistedCiceroLogNumber" title="Link to this definition">¶</a></dt>
-<dd><p>Count the number of log files that are already in the Origin folder.</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="BecExp.ExistedHardwareLogNumber">
-<span class="sig-name descname"><span class="pre">ExistedHardwareLogNumber</span></span><a class="headerlink" href="#BecExp.ExistedHardwareLogNumber" title="Link to this definition">¶</a></dt>
-<dd><p>Count the number of hardware log files that are already in the folder.</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="BecExp.IsAcquiring">
-<span class="sig-name descname"><span class="pre">IsAcquiring</span></span><em class="property"> <span class="pre">logical</span> <span class="pre">=</span> <span class="pre">false</span></em><a class="headerlink" href="#BecExp.IsAcquiring" title="Link to this definition">¶</a></dt>
-<dd><p>If the program is still acquiring images</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="BecExp.IsAutoAcquire">
-<span class="sig-name descname"><span class="pre">IsAutoAcquire</span></span><em class="property"> <span class="pre">logical</span> <span class="pre">=</span> <span class="pre">false</span></em><a class="headerlink" href="#BecExp.IsAutoAcquire" title="Link to this definition">¶</a></dt>
-<dd><p>If we want to automatically set the camera through MATLAB</p>
-</dd></dl>
-
-</dd>
-<dt>Method Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.addAnalysis">
-<span class="sig-name descname"><span class="pre">addAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">newAnalysisList</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.addAnalysis" title="Link to this definition">¶</a></dt>
-<dd><p>ADDANALYSIS Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.browserShow">
-<span class="sig-name descname"><span class="pre">browserShow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.browserShow" title="Link to this definition">¶</a></dt>
-<dd><p>SHOW Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.countExistedLog">
-<span class="sig-name descname"><span class="pre">countExistedLog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.countExistedLog" title="Link to this definition">¶</a></dt>
-<dd><p>COUNTEXISTEDLOG Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.deleteRun">
-<span class="sig-name descname"><span class="pre">deleteRun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">runIdx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.deleteRun" title="Link to this definition">¶</a></dt>
-<dd><p>DELETERUN Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.pause">
-<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.pause" title="Link to this definition">¶</a></dt>
-<dd><p>PAUSE Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.readRunRoi">
-<span class="sig-name descname"><span class="pre">readRunRoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">runIdx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.readRunRoi" title="Link to this definition">¶</a></dt>
-<dd><p>READRUNROI Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.refresh">
-<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">anaylsisName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.refresh" title="Link to this definition">¶</a></dt>
-<dd><p>REFRESH Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.removeAnalysis">
-<span class="sig-name descname"><span class="pre">removeAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">removeAnalysisList</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.removeAnalysis" title="Link to this definition">¶</a></dt>
-<dd><p>REMOVEANALYSIS Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.resume">
-<span class="sig-name descname"><span class="pre">resume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.resume" title="Link to this definition">¶</a></dt>
-<dd><p>RESUME Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.setConfigProperty">
-<span class="sig-name descname"><span class="pre">setConfigProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.setConfigProperty" title="Link to this definition">¶</a></dt>
-<dd><p>This method compares the properties of the handle object ‘obj’ with 
-the fields of a structure ‘struct’. Then it sets the properties to the
-values of the fields. The obj must inherit the set method from 
-matlab.mixin.SetGetExactNames</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.setFolder">
-<span class="sig-name descname"><span class="pre">setFolder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.setFolder" title="Link to this definition">¶</a></dt>
-<dd><p>SETFOLDER This method creates data storage folders and sets up data
-analysis paths.</p>
-<blockquote>
-<div><p>The data are stored in the folder:
-[ParentPath]yearyear.monthmonth.day[datafolder]
-[datafolder] is named as “idx1 - Name_idx2” where idx1 indicates
-it is the idx1-th data taken this day, and idx2 indicates it is the
-idx2-th data taken this day with the same Name.</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.show">
-<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.show" title="Link to this definition">¶</a></dt>
-<dd><p>SHOW Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.sortAnalysis">
-<span class="sig-name descname"><span class="pre">sortAnalysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.sortAnalysis" title="Link to this definition">¶</a></dt>
-<dd><p>SORTANALYSIS Summary of this function goes here
-We need to run different analysis in certain order so we have to sort
-the analysis methods</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.updateHardware">
-<span class="sig-name descname"><span class="pre">updateHardware</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.updateHardware" title="Link to this definition">¶</a></dt>
-<dd><p>UPDATEHARDWARE Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="BecExp.updateScopeData">
-<span class="sig-name descname"><span class="pre">updateScopeData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BecExp.updateScopeData" title="Link to this definition">¶</a></dt>
-<dd><p>UPDATESCOPEDATA Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-</dd>
-</dl>
-</div>
-</dd></dl>
-
+<p><strong>MuscleMuseum</strong> is a object-oriented MATLAB toolbox designed for Atomic, Molecular, and Optical
+(AMO) physics. It serves as an integrated solution for experimental control,
+data management, data analysis, and numerical simulation. The toolbox has
+several key features:</p>
+<ol class="arabic simple">
+<li><p>Direct Hardware Control: Leveraging MATLAB’s rich set of hardware communication toolboxes, such as the <a class="reference external" href="https://www.mathworks.com/products/data-acquisition.html">Data Acquisition Toolbox</a>, MuscleMuseum provides seamless integration for automatic hardware control.</p></li>
+<li><p>Data Management with <a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a>: MuscleMuseum employs the robust PostgreSQL database system for efficient data management. This ensures reliable storage and retrieval of experimental data.</p></li>
+<li><p>User-Friendly GUIs: The package offers intuitive Graphical User Interfaces (GUIs) developed using <a class="reference external" href="https://www.mathworks.com/products/matlab/app-designer.html">MATLAB App Designer</a>.</p></li>
+</ol>
+<p>Right now, I have implemented:</p>
+<ol class="arabic simple">
+<li><p>A BEC experimental control and data analysis system integrated with <a class="reference external" href="https://akeshet.github.io/Cicero-Word-Generator/">Cicero</a> (the BecExp class)</p></li>
+<li><p>Apps for controlling and browsing BEC experiments (BecControlPanel and BecBrowser)</p></li>
+<li><p>Atomic data and atomic structure handling (the Atom class)</p></li>
+<li><p>A single-atom master equation simulation tool (the MeSim class)</p></li>
+<li><p>A 1D Time-dependent Schrodinger equation (TDSE) simulation tool (the SeSim1D class)</p></li>
+<li><p>A 1D lattice dynamics simulation tool (the LatticeSeSim1D class)</p></li>
+<li><p>Some lattice band structure calculations (the OpticalLattice class)</p></li>
+<li><p>Keysight function generator control</p></li>
+</ol>
+<p>Still under construction:</p>
+<ol class="arabic simple">
+<li><p>Gross-Pitaevskii equation simulation</p></li>
+<li><p>Scope talk</p></li>
+<li><p>RF generator control</p></li>
+</ol>
+<p>Known issues: the database functions I wrote are not compatible with MATLAB 2023b or higher. I
+need to fix this in the future. The database may not be accessed through VPN
+for now.</p>
 </section>
 
         </article>
@@ -422,7 +283,15 @@ Detailed explanation goes here</p>
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="install.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Installation and Setup</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="../index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">

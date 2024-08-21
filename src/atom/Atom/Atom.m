@@ -5,7 +5,7 @@ classdef (Abstract) Atom < dynamicprops & handle & matlab.mixin.Heterogeneous
     %   (Alkali.ne Rydberg Calculator). Most (but not all) of the atomic
     %   data are inherited from the ARC package. Not all the ARC package
     %   functions are used, because of some defects in that package and
-    %   some convetion conflicts.
+    %   some convention conflicts.
     %   
     %   When an Atom object is constructed, it reads data from the
     %   corresponding ARC atom object and saves them as its own properties.
