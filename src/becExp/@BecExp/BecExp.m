@@ -1,5 +1,5 @@
 classdef BecExp < Trial
-    %BecExp Summary of this class goes here
+    %BecExp This is BecExp
     %   Detailed explanation goes here
     properties
         Roi Roi
