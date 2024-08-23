@@ -6,10 +6,10 @@
 MuscleMuseum
 ==========================
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    intro/introduction
    intro/install
    intro/quick
-   api/api
+   api/index
    sup/support

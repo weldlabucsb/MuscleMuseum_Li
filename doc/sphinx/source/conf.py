@@ -37,3 +37,7 @@ matlab_short_links = True
 
 html_theme = 'sphinx_book_theme'
 html_static_path = ['_static']
+html_theme_options = {
+    "show_navbar_depth": int(4),
+    "max_navbar_depth": int(4),
+}

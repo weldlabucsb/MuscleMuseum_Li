@@ -12,13 +12,13 @@ classdef (Abstract) Atom < dynamicprops & handle & matlab.mixin.Heterogeneous
     %   The ArcObj is also saved for later use.
     
     properties (SetAccess = protected)
-        Name string % Lithium7, for example. Check the ARC documents for available atoms.
+        Name string % "Lithium7", for example. Check the ARC documents for available atoms.
         DataPath string % Where to save the pre-calcualted data, for example, the MI,MJ <-> F,MF correspondence
     end
 
     properties (SetAccess = private, Hidden)
         ArcObj % The ARC atom object
-        Type string % Either alkali or Divalent
+        Type string % Either "Alkali" or "Divalent"
     end
     
     methods

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation and Setup &#8212; MuscleMuseum 0.1 documentation</title>
+    <title>API &#8212; MuscleMuseum 0.1 documentation</title>
   
   
   
@@ -40,11 +40,11 @@
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'intro/install';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/index';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Quick Start" href="quick.html" />
-    <link rel="prev" title="Introduction" href="introduction.html" />
+    <link rel="next" title="Atom" href="atom.html" />
+    <link rel="prev" title="Quick Start" href="../intro/quick.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -149,12 +149,12 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation and Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quick.html">Quick Start</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/trial.html">Trial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/install.html">Installation and Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro/quick.html">Quick Start</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom.html">Atom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trial.html">Trial</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../sup/support.html">Support</a></li>
@@ -212,7 +212,7 @@
       
       
       
-      <li><a href="../_sources/intro/install.rst" target="_blank"
+      <li><a href="../_sources/api/index.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -294,7 +294,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Installation and Setup</h1>
+    <h1>API</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -308,28 +308,14 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="installation-and-setup">
-<h1>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Link to this heading">#</a></h1>
-<p>To use this toolbox:</p>
-<ol class="arabic simple">
-<li><dl class="simple">
-<dt>Install MATLAB. I only tested my code with MATLAB 2023a. MATLAB 2023b is not compatible. Required MATLAB packages:</dt><dd><ul class="simple">
-<li><p>Curve Fitting Toolbox</p></li>
-<li><p>Parallel Computing Toolbox</p></li>
-<li><p>Data Acquisition Toolbox (optional, only for onsite experiments)</p></li>
-<li><p>Instrument Control Toolbox (optional, only for onsite experiments)</p></li>
+  <section id="api">
+<h1>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="atom.html">Atom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trial.html">Trial</a></li>
 </ul>
-</dd>
-</dl>
-</li>
-<li><p>Install <a class="reference external" href="https://www.python.org/downloads/">Python</a> that is <a class="reference external" href="https://www.mathworks.com/support/requirements/python-compatibility.html">compatible with your MATLAB version</a>. Make sure the Python path is in your environment variable. Check if you can invoke Python in command line.</p></li>
-<li><p>Install <a class="reference external" href="https://arc-alkali-rydberg-calculator.readthedocs.io/en/latest/installation.html">ARC</a>.</p></li>
-<li><p>Install <a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a>. Set up passwords.</p></li>
-<li><p>Download this package. You can do <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/weldlabucsb/MuscleMuseum</span></code>. Right now this project is still under construction. For most updated codes please check out to the <code class="docutils literal notranslate"><span class="pre">dev</span></code> branch: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">dev</span></code>.</p></li>
-<li><p>In MATLAB, go to the main directory of this package.</p></li>
-<li><p>Most of the configurations are set in <code class="docutils literal notranslate"><span class="pre">.config\setConfig</span></code>. Check and see if you need to change any settings.</p></li>
-<li><p>At first setup, run <code class="docutils literal notranslate"><span class="pre">init</span></code>. Fix the issues if you see any warnings.</p></li>
-</ol>
+</div>
 </section>
 
 
@@ -344,20 +330,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="introduction.html"
+       href="../intro/quick.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Introduction</p>
+        <p class="prev-next-title">Quick Start</p>
       </div>
     </a>
     <a class="right-next"
-       href="quick.html"
+       href="atom.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Quick Start</p>
+        <p class="prev-next-title">Atom</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
