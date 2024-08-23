@@ -154,27 +154,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro/quick.html">Quick Start</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Atom</a></li>
-
-
 <li class="toctree-l2"><a class="reference internal" href="field.html">Field</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trial.html">Trial</a></li>
-
 <li class="toctree-l2"><a class="reference internal" href="becexp.html">BecExp</a></li>
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="sim.html">Sim</a></li>
-
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="hardware.html">Hardware</a></li>
-
-
-
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="math.html">Math</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc.html">Misc</a></li>
 </ul>
@@ -328,11 +312,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Atom</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#atom-manifold">Atom Manifold</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-src.atom.Atom">Atom</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#atom-manifold">Atom Manifold</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -345,7 +328,9 @@ document.write(`
                   
   <section id="atom">
 <h1>Atom<a class="headerlink" href="#atom" title="Link to this heading">#</a></h1>
-<dl class="mat class" id="module-src.atom.Atom">
+<section id="module-src.atom.Atom">
+<span id="id1"></span><h2>Atom<a class="headerlink" href="#module-src.atom.Atom" title="Link to this heading">#</a></h2>
+<dl class="mat class">
 <dt class="sig sig-object mat" id="Atom">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">dynamicprops</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Heterogeneous</span></code></p>
@@ -529,7 +514,7 @@ Detailed explanation goes here</p>
 
 </section>
 <section id="atom-manifold">
-<h1>Atom Manifold<a class="headerlink" href="#atom-manifold" title="Link to this heading">#</a></h1>
+<h2>Atom Manifold<a class="headerlink" href="#atom-manifold" title="Link to this heading">#</a></h2>
 <dl class="mat class" id="module-src.atom.AtomManifold">
 <dt class="sig sig-object mat" id="AtomManifold">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">AtomManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#AtomManifold" title="Link to this definition">#</a></dt>
@@ -1017,7 +1002,7 @@ D line Data.</p>
 
 </section>
 <section id="functions">
-<h1>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h1>
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="mat function" id="module-src.atom.func">
 <dt class="sig sig-object mat" id="saveAtom">
 <span class="sig-name descname"><span class="pre">saveAtom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#saveAtom" title="Link to this definition">#</a></dt>
@@ -1059,7 +1044,7 @@ spin basis</p>
 <span class="sig-name descname"><span class="pre">uncoupledSpinBasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">mj1</span></em>, <em class="sig-param"><span class="pre">j2</span></em>, <em class="sig-param"><span class="pre">mj2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinBasis" title="Link to this definition">#</a></dt>
 <dd><p>uncoupledSpinBasis Convert coupled spin basis to uncoupled.
 j1 and j2 couple to get j3. Get the uncoupled angular
-momentum spin eigen-basis <a href="#id1"><span class="problematic" id="id2">|</span></a>j1,mj1,j2,mj2&gt; under the j3 basis <a href="#id3"><span class="problematic" id="id4">|</span></a>j3,mj3&gt;</p>
+momentum spin eigen-basis <a href="#id2"><span class="problematic" id="id3">|</span></a>j1,mj1,j2,mj2&gt; under the j3 basis <a href="#id4"><span class="problematic" id="id5">|</span></a>j3,mj3&gt;</p>
 </dd></dl>
 
 <dl class="mat function">
@@ -1069,6 +1054,7 @@ momentum spin eigen-basis <a href="#id1"><span class="problematic" id="id2">|</s
 Detailed explanation goes here</p>
 </dd></dl>
 
+</section>
 </section>
 
 
@@ -1116,11 +1102,10 @@ Detailed explanation goes here</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Atom</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#atom-manifold">Atom Manifold</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-src.atom.Atom">Atom</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#atom-manifold">Atom Manifold</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>

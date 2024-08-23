@@ -154,27 +154,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro/quick.html">Quick Start</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="atom.html">Atom</a></li>
-
-
 <li class="toctree-l2"><a class="reference internal" href="field.html">Field</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trial.html">Trial</a></li>
-
 <li class="toctree-l2"><a class="reference internal" href="becexp.html">BecExp</a></li>
-
-
-
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Sim</a></li>
-
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="hardware.html">Hardware</a></li>
-
-
-
-
-
-
 <li class="toctree-l2"><a class="reference internal" href="math.html">Math</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc.html">Misc</a></li>
 </ul>
@@ -328,13 +312,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Sim</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#simrun">SimRun</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#mesim">MeSim</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#sesim">SeSim</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-src.trial.sim.Sim">Sim</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simrun">SimRun</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mesim">MeSim</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sesim">SeSim</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -347,7 +330,9 @@ document.write(`
                   
   <section id="sim">
 <h1>Sim<a class="headerlink" href="#sim" title="Link to this heading">#</a></h1>
-<dl class="mat class" id="module-src.trial.sim.Sim">
+<section id="module-src.trial.sim.Sim">
+<span id="id1"></span><h2>Sim<a class="headerlink" href="#module-src.trial.sim.Sim" title="Link to this heading">#</a></h2>
+<dl class="mat class">
 <dt class="sig sig-object mat" id="Sim">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Sim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trialName</span></em>, <em class="sig-param"><span class="pre">config</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Sim" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="trial.html#Trial" title="Trial"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Trial</span></code></a></p>
@@ -563,7 +548,7 @@ Detailed explanation goes here</p>
 
 </section>
 <section id="simrun">
-<h1>SimRun<a class="headerlink" href="#simrun" title="Link to this heading">#</a></h1>
+<h2>SimRun<a class="headerlink" href="#simrun" title="Link to this heading">#</a></h2>
 <dl class="mat class" id="module-src.trial.sim.SimRun">
 <dt class="sig sig-object mat" id="TimeSimRun">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">TimeSimRun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">timeSim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TimeSimRun" title="Link to this definition">#</a></dt>
@@ -823,7 +808,7 @@ Detailed explanation goes here</p>
 
 </section>
 <section id="mesim">
-<h1>MeSim<a class="headerlink" href="#mesim" title="Link to this heading">#</a></h1>
+<h2>MeSim<a class="headerlink" href="#mesim" title="Link to this heading">#</a></h2>
 <dl class="mat class" id="module-src.trial.sim.MeSim">
 <dt class="sig sig-object mat" id="MeSimRun">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">MeSimRun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">meSim</span></em>, <em class="sig-param"><span class="pre">options</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MeSimRun" title="Link to this definition">#</a></dt>
@@ -976,7 +961,7 @@ Detailed explanation goes here</p>
 
 </section>
 <section id="sesim">
-<h1>SeSim<a class="headerlink" href="#sesim" title="Link to this heading">#</a></h1>
+<h2>SeSim<a class="headerlink" href="#sesim" title="Link to this heading">#</a></h2>
 <dl class="mat class" id="module-src.trial.sim.SeSim">
 <dt class="sig sig-object mat" id="SeSim1D">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">SeSim1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trialName</span></em>, <em class="sig-param"><span class="pre">config</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SeSim1D" title="Link to this definition">#</a></dt>
@@ -1355,7 +1340,7 @@ Detailed explanation goes here</p>
 
 </section>
 <section id="functions">
-<h1>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h1>
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="mat function" id="module-src.trial.sim.func">
 <dt class="sig sig-object mat" id="rabiMatrix">
 <span class="sig-name descname"><span class="pre">rabiMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em>, <em class="sig-param"><span class="pre">laser</span></em>, <em class="sig-param"><span class="pre">isAveraged</span></em>, <em class="sig-param"><span class="pre">transition</span></em><span class="sig-paren">)</span><a class="headerlink" href="#rabiMatrix" title="Link to this definition">#</a></dt>
@@ -1569,6 +1554,7 @@ Detailed explanation goes here</p>
 </dd></dl>
 
 </section>
+</section>
 
 
                 </article>
@@ -1615,13 +1601,12 @@ Detailed explanation goes here</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Sim</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#simrun">SimRun</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#mesim">MeSim</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#sesim">SeSim</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-src.trial.sim.Sim">Sim</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simrun">SimRun</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mesim">MeSim</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sesim">SeSim</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>
