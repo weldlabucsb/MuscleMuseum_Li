@@ -1,4 +1,5 @@
 Trial
 ========================================
 
-asdf
+.. autoclass:: src.trial.Trial
+    :members:
