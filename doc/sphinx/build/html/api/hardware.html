@@ -43,8 +43,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/hardware';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Support" href="../sup/support.html" />
-    <link rel="prev" title="Trial" href="trial.html" />
+    <link rel="next" title="Math" href="math.html" />
+    <link rel="prev" title="Sim" href="sim.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -153,8 +153,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro/install.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intro/quick.html">Quick Start</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="atom.html">Atom</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="field.html">Field</a></li>
 <li class="toctree-l2"><a class="reference internal" href="trial.html">Trial</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="becexp.html">BecExp</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="sim.html">Sim</a></li>
+
+
+
+
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Hardware</a></li>
+
+
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html">Misc</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../sup/support.html">Support</a></li>
@@ -283,7 +305,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -299,6 +323,21 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Hardware</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#acquisition">Acquisition</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#waveformgenerator">WaveformGenerator</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#rfgenerator">RfGenerator</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#scope">Scope</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#apps">Apps</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -310,207 +349,838 @@ document.write(`
                   
   <section id="hardware">
 <h1>Hardware<a class="headerlink" href="#hardware" title="Link to this heading">#</a></h1>
-<dl class="mat function" id="module-src.atom">
-<dt class="sig sig-object mat" id="saveAtom">
-<span class="sig-name descname"><span class="pre">saveAtom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#saveAtom" title="Link to this definition">#</a></dt>
-<dd><p>SAVEATOMDATA Summary of this function goes here
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Hardware">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Hardware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Hardware" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.SetGetExactNames</span></code></p>
+<p>UNTITLED Summary of this class goes here
 Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat function">
-<dt class="sig sig-object mat" id="uncoupledSpinMatrices">
-<span class="sig-name descname"><span class="pre">uncoupledSpinMatrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">j2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinMatrices" title="Link to this definition">#</a></dt>
-<dd><p>UNCOUPLEDOPERATOR j1 and j2 couple to get j3. Get the uncoupled angular
-momentum spin matrices under the j3 basis</p>
-<blockquote>
-<div><p>Detailed explanation goes here</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="mat function">
-<dt class="sig sig-object mat" id="uncoupledSpinBasisTransformation">
-<span class="sig-name descname"><span class="pre">uncoupledSpinBasisTransformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">j2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinBasisTransformation" title="Link to this definition">#</a></dt>
-<dd><p>UNTITLED Transform the basis from the coupled spin basis to the uncoupled
-spin basis</p>
-<blockquote>
-<div><p>Detailed explanation goes here</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="mat function">
-<dt class="sig sig-object mat" id="uncoupledSpinBasis">
-<span class="sig-name descname"><span class="pre">uncoupledSpinBasis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">mj1</span></em>, <em class="sig-param"><span class="pre">j2</span></em>, <em class="sig-param"><span class="pre">mj2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinBasis" title="Link to this definition">#</a></dt>
-<dd><p>UNCOUPLESPINBASIS j1 and j2 couple to get j3. Get the uncoupled angular
-momentum spin eigen-basis <a href="#id1"><span class="problematic" id="id2">|</span></a>j1,mj1,j2,mj2&gt; under the j3 basis <a href="#id3"><span class="problematic" id="id4">|</span></a>j3,mj3&gt;</p>
-<blockquote>
-<div><p>Detailed explanation goes here</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="mat function">
-<dt class="sig sig-object mat" id="spinMatrices">
-<span class="sig-name descname"><span class="pre">spinMatrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j</span></em><span class="sig-paren">)</span><a class="headerlink" href="#spinMatrices" title="Link to this definition">#</a></dt>
-<dd><p>SPINMATRICES Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
-
-<dl class="mat class" id="module-src.atom.Atom">
-<dt class="sig sig-object mat" id="Atom">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom" title="Link to this definition">#</a></dt>
-<dd><p>ATOM The Atom class stores information about alkali/divalent atoms  
-and calculates the atomic structure.</p>
-<blockquote>
-<div><p>This class is based on the well-known python package, ARC 
-(Alkali.ne Rydberg Calculator). Most (but not all) of the atomic
-data are inherited from the ARC package. Not all the ARC package
-functions are used, because of some defects in that package and
-some convention conflicts.</p>
-<p>When an Atom object is constructed, it reads data from the
-corresponding ARC atom object and saves them as its own properties.
-The ArcObj is also saved for later use.</p>
-</div></blockquote>
-<div class="members docutils container">
-<dl>
-<dt>Property Summary</dt><dd><dl class="mat attribute">
-<dt class="sig sig-object mat" id="Atom.DataPath">
-<span class="sig-name descname"><span class="pre">DataPath</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.DataPath" title="Link to this definition">#</a></dt>
-<dd><p>Where to save the pre-calcualted data, for example, the MI,MJ &lt;-&gt; F,MF correspondence</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Atom.Name">
-<span class="sig-name descname"><span class="pre">Name</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.Name" title="Link to this definition">#</a></dt>
-<dd><p>“Lithium7”, for example. Check the ARC documents for available atoms.</p>
-</dd></dl>
-
-</dd>
-<dt>Method Summary</dt><dd><dl class="mat staticmethod">
-<dt class="sig sig-object mat" id="Atom.loadobj">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">loadobj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom.loadobj" title="Link to this definition">#</a></dt>
-<dd><p>When the objected is loaded, reconstruct it using the name of
-the atom.</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="Atom.saveobj">
-<span class="sig-name descname"><span class="pre">saveobj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Atom.saveobj" title="Link to this definition">#</a></dt>
-<dd><p>Only save the Type and the Name of the object to files.</p>
-</dd></dl>
-
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="mat class" id="module-src.atom.Atom.&#64;Alkali">
-<dt class="sig sig-object mat" id="Alkali">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Alkali</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Alkali" title="Link to this definition">#</a></dt>
-<dd><p>ALKALI Alkali atom data.
-When constructed, several useful atomic manifolds are included,
-e.g. D1,D2. Cycling and repumping transition prameters are
-calculated.</p>
 <div class="members docutils container">
 <dl>
 <dt>Constructor Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="Alkali.Alkali">
-<span class="sig-name descname"><span class="pre">Alkali</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Alkali.Alkali" title="Link to this definition">#</a></dt>
-<dd><p>Set atomic properties</p>
-</dd></dl>
+<dt class="sig sig-object mat" id="Hardware.Hardware">
+<span class="sig-name descname"><span class="pre">Hardware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Hardware.Hardware" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd>
 <dt>Property Summary</dt><dd><dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.CyclerCrossSection">
-<span class="sig-name descname"><span class="pre">CyclerCrossSection</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.CyclerCrossSection" title="Link to this definition">#</a></dt>
-<dd><p>Cycling transition resonant cross section, in m^2</p>
+<dt class="sig sig-object mat" id="Hardware.DataPath">
+<span class="sig-name descname"><span class="pre">DataPath</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Hardware.DataPath" title="Link to this definition">#</a></dt>
+<dd><p>Folder to save the object</p>
 </dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.CyclerFrequency">
-<span class="sig-name descname"><span class="pre">CyclerFrequency</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.CyclerFrequency" title="Link to this definition">#</a></dt>
-<dd><p>Cycling transition frequency at zero field, in Hz</p>
+<dt class="sig sig-object mat" id="Hardware.DataType">
+<span class="sig-name descname"><span class="pre">DataType</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(DataType,{'uint8','double'})}</span> <span class="pre">=</span> <span class="pre">&quot;uint8&quot;</span></em><a class="headerlink" href="#Hardware.DataType" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Hardware.DisabledProperty">
+<span class="sig-name descname"><span class="pre">DisabledProperty</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Hardware.DisabledProperty" title="Link to this definition">#</a></dt>
+<dd><p>Properties that are not implemented for specific models</p>
 </dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.CyclerSaturationIntensity">
-<span class="sig-name descname"><span class="pre">CyclerSaturationIntensity</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.CyclerSaturationIntensity" title="Link to this definition">#</a></dt>
-<dd><p>Cycling transition saturation intensity, in W/m^2</p>
+<dt class="sig sig-object mat" id="Hardware.Manufacturer">
+<span class="sig-name descname"><span class="pre">Manufacturer</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Hardware.Manufacturer" title="Link to this definition">#</a></dt>
+<dd><p>Manufacturer of the device</p>
 </dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.CyclerSaturationIntensityLu">
-<span class="sig-name descname"><span class="pre">CyclerSaturationIntensityLu</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.CyclerSaturationIntensityLu" title="Link to this definition">#</a></dt>
-<dd><p>Cycling transition saturation intensity, in mW/cm^2</p>
+<dt class="sig sig-object mat" id="Hardware.Memory">
+<span class="sig-name descname"><span class="pre">Memory</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Hardware.Memory" title="Link to this definition">#</a></dt>
+<dd><p>How many sample points the device can store</p>
 </dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.D1">
-<span class="sig-name descname"><span class="pre">D1</span></span><em class="property"> <span class="pre">TwoJManifold</span></em><a class="headerlink" href="#Alkali.D1" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D1 manifold. F=0,J=1/2 &lt;-&gt; L=1,J=1/2</p>
+<dt class="sig sig-object mat" id="Hardware.Model">
+<span class="sig-name descname"><span class="pre">Model</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Hardware.Model" title="Link to this definition">#</a></dt>
+<dd><p>Model number</p>
 </dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.D1Excited">
-<span class="sig-name descname"><span class="pre">D1Excited</span></span><em class="property"> <span class="pre">OneJManifold</span></em><a class="headerlink" href="#Alkali.D1Excited" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D1 excited manifold. L=1,J=1/2</p>
+<dt class="sig sig-object mat" id="Hardware.NChannel">
+<span class="sig-name descname"><span class="pre">NChannel</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Hardware.NChannel" title="Link to this definition">#</a></dt>
+<dd><p>How many channels the device has</p>
 </dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.D2">
-<span class="sig-name descname"><span class="pre">D2</span></span><em class="property"> <span class="pre">TwoJManifold</span></em><a class="headerlink" href="#Alkali.D2" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D2 manifold. L=0,J=1/2 &lt;-&gt; L=1,J=3/2</p>
+<dt class="sig sig-object mat" id="Hardware.Name">
+<span class="sig-name descname"><span class="pre">Name</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Hardware.Name" title="Link to this definition">#</a></dt>
+<dd><p>Nickname of the device</p>
 </dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.D2Excited">
-<span class="sig-name descname"><span class="pre">D2Excited</span></span><em class="property"> <span class="pre">OneJManifold</span></em><a class="headerlink" href="#Alkali.D2Excited" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D2 excited manifold. L=1,J=3/2</p>
-</dd></dl>
+<dt class="sig sig-object mat" id="Hardware.ParentPath">
+<span class="sig-name descname"><span class="pre">ParentPath</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Hardware.ParentPath" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.DGround">
-<span class="sig-name descname"><span class="pre">DGround</span></span><em class="property"> <span class="pre">OneJManifold</span></em><a class="headerlink" href="#Alkali.DGround" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D line ground manifold. L=0,J=1/2</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.RepumperCrossSection">
-<span class="sig-name descname"><span class="pre">RepumperCrossSection</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.RepumperCrossSection" title="Link to this definition">#</a></dt>
-<dd><p>Repump transition resonant cross section, in m^2</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.RepumperFrequency">
-<span class="sig-name descname"><span class="pre">RepumperFrequency</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.RepumperFrequency" title="Link to this definition">#</a></dt>
-<dd><p>Repump transition frequency at zero field, in Hz</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.RepumperSaturationIntensity">
-<span class="sig-name descname"><span class="pre">RepumperSaturationIntensity</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.RepumperSaturationIntensity" title="Link to this definition">#</a></dt>
-<dd><p>Repump transition saturation intensity, in W/m^2. Assume the repumper also has sigma+ polarization</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.RepumperSaturationIntensityLu">
-<span class="sig-name descname"><span class="pre">RepumperSaturationIntensityLu</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.RepumperSaturationIntensityLu" title="Link to this definition">#</a></dt>
-<dd><p>Repump transition saturation intensity, in mW/cm^2</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.Spinor1">
-<span class="sig-name descname"><span class="pre">Spinor1</span></span><em class="property"> <span class="pre">OneFManifold</span></em><a class="headerlink" href="#Alkali.Spinor1" title="Link to this definition">#</a></dt>
-<dd><p>Alkali first ground F manifold. L=0,J=1/2,F=min{abs(I-J),abs(I+J)}</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Alkali.Spinor2">
-<span class="sig-name descname"><span class="pre">Spinor2</span></span><em class="property"> <span class="pre">OneFManifold</span></em><a class="headerlink" href="#Alkali.Spinor2" title="Link to this definition">#</a></dt>
-<dd><p>Alkali second ground F manifold. L=0,J=1/2,F=max{abs(I-J),abs(I+J)}</p>
+<dt class="sig sig-object mat" id="Hardware.ResourceName">
+<span class="sig-name descname"><span class="pre">ResourceName</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Hardware.ResourceName" title="Link to this definition">#</a></dt>
+<dd><p>Interfaces (like VISA) require a resource name to identify the device</p>
 </dd></dl>
 
 </dd>
 </dl>
 </div>
+</dd></dl>
+
+</section>
+<section id="acquisition">
+<h1>Acquisition<a class="headerlink" href="#acquisition" title="Link to this heading">#</a></h1>
+<dl class="mat class" id="module-src.hardware.Acquisition">
+<dt class="sig sig-object mat" id="Acquisition">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Acquisition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">acqName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.SetGetExactNames</span></code></p>
+<p>Acquisition Acquisition class.
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.Acquisition">
+<span class="sig-name descname"><span class="pre">Acquisition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">acqName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.Acquisition" title="Link to this definition">#</a></dt>
+<dd><p>Acquisition Construct an instance of the Acquisition class
+Acquisition handles mainly the camera parameters and the
+data acquisition process. Given “cameraName”, the
+constructor load the configuration and set the acquisition
+parameters properly.</p>
+</dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.AdaptorName">
+<span class="sig-name descname"><span class="pre">AdaptorName</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Acquisition.AdaptorName" title="Link to this definition">#</a></dt>
+<dd><p>MATLAB camera adaptor</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.BadColumn">
+<span class="sig-name descname"><span class="pre">BadColumn</span></span><em class="property"> <span class="pre">uint32</span></em><a class="headerlink" href="#Acquisition.BadColumn" title="Link to this definition">#</a></dt>
+<dd><p>columns that have bad pixels</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.BadRow">
+<span class="sig-name descname"><span class="pre">BadRow</span></span><em class="property"> <span class="pre">uint32</span></em><a class="headerlink" href="#Acquisition.BadRow" title="Link to this definition">#</a></dt>
+<dd><p>rows that have bad pixels</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.BitsPerSample">
+<span class="sig-name descname"><span class="pre">BitsPerSample</span></span><em class="property"> <span class="pre">int16</span></em><a class="headerlink" href="#Acquisition.BitsPerSample" title="Link to this definition">#</a></dt>
+<dd><p>How many bits per pixel</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.CameraType">
+<span class="sig-name descname"><span class="pre">CameraType</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Acquisition.CameraType" title="Link to this definition">#</a></dt>
+<dd><p>Producer of the camera</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.ConfigFun">
+<span class="sig-name descname"><span class="pre">ConfigFun</span></span><em class="property"> <span class="pre">function_handle</span></em><a class="headerlink" href="#Acquisition.ConfigFun" title="Link to this definition">#</a></dt>
+<dd><p>Configure the camera parameters. Must be pre-defined.</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.DeviceID">
+<span class="sig-name descname"><span class="pre">DeviceID</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#Acquisition.DeviceID" title="Link to this definition">#</a></dt>
+<dd><p>To distinguish devices if multiple devices are connected through the same adaptor</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.ExposureTime">
+<span class="sig-name descname"><span class="pre">ExposureTime</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Acquisition.ExposureTime" title="Link to this definition">#</a></dt>
+<dd><p>In micro-seconds</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.ImageFormat">
+<span class="sig-name descname"><span class="pre">ImageFormat</span></span><em class="property"> <span class="pre">string</span> <span class="pre">=</span> <span class="pre">&quot;tif&quot;</span></em><a class="headerlink" href="#Acquisition.ImageFormat" title="Link to this definition">#</a></dt>
+<dd><p>Image format</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.ImageGroupSize">
+<span class="sig-name descname"><span class="pre">ImageGroupSize</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#Acquisition.ImageGroupSize" title="Link to this definition">#</a></dt>
+<dd><p>Specify the number of frames that must be acquired before we save the images</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.ImagePath">
+<span class="sig-name descname"><span class="pre">ImagePath</span></span><em class="property"> <span class="pre">{mustBeFolder}</span> <span class="pre">=</span> <span class="pre">&quot;.&quot;</span></em><a class="headerlink" href="#Acquisition.ImagePath" title="Link to this definition">#</a></dt>
+<dd><p>Where to save the generated images</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.ImagePrefix">
+<span class="sig-name descname"><span class="pre">ImagePrefix</span></span><em class="property"> <span class="pre">string</span> <span class="pre">=</span> <span class="pre">&quot;run&quot;</span></em><a class="headerlink" href="#Acquisition.ImagePrefix" title="Link to this definition">#</a></dt>
+<dd><p>How to name the images</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.ImageSize">
+<span class="sig-name descname"><span class="pre">ImageSize</span></span><em class="property"> <span class="pre">uint32</span></em><a class="headerlink" href="#Acquisition.ImageSize" title="Link to this definition">#</a></dt>
+<dd><p>size x * size y</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.IsExternalTriggered">
+<span class="sig-name descname"><span class="pre">IsExternalTriggered</span></span><em class="property"> <span class="pre">logical</span></em><a class="headerlink" href="#Acquisition.IsExternalTriggered" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.Magnification">
+<span class="sig-name descname"><span class="pre">Magnification</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Acquisition.Magnification" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.Name">
+<span class="sig-name descname"><span class="pre">Name</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Acquisition.Name" title="Link to this definition">#</a></dt>
+<dd><p>Nickname/label of the acquisition</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.PixelSize">
+<span class="sig-name descname"><span class="pre">PixelSize</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Acquisition.PixelSize" title="Link to this definition">#</a></dt>
+<dd><p>In microns</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.PixelSizeReal">
+<span class="sig-name descname"><span class="pre">PixelSizeReal</span></span><a class="headerlink" href="#Acquisition.PixelSizeReal" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.QuantumEfficiencyData">
+<span class="sig-name descname"><span class="pre">QuantumEfficiencyData</span></span><em class="property"> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#Acquisition.QuantumEfficiencyData" title="Link to this definition">#</a></dt>
+<dd><p>Quantum efficiency data from the company. First column: wavelength. Second column: quantum efficiency.</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.SerialNumber">
+<span class="sig-name descname"><span class="pre">SerialNumber</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#Acquisition.SerialNumber" title="Link to this definition">#</a></dt>
+<dd><p>Camera serial number</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Acquisition.VideoInput">
+<span class="sig-name descname"><span class="pre">VideoInput</span></span><a class="headerlink" href="#Acquisition.VideoInput" title="Link to this definition">#</a></dt>
+<dd><p>MATLAB camera connection</p>
+</dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.QuantumEfficiency">
+<span class="sig-name descname"><span class="pre">QuantumEfficiency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">lambda</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.QuantumEfficiency" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.connectCamera">
+<span class="sig-name descname"><span class="pre">connectCamera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.connectCamera" title="Link to this definition">#</a></dt>
+<dd><p>Connect to the camera. Return the VideoInput object.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.killBadPixel">
+<span class="sig-name descname"><span class="pre">killBadPixel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">imageData</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.killBadPixel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.pauseCamera">
+<span class="sig-name descname"><span class="pre">pauseCamera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.pauseCamera" title="Link to this definition">#</a></dt>
+<dd><p>Pause camera recording</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.setCallback">
+<span class="sig-name descname"><span class="pre">setCallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">callbackFunc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.setCallback" title="Link to this definition">#</a></dt>
+<dd><p>Set camera callback function.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.setCameraParameter">
+<span class="sig-name descname"><span class="pre">setCameraParameter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.setCameraParameter" title="Link to this definition">#</a></dt>
+<dd><p>Set camera parameters using the predefined configuration
+functions.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.setConfigProperty">
+<span class="sig-name descname"><span class="pre">setConfigProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">struct</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.setConfigProperty" title="Link to this definition">#</a></dt>
+<dd><p>This method compares the properties of the handle object ‘obj’ with
+the fields of a structure ‘struct’. Then it sets the properties to the
+values of the fields. The obj must inherit the set method from
+matlab.mixin.SetGetExactNames</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.startCamera">
+<span class="sig-name descname"><span class="pre">startCamera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.startCamera" title="Link to this definition">#</a></dt>
+<dd><p>Start camera recording</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Acquisition.stopCamera">
+<span class="sig-name descname"><span class="pre">stopCamera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Acquisition.stopCamera" title="Link to this definition">#</a></dt>
+<dd><p>Stop camera recording</p>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="waveformgenerator">
+<h1>WaveformGenerator<a class="headerlink" href="#waveformgenerator" title="Link to this heading">#</a></h1>
+<dl class="mat class" id="module-src.hardware.WaveformGenerator">
+<dt class="sig sig-object mat" id="WaveformGenerator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">WaveformGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#WaveformGenerator" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Hardware" title="Hardware"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Hardware</span></code></a></p>
+<p>WAVEFORMGENERATOR Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="WaveformGenerator.WaveformGenerator">
+<span class="sig-name descname"><span class="pre">WaveformGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#WaveformGenerator.WaveformGenerator" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="WaveformGenerator.IsOutput">
+<span class="sig-name descname"><span class="pre">IsOutput</span></span><em class="property"> <span class="pre">logical</span></em><a class="headerlink" href="#WaveformGenerator.IsOutput" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="WaveformGenerator.OutputLoad">
+<span class="sig-name descname"><span class="pre">OutputLoad</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(OutputLoad,{'50','Infinity'})}</span> <span class="pre">=</span> <span class="pre">&quot;50&quot;</span></em><a class="headerlink" href="#WaveformGenerator.OutputLoad" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="WaveformGenerator.OutputMode">
+<span class="sig-name descname"><span class="pre">OutputMode</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(OutputMode,{'Gated','Normal'})}</span> <span class="pre">=</span> <span class="pre">&quot;Normal&quot;</span></em><a class="headerlink" href="#WaveformGenerator.OutputMode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="WaveformGenerator.SamplingRate">
+<span class="sig-name descname"><span class="pre">SamplingRate</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#WaveformGenerator.SamplingRate" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="WaveformGenerator.TriggerSlope">
+<span class="sig-name descname"><span class="pre">TriggerSlope</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(TriggerSlope,{'Rise','Fall'})}</span> <span class="pre">=</span> <span class="pre">&quot;Rise&quot;</span></em><a class="headerlink" href="#WaveformGenerator.TriggerSlope" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="WaveformGenerator.TriggerSource">
+<span class="sig-name descname"><span class="pre">TriggerSource</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(TriggerSource,{'External','Software','Immediate'})}</span> <span class="pre">=</span> <span class="pre">&quot;External&quot;</span></em><a class="headerlink" href="#WaveformGenerator.TriggerSource" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="WaveformGenerator.WaveformList">
+<span class="sig-name descname"><span class="pre">WaveformList</span></span><em class="property"> <span class="pre">cell</span></em><a class="headerlink" href="#WaveformGenerator.WaveformList" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Keysight33600A">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Keysight33600A</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Keysight33600A" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#KeysightWaveformGenerator" title="KeysightWaveformGenerator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">KeysightWaveformGenerator</span></code></a></p>
+<p>KEYSIGHT Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Keysight33600A.Keysight33600A">
+<span class="sig-name descname"><span class="pre">Keysight33600A</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Keysight33600A.Keysight33600A" title="Link to this definition">#</a></dt>
+<dd><p>KEYSIGHT Construct an instance of this class
+Detailed explanation goes here</p>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Keysight33500B">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Keysight33500B</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Keysight33500B" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#KeysightWaveformGenerator" title="KeysightWaveformGenerator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">KeysightWaveformGenerator</span></code></a></p>
+<p>KEYSIGHT Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Keysight33500B.Keysight33500B">
+<span class="sig-name descname"><span class="pre">Keysight33500B</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Keysight33500B.Keysight33500B" title="Link to this definition">#</a></dt>
+<dd><p>KEYSIGHT Construct an instance of this class
+Detailed explanation goes here</p>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="mat class">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">KeysightWaveformGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#KeysightWaveformGenerator" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#WaveformGenerator" title="WaveformGenerator"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WaveformGenerator</span></code></a></p>
+<p>KEYSIGHT Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator.KeysightWaveformGenerator">
+<span class="sig-name descname"><span class="pre">KeysightWaveformGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#KeysightWaveformGenerator.KeysightWaveformGenerator" title="Link to this definition">#</a></dt>
+<dd><p>KEYSIGHT Construct an instance of this class
+Detailed explanation goes here</p>
+</dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator.VisaDevice">
+<span class="sig-name descname"><span class="pre">VisaDevice</span></span><a class="headerlink" href="#KeysightWaveformGenerator.VisaDevice" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#KeysightWaveformGenerator.check" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#KeysightWaveformGenerator.close" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#KeysightWaveformGenerator.connect" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#KeysightWaveformGenerator.set" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="KeysightWaveformGenerator.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#KeysightWaveformGenerator.upload" title="Link to this definition">#</a></dt>
+<dd><p>Check connection to the device</p>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="rfgenerator">
+<h1>RfGenerator<a class="headerlink" href="#rfgenerator" title="Link to this heading">#</a></h1>
+<dl class="mat class" id="module-src.hardware.RfGenerator">
+<dt class="sig sig-object mat" id="RfGenerator">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">RfGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#RfGenerator" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Hardware" title="Hardware"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Hardware</span></code></a></p>
+<p>WAVEFORMGENERATOR Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="RfGenerator.RfGenerator">
+<span class="sig-name descname"><span class="pre">RfGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#RfGenerator.RfGenerator" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="RfGenerator.IsOutput">
+<span class="sig-name descname"><span class="pre">IsOutput</span></span><em class="property"> <span class="pre">logical</span></em><a class="headerlink" href="#RfGenerator.IsOutput" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="RfGenerator.OutputLoad">
+<span class="sig-name descname"><span class="pre">OutputLoad</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(OutputLoad,{'50','Infinity'})}</span> <span class="pre">=</span> <span class="pre">&quot;50&quot;</span></em><a class="headerlink" href="#RfGenerator.OutputLoad" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="RfGenerator.OutputMode">
+<span class="sig-name descname"><span class="pre">OutputMode</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(OutputMode,{'Gated','Normal'})}</span> <span class="pre">=</span> <span class="pre">&quot;Normal&quot;</span></em><a class="headerlink" href="#RfGenerator.OutputMode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="RfGenerator.SamplingRate">
+<span class="sig-name descname"><span class="pre">SamplingRate</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#RfGenerator.SamplingRate" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="RfGenerator.TriggerSlope">
+<span class="sig-name descname"><span class="pre">TriggerSlope</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(TriggerSlope,{'Rise','Fall'})}</span> <span class="pre">=</span> <span class="pre">&quot;Rise&quot;</span></em><a class="headerlink" href="#RfGenerator.TriggerSlope" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="RfGenerator.TriggerSource">
+<span class="sig-name descname"><span class="pre">TriggerSource</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(TriggerSource,{'External','Software','Immediate'})}</span> <span class="pre">=</span> <span class="pre">&quot;External&quot;</span></em><a class="headerlink" href="#RfGenerator.TriggerSource" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="RfGenerator.WaveformList">
+<span class="sig-name descname"><span class="pre">WaveformList</span></span><em class="property"> <span class="pre">cell</span></em><a class="headerlink" href="#RfGenerator.WaveformList" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="scope">
+<h1>Scope<a class="headerlink" href="#scope" title="Link to this heading">#</a></h1>
+<dl class="mat class" id="module-src.hardware.Scope">
+<dt class="sig sig-object mat" id="Scope">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Scope" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Hardware" title="Hardware"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Hardware</span></code></a></p>
+<p>WAVEFORMGENERATOR Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Scope.Scope">
+<span class="sig-name descname"><span class="pre">Scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Scope.Scope" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.Duration">
+<span class="sig-name descname"><span class="pre">Duration</span></span><em class="property"> <span class="pre">double</span> <span class="pre">{mustBePositive}</span> <span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#Scope.Duration" title="Link to this definition">#</a></dt>
+<dd><p>The time in seconds that corresponds to the record length</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.IsEnabled">
+<span class="sig-name descname"><span class="pre">IsEnabled</span></span><em class="property"> <span class="pre">logical</span></em><a class="headerlink" href="#Scope.IsEnabled" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.Max">
+<span class="sig-name descname"><span class="pre">Max</span></span><a class="headerlink" href="#Scope.Max" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.Mean">
+<span class="sig-name descname"><span class="pre">Mean</span></span><a class="headerlink" href="#Scope.Mean" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.Min">
+<span class="sig-name descname"><span class="pre">Min</span></span><a class="headerlink" href="#Scope.Min" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.NSample">
+<span class="sig-name descname"><span class="pre">NSample</span></span><em class="property"> <span class="pre">double</span> <span class="pre">{mustBeInteger,mustBePositive}</span> <span class="pre">=</span> <span class="pre">2500</span></em><a class="headerlink" href="#Scope.NSample" title="Link to this definition">#</a></dt>
+<dd><p>How many data points to collect</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.NSampleMax">
+<span class="sig-name descname"><span class="pre">NSampleMax</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Scope.NSampleMax" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.PeakToPeak">
+<span class="sig-name descname"><span class="pre">PeakToPeak</span></span><a class="headerlink" href="#Scope.PeakToPeak" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.Rms">
+<span class="sig-name descname"><span class="pre">Rms</span></span><a class="headerlink" href="#Scope.Rms" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.Sample">
+<span class="sig-name descname"><span class="pre">Sample</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Scope.Sample" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SampleUnit">
+<span class="sig-name descname"><span class="pre">SampleUnit</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Scope.SampleUnit" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SamplingRate">
+<span class="sig-name descname"><span class="pre">SamplingRate</span></span><a class="headerlink" href="#Scope.SamplingRate" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SamplingRateMax">
+<span class="sig-name descname"><span class="pre">SamplingRateMax</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Scope.SamplingRateMax" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SineAmplitude">
+<span class="sig-name descname"><span class="pre">SineAmplitude</span></span><a class="headerlink" href="#Scope.SineAmplitude" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SineFit">
+<span class="sig-name descname"><span class="pre">SineFit</span></span><em class="property"> <span class="pre">SineFit1D</span></em><a class="headerlink" href="#Scope.SineFit" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SineFrequency">
+<span class="sig-name descname"><span class="pre">SineFrequency</span></span><a class="headerlink" href="#Scope.SineFrequency" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SineOffset">
+<span class="sig-name descname"><span class="pre">SineOffset</span></span><a class="headerlink" href="#Scope.SineOffset" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.SinePhase">
+<span class="sig-name descname"><span class="pre">SinePhase</span></span><a class="headerlink" href="#Scope.SinePhase" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.Std">
+<span class="sig-name descname"><span class="pre">Std</span></span><a class="headerlink" href="#Scope.Std" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.TimeList">
+<span class="sig-name descname"><span class="pre">TimeList</span></span><a class="headerlink" href="#Scope.TimeList" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.TriggerLevel">
+<span class="sig-name descname"><span class="pre">TriggerLevel</span></span><em class="property"> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#Scope.TriggerLevel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.TriggerMode">
+<span class="sig-name descname"><span class="pre">TriggerMode</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(TriggerMode,{'Normal','Auto','Software'})}</span> <span class="pre">=</span> <span class="pre">&quot;Normal&quot;</span></em><a class="headerlink" href="#Scope.TriggerMode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.TriggerSlope">
+<span class="sig-name descname"><span class="pre">TriggerSlope</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(TriggerSlope,{'Rise','Fall'})}</span> <span class="pre">=</span> <span class="pre">&quot;Rise&quot;</span></em><a class="headerlink" href="#Scope.TriggerSlope" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.TriggerSource">
+<span class="sig-name descname"><span class="pre">TriggerSource</span></span><em class="property"> <span class="pre">string</span> <span class="pre">=</span> <span class="pre">&quot;External&quot;</span></em><a class="headerlink" href="#Scope.TriggerSource" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.VerticalCoupling">
+<span class="sig-name descname"><span class="pre">VerticalCoupling</span></span><em class="property"> <span class="pre">string</span> <span class="pre">{mustBeMember(VerticalCoupling,{'DC','AC'})}</span> <span class="pre">=</span> <span class="pre">&quot;DC&quot;</span></em><a class="headerlink" href="#Scope.VerticalCoupling" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.VerticalOffset">
+<span class="sig-name descname"><span class="pre">VerticalOffset</span></span><em class="property"> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#Scope.VerticalOffset" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Scope.VerticalRange">
+<span class="sig-name descname"><span class="pre">VerticalRange</span></span><em class="property"> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">10</span></em><a class="headerlink" href="#Scope.VerticalRange" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Scope.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">ax</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Scope.plot" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="mat class">
+<dt class="sig sig-object mat" id="TektronixScope">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">TektronixScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TektronixScope" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Scope" title="Scope"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Scope</span></code></a></p>
+<p>TEKTRONIXOSCILLOSCOPE Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="TektronixScope.TektronixScope">
+<span class="sig-name descname"><span class="pre">TektronixScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TektronixScope.TektronixScope" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="TektronixScope.Oscilloscope">
+<span class="sig-name descname"><span class="pre">Oscilloscope</span></span><a class="headerlink" href="#TektronixScope.Oscilloscope" title="Link to this definition">#</a></dt>
+<dd><p>MATLAB Quick-Control Oscilloscope object</p>
+</dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="TektronixScope.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TektronixScope.check" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="TektronixScope.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TektronixScope.close" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="TektronixScope.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TektronixScope.connect" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="TektronixScope.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TektronixScope.read" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="TektronixScope.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TektronixScope.set" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="mat class">
+<dt class="sig sig-object mat" id="TekTronix1104">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">TekTronix1104</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TekTronix1104" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TektronixScope" title="TektronixScope"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">TektronixScope</span></code></a></p>
+<p>TEKTRONIX1104 Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="TekTronix1104.TekTronix1104">
+<span class="sig-name descname"><span class="pre">TekTronix1104</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TekTronix1104.TekTronix1104" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="TekTronix1104.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TekTronix1104.set" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="mat class">
+<dt class="sig sig-object mat" id="PicoScope">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">PicoScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#PicoScope" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Scope" title="Scope"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Scope</span></code></a></p>
+<p>TEKTRONIXOSCILLOSCOPE Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="PicoScope.PicoScope">
+<span class="sig-name descname"><span class="pre">PicoScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">resourceName</span></em>, <em class="sig-param"><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#PicoScope.PicoScope" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="PicoScope.Oscilloscope">
+<span class="sig-name descname"><span class="pre">Oscilloscope</span></span><a class="headerlink" href="#PicoScope.Oscilloscope" title="Link to this definition">#</a></dt>
+<dd><p>MATLAB Quick-Control Oscilloscope object</p>
+</dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="PicoScope.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PicoScope.check" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="PicoScope.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PicoScope.close" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="PicoScope.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PicoScope.connect" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="PicoScope.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PicoScope.read" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="PicoScope.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PicoScope.set" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="apps">
+<h1>Apps<a class="headerlink" href="#apps" title="Link to this heading">#</a></h1>
+<dl class="mat application" id="module-src.hardware.app">
+<dt class="sig sig-object mat" id="HardwareControlPanel">
+<span class="sig-name descname"><span class="pre">HardwareControlPanel</span></span><a class="headerlink" href="#HardwareControlPanel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat application">
+<dt class="sig sig-object mat" id="ListDialog">
+<span class="sig-name descname"><span class="pre">ListDialog</span></span><a class="headerlink" href="#ListDialog" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat application">
+<dt class="sig sig-object mat" id="WgControlPanel">
+<span class="sig-name descname"><span class="pre">WgControlPanel</span></span><a class="headerlink" href="#WgControlPanel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat application">
+<dt class="sig sig-object mat" id="ScopeControlPanel">
+<span class="sig-name descname"><span class="pre">ScopeControlPanel</span></span><a class="headerlink" href="#ScopeControlPanel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h1>
+<dl class="mat function" id="module-src.hardware.func">
+<dt class="sig sig-object mat" id="saveBecImage">
+<span class="sig-name descname"><span class="pre">saveBecImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">vid</span></em>, <em class="sig-param"><span class="pre">~</span></em>, <em class="sig-param"><span class="pre">becExp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#saveBecImage" title="Link to this definition">#</a></dt>
+<dd><p>saveBecImage saves acquired becExp images to drives and trigger the
+becExp’s “NewRunFinished” event.</p>
+<p>saveImageData is a callback function fired by a videoinput
+FramesAvailable event. It typically acquires three images and saves them
+as “atom”,”light”,”dark”, for the calculation of absorption and OD. After
+that, it transfers the data to becExp and triggers the event
+“NewRunFinished” for the following data analysis.</p>
+</dd></dl>
+
+<dl class="mat function">
+<dt class="sig sig-object mat" id="getWg">
+<span class="sig-name descname"><span class="pre">getWg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">name</span></em>, <em class="sig-param"><span class="pre">isLoadingSetting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#getWg" title="Link to this definition">#</a></dt>
+<dd><p>GETWG Summary of this function goes here
+Detailed explanation goes here</p>
+</dd></dl>
+
+<dl class="mat function">
+<dt class="sig sig-object mat" id="getScope">
+<span class="sig-name descname"><span class="pre">getScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">name</span></em>, <em class="sig-param"><span class="pre">isLoadingSetting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#getScope" title="Link to this definition">#</a></dt>
+<dd><p>GETSCOPE Summary of this function goes here
+Detailed explanation goes here</p>
 </dd></dl>
 
 </section>
@@ -527,20 +1197,20 @@ calculated.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="trial.html"
+       href="sim.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Trial</p>
+        <p class="prev-next-title">Sim</p>
       </div>
     </a>
     <a class="right-next"
-       href="../sup/support.html"
+       href="math.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Support</p>
+        <p class="prev-next-title">Math</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -550,6 +1220,28 @@ calculated.</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Hardware</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#acquisition">Acquisition</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#waveformgenerator">WaveformGenerator</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#rfgenerator">RfGenerator</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#scope">Scope</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#apps">Apps</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
               
             
           </div>

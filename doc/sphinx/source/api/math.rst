@@ -1,14 +1,19 @@
-Trial
+Math 
+===============================================
+
+FitData
 -------------------------------------------
-.. autoclass:: src.trial.Trial
+
+.. automodule:: src.math.FitData
     :members:
     :private-members:
     :show-inheritance:
     :undoc-members:
 
-Functions
---------------------------------------------
-.. automodule:: src.trial.func
+Waveform
+-------------------------------------------
+
+.. automodule:: src.math.Waveform
     :members:
     :private-members:
     :show-inheritance:

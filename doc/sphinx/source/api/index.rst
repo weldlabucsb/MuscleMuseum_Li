@@ -1,10 +1,16 @@
 API
 ==========================
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    atom
+   field
    trial
+   becexp
+   sim
+   hardware
+   math
+   misc
 
 
 

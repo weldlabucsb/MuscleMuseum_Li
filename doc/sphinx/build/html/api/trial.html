@@ -43,8 +43,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/trial';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Support" href="../sup/support.html" />
-    <link rel="prev" title="Atom" href="atom.html" />
+    <link rel="next" title="BecExp" href="becexp.html" />
+    <link rel="prev" title="Field" href="field.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -154,7 +154,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro/quick.html">Quick Start</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="atom.html">Atom</a></li>
+
+
+<li class="toctree-l2"><a class="reference internal" href="field.html">Field</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Trial</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="becexp.html">BecExp</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="sim.html">Sim</a></li>
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="hardware.html">Hardware</a></li>
+
+
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="math.html">Math</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html">Misc</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../sup/support.html">Support</a></li>
@@ -283,7 +305,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -299,6 +323,16 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Trial</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -313,19 +347,128 @@ document.write(`
 <dl class="mat class">
 <dt class="sig sig-object mat" id="Trial">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Trial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trialName</span></em>, <em class="sig-param"><span class="pre">config</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Trial" title="Link to this definition">#</a></dt>
-<dd><p>DATA Summary of this class goes here
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.SetGetExactNames</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">dynamicprops</span></code></p>
+<p>Trial Summary of this class goes here
 Detailed explanation goes here</p>
 <div class="members docutils container">
 <dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Trial.Trial">
+<span class="sig-name descname"><span class="pre">Trial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">trialName</span></em>, <em class="sig-param"><span class="pre">config</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Trial.Trial" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
 <dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.DataPath">
+<span class="sig-name descname"><span class="pre">DataPath</span></span><em class="property"> <span class="pre">string</span> <span class="pre">=</span> <span class="pre">&quot;.&quot;</span></em><a class="headerlink" href="#Trial.DataPath" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
 <dt class="sig sig-object mat" id="Trial.DateTime">
 <span class="sig-name descname"><span class="pre">DateTime</span></span><em class="property"> <span class="pre">datetime</span></em><a class="headerlink" href="#Trial.DateTime" title="Link to this definition">#</a></dt>
 <dd><p>The date and time when the experiment/simulation is done.</p>
 </dd></dl>
 
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.Description">
+<span class="sig-name descname"><span class="pre">Description</span></span><em class="property"> <span class="pre">string</span> <span class="pre">=</span> <span class="pre">&quot;This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">test</span> <span class="pre">trial.&quot;</span></em><a class="headerlink" href="#Trial.Description" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.IsCompeted">
+<span class="sig-name descname"><span class="pre">IsCompeted</span></span><em class="property"> <span class="pre">logical</span></em><a class="headerlink" href="#Trial.IsCompeted" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.NCompletedRun">
+<span class="sig-name descname"><span class="pre">NCompletedRun</span></span><em class="property"> <span class="pre">int32</span> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#Trial.NCompletedRun" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.NRun">
+<span class="sig-name descname"><span class="pre">NRun</span></span><em class="property"> <span class="pre">int32</span> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#Trial.NRun" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.Name">
+<span class="sig-name descname"><span class="pre">Name</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Trial.Name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.ObjectPath">
+<span class="sig-name descname"><span class="pre">ObjectPath</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Trial.ObjectPath" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.ScannedParameter">
+<span class="sig-name descname"><span class="pre">ScannedParameter</span></span><em class="property"> <span class="pre">string</span> <span class="pre">=</span> <span class="pre">&quot;dummy&quot;</span></em><a class="headerlink" href="#Trial.ScannedParameter" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.ScannedParameterUnit">
+<span class="sig-name descname"><span class="pre">ScannedParameterUnit</span></span><em class="property"> <span class="pre">string</span> <span class="pre">=</span> <span class="pre">&quot;V&quot;</span></em><a class="headerlink" href="#Trial.ScannedParameterUnit" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Trial.SerialNumber">
+<span class="sig-name descname"><span class="pre">SerialNumber</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#Trial.SerialNumber" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Trial.createWatcher">
+<span class="sig-name descname"><span class="pre">createWatcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Trial.createWatcher" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Trial.displayLog">
+<span class="sig-name descname"><span class="pre">displayLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Trial.displayLog" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat staticmethod">
+<dt class="sig sig-object mat" id="Trial.loadobj">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">loadobj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Trial.loadobj" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Trial.struct">
+<span class="sig-name descname"><span class="pre">struct</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Trial.struct" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Trial.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Trial.update" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Trial.updateObject">
+<span class="sig-name descname"><span class="pre">updateObject</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Trial.updateObject" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd>
 </dl>
 </div>
+</dd></dl>
+
+</section>
+<section id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h1>
+<dl class="mat function" id="module-src.trial.func">
+<dt class="sig sig-object mat" id="loadTrial">
+<span class="sig-name descname"><span class="pre">loadTrial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">conn</span></em>, <em class="sig-param"><span class="pre">databaseTableName</span></em>, <em class="sig-param"><span class="pre">serialNumber</span></em><span class="sig-paren">)</span><a class="headerlink" href="#loadTrial" title="Link to this definition">#</a></dt>
+<dd><p>LOADTRIAL Summary of this function goes here
+Detailed explanation goes here</p>
+</dd></dl>
+
+<dl class="mat function">
+<dt class="sig sig-object mat" id="deleteTrial">
+<span class="sig-name descname"><span class="pre">deleteTrial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">conn</span></em>, <em class="sig-param"><span class="pre">databaseTableName</span></em>, <em class="sig-param"><span class="pre">serialNumber</span></em>, <em class="sig-param"><span class="pre">isForceDelete</span></em><span class="sig-paren">)</span><a class="headerlink" href="#deleteTrial" title="Link to this definition">#</a></dt>
+<dd><p>DELETETRIAL delete folders and database rows for trials with serialNumber
+conn: database connection
+databaseTableName: databas table name
+serialNumber: serial number of the trails to be deleted. can be a
+vector
+isForceDelete: boolean. Force to delete or not.</p>
 </dd></dl>
 
 </section>
@@ -342,20 +485,20 @@ Detailed explanation goes here</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="atom.html"
+       href="field.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Atom</p>
+        <p class="prev-next-title">Field</p>
       </div>
     </a>
     <a class="right-next"
-       href="../sup/support.html"
+       href="becexp.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Support</p>
+        <p class="prev-next-title">BecExp</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -365,6 +508,23 @@ Detailed explanation goes here</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Trial</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
               
             
           </div>

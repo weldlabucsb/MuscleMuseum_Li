@@ -1,5 +1,5 @@
 classdef (Abstract) Trial < handle & matlab.mixin.SetGetExactNames & dynamicprops
-    %DATA Summary of this class goes here
+    %Trial Summary of this class goes here
     %   Detailed explanation goes here
 
     properties

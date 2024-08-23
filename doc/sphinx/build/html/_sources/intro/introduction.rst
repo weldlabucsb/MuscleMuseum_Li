@@ -11,14 +11,14 @@ several key features:
 
 Right now, I have implemented:
 
-#. A BEC experimental control and data analysis system integrated with `Cicero <https://akeshet.github.io/Cicero-Word-Generator/>`_ (the BecExp class) 
-#. Apps for controlling and browsing BEC experiments (BecControlPanel and BecBrowser)
-#. Atomic data and atomic structure handling (the Atom class)
-#. A single-atom master equation simulation tool (the MeSim class)
-#. A 1D Time-dependent Schrodinger equation (TDSE) simulation tool (the SeSim1D class)
-#. A 1D lattice dynamics simulation tool (the LatticeSeSim1D class)
-#. Some lattice band structure calculations (the OpticalLattice class)
-#. Keysight function generator control
+#. :class:`.BecExp`: A BEC experimental control and data analysis system integrated with `Cicero <https://akeshet.github.io/Cicero-Word-Generator/>`_  
+#. :app:`.BecControlPanel` & :app:`.BecBrowser`: Apps for controlling and browsing BEC experiments 
+#. :class:`.Atom`: Atomic data and atomic structure handling
+#. :class:`.MeSim`: A single-atom master equation simulation tool 
+#. :class:`.SeSim1D`: A 1D Time-dependent Schrodinger equation (TDSE) simulation tool 
+#. :class:`.LatticeSeSim1D`: A 1D lattice dynamics simulation tool 
+#. :class:`.OpticalLattice`: Some lattice band structure calculations 
+#. :class:`.KeysightWaveformGenerator`: Keysight function generator control
 
 Still under construction:
 

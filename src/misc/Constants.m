@@ -1,11 +1,11 @@
 classdef Constants
-    %CONSTANTS Physical constants.
+    %Constants Physical constants.
     %   The values are taken from Daniel Steck's notes. The default values
-    %are in SI units. Calling Constant.### can load the constants into the
-    %caller workspace (### stands for SI, Micro). Calling Constant.###(name)
-    %can return the value of the constant in that units. Here name is the
-    %varialbe name string of the corresponding constant, which is listed
-    %bellow.
+    %   are in SI units. Calling Constant.### can load the constants into the
+    %   caller workspace (### stands for SI, Micro). Calling Constant.###(name)
+    %   can return the value of the constant in that units. Here name is the
+    %   varialbe name string of the corresponding constant, which is listed
+    %   bellow.
     
     properties (Constant)
         SpeedOfLight = 2.99792458e8 % c.

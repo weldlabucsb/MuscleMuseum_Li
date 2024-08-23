@@ -8,9 +8,7 @@ classdef SeSim1D < TimeSim & SpaceSim
 
     methods
         function obj = SeSim1D(trialName,config)
-            %SESIM Construct an instance of this class
-            %   Detailed explanation goes here
-            % obj.Property1 = inputArg1 + inputArg2;
+            %SeSim1D Construct an instance of this class
             obj@TimeSim(trialName,config);
         end
 

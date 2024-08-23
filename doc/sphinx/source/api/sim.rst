@@ -1,52 +1,34 @@
-Hardware 
+Sim 
 ---------------------------------------------------
 
-.. autoclass:: src.hardware.Hardware
+.. automodule:: src.trial.sim.Sim
     :members:
     :private-members:
     :show-inheritance:
     :undoc-members:
 
-Acquisition 
+SimRun 
 ---------------------------------------------------
 
-.. automodule:: src.hardware.Acquisition
+.. automodule:: src.trial.sim.SimRun
     :members:
     :private-members:
     :show-inheritance:
     :undoc-members:
 
-WaveformGenerator 
+MeSim 
 ---------------------------------------------------
 
-.. automodule:: src.hardware.WaveformGenerator
+.. automodule:: src.trial.sim.MeSim
     :members:
     :private-members:
     :show-inheritance:
     :undoc-members:
 
-RfGenerator 
+SeSim 
 ---------------------------------------------------
 
-.. automodule:: src.hardware.RfGenerator
-    :members:
-    :private-members:
-    :show-inheritance:
-    :undoc-members:
-
-Scope 
----------------------------------------------------
-
-.. automodule:: src.hardware.Scope
-    :members:
-    :private-members:
-    :show-inheritance:
-    :undoc-members:
-
-Apps 
----------------------------------------------------
-
-.. automodule:: src.hardware.app
+.. automodule:: src.trial.sim.SeSim
     :members:
     :private-members:
     :show-inheritance:
@@ -55,7 +37,7 @@ Apps
 Functions 
 ---------------------------------------------------
 
-.. automodule:: src.hardware.func
+.. automodule:: src.trial.sim.func
     :members:
     :private-members:
     :show-inheritance:

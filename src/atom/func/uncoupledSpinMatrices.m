@@ -1,7 +1,7 @@
 function [J1,J2] = uncoupledSpinMatrices(j1,j2)
-%UNCOUPLEDOPERATOR j1 and j2 couple to get j3. Get the uncoupled angular
-%momentum spin matrices under the j3 basis
-%   Detailed explanation goes here
+%uncoupledSpinMatrices 
+%   j1 and j2 couple to get j3. Get the uncoupled angular
+%   momentum spin matrices under the j3 basis
 J1 = spinMatrices(j1);
 nj1 = 2*j1 + 1;
 J2 = spinMatrices(j2);

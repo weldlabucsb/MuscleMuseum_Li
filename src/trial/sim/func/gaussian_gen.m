@@ -1,4 +1,6 @@
 function gaussian_gen
+% gaussian_gen 
+
 
 %% 1
 % syms w0 k
