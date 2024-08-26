@@ -331,58 +331,6 @@ document.write(`
 <section id="module-src.atom.Atom">
 <span id="id1"></span><h2>Atom<a class="headerlink" href="#module-src.atom.Atom" title="Link to this heading">#</a></h2>
 <dl class="mat class">
-<dt class="sig sig-object mat" id="Atom">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">dynamicprops</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Heterogeneous</span></code></p>
-<p>Atom The Atom class stores information about alkali/divalent atoms and calculates the atomic structure.
-This class is based on the well-known python package, ARC 
-(Alkali.ne Rydberg Calculator). Most (but not all) of the atomic
-data are inherited from the ARC package. Not all the ARC package
-functions are used, because of some defects in that package and
-some convention conflicts.</p>
-<p>When an Atom object is constructed, it reads data from the
-corresponding ARC atom object and saves them as its own properties.
-The ArcObj is also saved for later use.</p>
-<div class="members docutils container">
-<dl>
-<dt>Constructor Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="Atom.Atom">
-<span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom.Atom" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd>
-<dt>Property Summary</dt><dd><dl class="mat attribute">
-<dt class="sig sig-object mat" id="Atom.DataPath">
-<span class="sig-name descname"><span class="pre">DataPath</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.DataPath" title="Link to this definition">#</a></dt>
-<dd><p>Where to save the pre-calcualted data, for example, the MI,MJ &lt;-&gt; F,MF correspondence</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="Atom.Name">
-<span class="sig-name descname"><span class="pre">Name</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.Name" title="Link to this definition">#</a></dt>
-<dd><p>“Lithium7”, for example. Check the ARC documents for available atoms.</p>
-</dd></dl>
-
-</dd>
-<dt>Method Summary</dt><dd><dl class="mat staticmethod">
-<dt class="sig sig-object mat" id="Atom.loadobj">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">loadobj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom.loadobj" title="Link to this definition">#</a></dt>
-<dd><p>When the objected is loaded, reconstruct it using the name of
-the atom.</p>
-</dd></dl>
-
-<dl class="mat method">
-<dt class="sig sig-object mat" id="Atom.saveobj">
-<span class="sig-name descname"><span class="pre">saveobj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Atom.saveobj" title="Link to this definition">#</a></dt>
-<dd><p>Only save the Type and the Name of the object to files.</p>
-</dd></dl>
-
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="mat class">
 <dt class="sig sig-object mat" id="Alkali">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Alkali</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Alkali" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Atom" title="Atom"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Atom</span></code></a></p>
@@ -512,71 +460,131 @@ Detailed explanation goes here</p>
 </div>
 </dd></dl>
 
+<dl class="mat class">
+<dt class="sig sig-object mat" id="Atom">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">dynamicprops</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Heterogeneous</span></code></p>
+<p>Atom The Atom class stores information about alkali/divalent atoms and calculates the atomic structure.
+This class is based on the well-known python package, ARC 
+(Alkali.ne Rydberg Calculator). Most (but not all) of the atomic
+data are inherited from the ARC package. Not all the ARC package
+functions are used, because of some defects in that package and
+some convention conflicts.</p>
+<p>When an Atom object is constructed, it reads data from the
+corresponding ARC atom object and saves them as its own properties.
+The ArcObj is also saved for later use.</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="Atom.Atom">
+<span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom.Atom" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="Atom.DataPath">
+<span class="sig-name descname"><span class="pre">DataPath</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.DataPath" title="Link to this definition">#</a></dt>
+<dd><p>Where to save the pre-calcualted data, for example, the MI,MJ &lt;-&gt; F,MF correspondence</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Atom.Name">
+<span class="sig-name descname"><span class="pre">Name</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.Name" title="Link to this definition">#</a></dt>
+<dd><p>“Lithium7”, for example. Check the ARC documents for available atoms.</p>
+</dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat staticmethod">
+<dt class="sig sig-object mat" id="Atom.loadobj">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">loadobj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom.loadobj" title="Link to this definition">#</a></dt>
+<dd><p>When the objected is loaded, reconstruct it using the name of
+the atom.</p>
+</dd></dl>
+
+<dl class="mat method">
+<dt class="sig sig-object mat" id="Atom.saveobj">
+<span class="sig-name descname"><span class="pre">saveobj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Atom.saveobj" title="Link to this definition">#</a></dt>
+<dd><p>Only save the Type and the Name of the object to files.</p>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
 </section>
 <section id="atom-manifold">
 <h2>Atom Manifold<a class="headerlink" href="#atom-manifold" title="Link to this heading">#</a></h2>
 <dl class="mat class" id="module-src.atom.AtomManifold">
-<dt class="sig sig-object mat" id="AtomManifold">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">AtomManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#AtomManifold" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Heterogeneous</span></code></p>
-<p>TRANSITION Summary of this class goes here
+<dt class="sig sig-object mat" id="OneFManifold">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">OneFManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em>, <em class="sig-param"><span class="pre">n</span></em>, <em class="sig-param"><span class="pre">l</span></em>, <em class="sig-param"><span class="pre">j</span></em>, <em class="sig-param"><span class="pre">f</span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneFManifold" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#AtomManifold" title="AtomManifold"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">AtomManifold</span></code></a></p>
+<p>TWOJ Summary of this class goes here
 Detailed explanation goes here</p>
 <div class="members docutils container">
 <dl>
 <dt>Constructor Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="AtomManifold.AtomManifold">
-<span class="sig-name descname"><span class="pre">AtomManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#AtomManifold.AtomManifold" title="Link to this definition">#</a></dt>
-<dd><p>TRANSITION Construct an instance of this class
+<dt class="sig sig-object mat" id="OneFManifold.OneFManifold">
+<span class="sig-name descname"><span class="pre">OneFManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em>, <em class="sig-param"><span class="pre">n</span></em>, <em class="sig-param"><span class="pre">l</span></em>, <em class="sig-param"><span class="pre">j</span></em>, <em class="sig-param"><span class="pre">f</span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneFManifold.OneFManifold" title="Link to this definition">#</a></dt>
+<dd><p>TWOJ Construct an instance of this class
 Detailed explanation goes here</p>
 </dd></dl>
 
 </dd>
 <dt>Property Summary</dt><dd><dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.AngularWavenumber">
-<span class="sig-name descname"><span class="pre">AngularWavenumber</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.AngularWavenumber" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object mat" id="OneFManifold.Energy">
+<span class="sig-name descname"><span class="pre">Energy</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.Energy" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.Atom">
-<span class="sig-name descname"><span class="pre">Atom</span></span><em class="property"> <span class="pre">Atom</span></em><a class="headerlink" href="#AtomManifold.Atom" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object mat" id="OneFManifold.F">
+<span class="sig-name descname"><span class="pre">F</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.F" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.Frequency">
-<span class="sig-name descname"><span class="pre">Frequency</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.Frequency" title="Link to this definition">#</a></dt>
-<dd><p>The center of gravity transition frequency.</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.NNState">
-<span class="sig-name descname"><span class="pre">NNState</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#AtomManifold.NNState" title="Link to this definition">#</a></dt>
-<dd><p>Total number of states</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.RecoilEnergy">
-<span class="sig-name descname"><span class="pre">RecoilEnergy</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilEnergy" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object mat" id="OneFManifold.FOperator">
+<span class="sig-name descname"><span class="pre">FOperator</span></span><a class="headerlink" href="#OneFManifold.FOperator" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.RecoilMomentum">
-<span class="sig-name descname"><span class="pre">RecoilMomentum</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilMomentum" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object mat" id="OneFManifold.J">
+<span class="sig-name descname"><span class="pre">J</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.J" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.RecoilTemperature">
-<span class="sig-name descname"><span class="pre">RecoilTemperature</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilTemperature" title="Link to this definition">#</a></dt>
-<dd><p>in K</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.RecoilVelocity">
-<span class="sig-name descname"><span class="pre">RecoilVelocity</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilVelocity" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object mat" id="OneFManifold.L">
+<span class="sig-name descname"><span class="pre">L</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#OneFManifold.L" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="mat attribute">
-<dt class="sig sig-object mat" id="AtomManifold.Wavelength">
-<span class="sig-name descname"><span class="pre">Wavelength</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.Wavelength" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object mat" id="OneFManifold.LandegF">
+<span class="sig-name descname"><span class="pre">LandegF</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.LandegF" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="OneFManifold.LandegJ">
+<span class="sig-name descname"><span class="pre">LandegJ</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.LandegJ" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="OneFManifold.MF">
+<span class="sig-name descname"><span class="pre">MF</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.MF" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="OneFManifold.N">
+<span class="sig-name descname"><span class="pre">N</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#OneFManifold.N" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="OneFManifold.StateList">
+<span class="sig-name descname"><span class="pre">StateList</span></span><em class="property"> <span class="pre">table</span></em><a class="headerlink" href="#OneFManifold.StateList" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Method Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="OneFManifold.HamiltonianAtom">
+<span class="sig-name descname"><span class="pre">HamiltonianAtom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">fRot</span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneFManifold.HamiltonianAtom" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd>
@@ -695,83 +703,6 @@ Detailed explanation goes here</p>
 <dl class="mat method">
 <dt class="sig sig-object mat" id="OneJManifold.getMIMJ">
 <span class="sig-name descname"><span class="pre">getMIMJ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">isPlot</span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneJManifold.getMIMJ" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="mat class">
-<dt class="sig sig-object mat" id="OneFManifold">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">OneFManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em>, <em class="sig-param"><span class="pre">n</span></em>, <em class="sig-param"><span class="pre">l</span></em>, <em class="sig-param"><span class="pre">j</span></em>, <em class="sig-param"><span class="pre">f</span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneFManifold" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#AtomManifold" title="AtomManifold"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">AtomManifold</span></code></a></p>
-<p>TWOJ Summary of this class goes here
-Detailed explanation goes here</p>
-<div class="members docutils container">
-<dl>
-<dt>Constructor Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="OneFManifold.OneFManifold">
-<span class="sig-name descname"><span class="pre">OneFManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em>, <em class="sig-param"><span class="pre">n</span></em>, <em class="sig-param"><span class="pre">l</span></em>, <em class="sig-param"><span class="pre">j</span></em>, <em class="sig-param"><span class="pre">f</span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneFManifold.OneFManifold" title="Link to this definition">#</a></dt>
-<dd><p>TWOJ Construct an instance of this class
-Detailed explanation goes here</p>
-</dd></dl>
-
-</dd>
-<dt>Property Summary</dt><dd><dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.Energy">
-<span class="sig-name descname"><span class="pre">Energy</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.Energy" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.F">
-<span class="sig-name descname"><span class="pre">F</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.F" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.FOperator">
-<span class="sig-name descname"><span class="pre">FOperator</span></span><a class="headerlink" href="#OneFManifold.FOperator" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.J">
-<span class="sig-name descname"><span class="pre">J</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.J" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.L">
-<span class="sig-name descname"><span class="pre">L</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#OneFManifold.L" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.LandegF">
-<span class="sig-name descname"><span class="pre">LandegF</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.LandegF" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.LandegJ">
-<span class="sig-name descname"><span class="pre">LandegJ</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.LandegJ" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.MF">
-<span class="sig-name descname"><span class="pre">MF</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#OneFManifold.MF" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.N">
-<span class="sig-name descname"><span class="pre">N</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#OneFManifold.N" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="OneFManifold.StateList">
-<span class="sig-name descname"><span class="pre">StateList</span></span><em class="property"> <span class="pre">table</span></em><a class="headerlink" href="#OneFManifold.StateList" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd>
-<dt>Method Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="OneFManifold.HamiltonianAtom">
-<span class="sig-name descname"><span class="pre">HamiltonianAtom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">fRot</span></em><span class="sig-paren">)</span><a class="headerlink" href="#OneFManifold.HamiltonianAtom" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd>
@@ -1000,15 +931,82 @@ D line Data.</p>
 </div>
 </dd></dl>
 
+<dl class="mat class">
+<dt class="sig sig-object mat" id="AtomManifold">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">AtomManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#AtomManifold" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Heterogeneous</span></code></p>
+<p>TRANSITION Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="AtomManifold.AtomManifold">
+<span class="sig-name descname"><span class="pre">AtomManifold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atom</span></em><span class="sig-paren">)</span><a class="headerlink" href="#AtomManifold.AtomManifold" title="Link to this definition">#</a></dt>
+<dd><p>TRANSITION Construct an instance of this class
+Detailed explanation goes here</p>
+</dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.AngularWavenumber">
+<span class="sig-name descname"><span class="pre">AngularWavenumber</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.AngularWavenumber" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.Atom">
+<span class="sig-name descname"><span class="pre">Atom</span></span><em class="property"> <span class="pre">Atom</span></em><a class="headerlink" href="#AtomManifold.Atom" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.Frequency">
+<span class="sig-name descname"><span class="pre">Frequency</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.Frequency" title="Link to this definition">#</a></dt>
+<dd><p>The center of gravity transition frequency.</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.NNState">
+<span class="sig-name descname"><span class="pre">NNState</span></span><em class="property"> <span class="pre">int32</span></em><a class="headerlink" href="#AtomManifold.NNState" title="Link to this definition">#</a></dt>
+<dd><p>Total number of states</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.RecoilEnergy">
+<span class="sig-name descname"><span class="pre">RecoilEnergy</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilEnergy" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.RecoilMomentum">
+<span class="sig-name descname"><span class="pre">RecoilMomentum</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilMomentum" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.RecoilTemperature">
+<span class="sig-name descname"><span class="pre">RecoilTemperature</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilTemperature" title="Link to this definition">#</a></dt>
+<dd><p>in K</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.RecoilVelocity">
+<span class="sig-name descname"><span class="pre">RecoilVelocity</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.RecoilVelocity" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="AtomManifold.Wavelength">
+<span class="sig-name descname"><span class="pre">Wavelength</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#AtomManifold.Wavelength" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
 </section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="mat function" id="module-src.atom.func">
-<dt class="sig sig-object mat" id="saveAtom">
-<span class="sig-name descname"><span class="pre">saveAtom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#saveAtom" title="Link to this definition">#</a></dt>
-<dd><p>SAVEATOMDATA Summary of this function goes here
-Detailed explanation goes here</p>
-</dd></dl>
+<dt class="sig sig-object mat" id="angularMomentumList">
+<span class="sig-name descname"><span class="pre">angularMomentumList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j</span></em><span class="sig-paren">)</span><a class="headerlink" href="#angularMomentumList" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="mat function">
 <dt class="sig sig-object mat" id="magneticAngularMomentum">
@@ -1016,28 +1014,23 @@ Detailed explanation goes here</p>
 <dd></dd></dl>
 
 <dl class="mat function">
-<dt class="sig sig-object mat" id="angularMomentumList">
-<span class="sig-name descname"><span class="pre">angularMomentumList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j</span></em><span class="sig-paren">)</span><a class="headerlink" href="#angularMomentumList" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object mat" id="saveAtom">
+<span class="sig-name descname"><span class="pre">saveAtom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#saveAtom" title="Link to this definition">#</a></dt>
+<dd><p>SAVEATOMDATA Summary of this function goes here
+Detailed explanation goes here</p>
+</dd></dl>
+
+<dl class="mat function">
+<dt class="sig sig-object mat" id="spinMatrices">
+<span class="sig-name descname"><span class="pre">spinMatrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j</span></em><span class="sig-paren">)</span><a class="headerlink" href="#spinMatrices" title="Link to this definition">#</a></dt>
+<dd><p>SPINMATRICES Summary of this function goes here
+Detailed explanation goes here</p>
+</dd></dl>
 
 <dl class="mat function">
 <dt class="sig sig-object mat" id="totalAngularMomentum">
 <span class="sig-name descname"><span class="pre">totalAngularMomentum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">j2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#totalAngularMomentum" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-<dl class="mat function">
-<dt class="sig sig-object mat" id="uncoupledSpinMatrices">
-<span class="sig-name descname"><span class="pre">uncoupledSpinMatrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">j2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinMatrices" title="Link to this definition">#</a></dt>
-<dd><p>j1 and j2 couple to get j3. Get the uncoupled angular
-momentum spin matrices under the j3 basis</p>
-</dd></dl>
-
-<dl class="mat function">
-<dt class="sig sig-object mat" id="uncoupledSpinBasisTransformation">
-<span class="sig-name descname"><span class="pre">uncoupledSpinBasisTransformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">j2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinBasisTransformation" title="Link to this definition">#</a></dt>
-<dd><p>Transform the basis from the coupled spin basis to the uncoupled
-spin basis</p>
-</dd></dl>
 
 <dl class="mat function">
 <dt class="sig sig-object mat" id="uncoupledSpinBasis">
@@ -1048,10 +1041,17 @@ momentum spin eigen-basis <a href="#id2"><span class="problematic" id="id3">|</s
 </dd></dl>
 
 <dl class="mat function">
-<dt class="sig sig-object mat" id="spinMatrices">
-<span class="sig-name descname"><span class="pre">spinMatrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j</span></em><span class="sig-paren">)</span><a class="headerlink" href="#spinMatrices" title="Link to this definition">#</a></dt>
-<dd><p>SPINMATRICES Summary of this function goes here
-Detailed explanation goes here</p>
+<dt class="sig sig-object mat" id="uncoupledSpinBasisTransformation">
+<span class="sig-name descname"><span class="pre">uncoupledSpinBasisTransformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">j2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinBasisTransformation" title="Link to this definition">#</a></dt>
+<dd><p>Transform the basis from the coupled spin basis to the uncoupled
+spin basis</p>
+</dd></dl>
+
+<dl class="mat function">
+<dt class="sig sig-object mat" id="uncoupledSpinMatrices">
+<span class="sig-name descname"><span class="pre">uncoupledSpinMatrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">j1</span></em>, <em class="sig-param"><span class="pre">j2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#uncoupledSpinMatrices" title="Link to this definition">#</a></dt>
+<dd><p>j1 and j2 couple to get j3. Get the uncoupled angular
+momentum spin matrices under the j3 basis</p>
 </dd></dl>
 
 </section>

@@ -331,6 +331,49 @@ document.write(`
 <section id="laser">
 <h2>Laser<a class="headerlink" href="#laser" title="Link to this heading">#</a></h2>
 <dl class="mat class" id="module-src.field.Laser">
+<dt class="sig sig-object mat" id="GaussianBeam">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">GaussianBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">options1</span></em>, <em class="sig-param"><span class="pre">options2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GaussianBeam" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#Laser" title="Laser"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Laser</span></code></a></p>
+<p>PLANEWAVE Summary of this class goes here
+Detailed explanation goes here</p>
+<div class="members docutils container">
+<dl>
+<dt>Constructor Summary</dt><dd><dl class="mat method">
+<dt class="sig sig-object mat" id="GaussianBeam.GaussianBeam">
+<span class="sig-name descname"><span class="pre">GaussianBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">options1</span></em>, <em class="sig-param"><span class="pre">options2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GaussianBeam.GaussianBeam" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd>
+<dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="GaussianBeam.Center">
+<span class="sig-name descname"><span class="pre">Center</span></span><em class="property"> <span class="pre">(3,1)</span> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">[0;0;0]</span></em><a class="headerlink" href="#GaussianBeam.Center" title="Link to this definition">#</a></dt>
+<dd><p>In meters</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="GaussianBeam.IntensityAveraged">
+<span class="sig-name descname"><span class="pre">IntensityAveraged</span></span><a class="headerlink" href="#GaussianBeam.IntensityAveraged" title="Link to this definition">#</a></dt>
+<dd><p>In W/m^2</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="GaussianBeam.RayleighRange">
+<span class="sig-name descname"><span class="pre">RayleighRange</span></span><a class="headerlink" href="#GaussianBeam.RayleighRange" title="Link to this definition">#</a></dt>
+<dd><p>In meters</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="GaussianBeam.Waist">
+<span class="sig-name descname"><span class="pre">Waist</span></span><em class="property"> <span class="pre">(2,1)</span> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">[NaN;NaN]</span></em><a class="headerlink" href="#GaussianBeam.Waist" title="Link to this definition">#</a></dt>
+<dd><p>In meters</p>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="mat class">
 <dt class="sig sig-object mat" id="Laser">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Laser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">options</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Laser" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Heterogeneous</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code></p>
@@ -455,49 +498,6 @@ document.write(`
 <dt class="sig sig-object mat" id="Laser.timePhaseFunc">
 <span class="sig-name descname"><span class="pre">timePhaseFunc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Laser.timePhaseFunc" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
-
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="mat class">
-<dt class="sig sig-object mat" id="GaussianBeam">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">GaussianBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">options1</span></em>, <em class="sig-param"><span class="pre">options2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GaussianBeam" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#Laser" title="Laser"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Laser</span></code></a></p>
-<p>PLANEWAVE Summary of this class goes here
-Detailed explanation goes here</p>
-<div class="members docutils container">
-<dl>
-<dt>Constructor Summary</dt><dd><dl class="mat method">
-<dt class="sig sig-object mat" id="GaussianBeam.GaussianBeam">
-<span class="sig-name descname"><span class="pre">GaussianBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">options1</span></em>, <em class="sig-param"><span class="pre">options2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GaussianBeam.GaussianBeam" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd>
-<dt>Property Summary</dt><dd><dl class="mat attribute">
-<dt class="sig sig-object mat" id="GaussianBeam.Center">
-<span class="sig-name descname"><span class="pre">Center</span></span><em class="property"> <span class="pre">(3,1)</span> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">[0;0;0]</span></em><a class="headerlink" href="#GaussianBeam.Center" title="Link to this definition">#</a></dt>
-<dd><p>In meters</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="GaussianBeam.IntensityAveraged">
-<span class="sig-name descname"><span class="pre">IntensityAveraged</span></span><a class="headerlink" href="#GaussianBeam.IntensityAveraged" title="Link to this definition">#</a></dt>
-<dd><p>In W/m^2</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="GaussianBeam.RayleighRange">
-<span class="sig-name descname"><span class="pre">RayleighRange</span></span><a class="headerlink" href="#GaussianBeam.RayleighRange" title="Link to this definition">#</a></dt>
-<dd><p>In meters</p>
-</dd></dl>
-
-<dl class="mat attribute">
-<dt class="sig sig-object mat" id="GaussianBeam.Waist">
-<span class="sig-name descname"><span class="pre">Waist</span></span><em class="property"> <span class="pre">(2,1)</span> <span class="pre">double</span> <span class="pre">=</span> <span class="pre">[NaN;NaN]</span></em><a class="headerlink" href="#GaussianBeam.Waist" title="Link to this definition">#</a></dt>
-<dd><p>In meters</p>
-</dd></dl>
 
 </dd>
 </dl>

@@ -18,7 +18,6 @@ extensions = ['sphinxcontrib.matlab', 'sphinx.ext.autodoc']
 
 templates_path = ['_templates']
 exclude_patterns = []
-autodoc_member_order = 'groupwise'
 
 # -- MATLAB options ----------------------------------------------------------
 
