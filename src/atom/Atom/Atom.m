@@ -1,24 +1,23 @@
 classdef (Abstract) Atom < dynamicprops & handle & matlab.mixin.Heterogeneous
-    %ATOM The Atom class stores information about alkali/divalent atoms  
-    %and calculates the atomic structure.
+    %Atom The Atom class stores information about alkali/divalent atoms and calculates the atomic structure.
     %   This class is based on the well-known python package, ARC 
     %   (Alkali.ne Rydberg Calculator). Most (but not all) of the atomic
     %   data are inherited from the ARC package. Not all the ARC package
     %   functions are used, because of some defects in that package and
-    %   some convetion conflicts.
+    %   some convention conflicts.
     %   
     %   When an Atom object is constructed, it reads data from the
     %   corresponding ARC atom object and saves them as its own properties.
     %   The ArcObj is also saved for later use.
     
     properties (SetAccess = protected)
-        Name string % Lithium7, for example. Check the ARC documents for available atoms.
+        Name string % "Lithium7", for example. Check the ARC documents for available atoms.
         DataPath string % Where to save the pre-calcualted data, for example, the MI,MJ <-> F,MF correspondence
     end
 
     properties (SetAccess = private, Hidden)
         ArcObj % The ARC atom object
-        Type string % Either alkali or Divalent
+        Type string % Either "Alkali" or "Divalent"
     end
     
     methods
