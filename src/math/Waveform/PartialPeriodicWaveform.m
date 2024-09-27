@@ -73,13 +73,17 @@ classdef (Abstract) PartialPeriodicWaveform < Waveform
         end
 
         function s = get.SampleOneCycle(obj)
-            if obj.NRepeat == 1
-                s = obj.Sample;
-            else
+            % if obj.NRepeat == 1
+                % s = obj.Sample;
+            % else
+            if obj.PeriodicStartTime ~= obj.PeriodicEndTime
                 tFunc = obj.TimeFunc;
                 t = obj.PeriodicStartTime : obj.TimeStep : (obj.PeriodicStartTime + obj.DurationOneCycle - obj.TimeStep);
                 s = tFunc(t);
+            else
+                s = [];
             end
+            % end
         end
 
         function teC = get.EndTimeAllCycle(obj)
