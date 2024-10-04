@@ -42,7 +42,7 @@ DatabaseConfig = table(Name,Table);
 Name = ["localhost";"128.111.8.45"];
 Port = [5432;5432];
 Username = ["postgres";"postgres";];
-Password = ["Ultr@c0ld";"Ultr@c0ld"];
+Password = ["SupermassiveBlackHole";"SupermassiveBlackHole"];
 DatabaseServerConfig = table(Name,Port,Username,Password);
 save(configName,"DatabaseConfig","DatabaseServerConfig",'-mat','-append')
 

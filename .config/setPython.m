@@ -18,13 +18,22 @@ if isempty(pe.Version)
 else
     disp("Python version: " + pe.Version)
     try
+        py.list({'This','is a','list'});
+    catch
+        warning("Python is not properly installed. Make sure you download Python from python.org, not from" + ...
+            " Microsoft Store. Also please check this page:" + newline + ...
+            "https://www.mathworks.com/help/matlab/matlab_external/undefined-variable-py-or-function-py-command.html")
+        return
+    end
+    try
         arc = py.importlib.import_module("arc");
+        disp("ARC is installed.")
     catch
         warning("ARC is not installed. Please install this Python package from here: " ...
             + newline + "https://arc-alkali-rydberg-calculator.readthedocs.io/en/latest/installation.html")
         return
     end
-    disp("ARC is installed.")
+
     atom = arc.AlkaliAtom;
 
     % Copy ARC data file

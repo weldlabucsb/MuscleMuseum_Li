@@ -1,26 +1,26 @@
 classdef Alkali < Atom
-    %ALKALI Alkali atom data.
-    %   When constructed, several useful atomic manifolds are included,
-    %   e.g. D1,D2. Cycling and repumping transition prameters are
-    %   calculated.
+    %:class:`Alkali` deals with Alkali atoms' data and calculations. When
+    %constructed, it calculates some :class:`AtomManifold` and transition
+    %properties, e.g. D1, D2 structures, Cycling and repumping transition
+    %prameters.
     
     properties(SetAccess=protected)
-        D1 TwoJManifold % Alkali D1 manifold. F=0,J=1/2 <-> L=1,J=1/2
-        D2 TwoJManifold % Alkali D2 manifold. L=0,J=1/2 <-> L=1,J=3/2
-        DGround OneJManifold % Alkali D line ground manifold. L=0,J=1/2
-        D1Excited OneJManifold % Alkali D1 excited manifold. L=1,J=1/2
-        D2Excited OneJManifold % Alkali D2 excited manifold. L=1,J=3/2
-        Spinor1 OneFManifold % Alkali first ground F manifold. L=0,J=1/2,F=min{abs(I-J),abs(I+J)}
-        Spinor2 OneFManifold % Alkali second ground F manifold. L=0,J=1/2,F=max{abs(I-J),abs(I+J)}
-        CyclerFrequency double % Cycling transition frequency at zero field, in Hz
-        CyclerSaturationIntensity double % Cycling transition saturation intensity, in W/m^2
-        CyclerSaturationIntensityLu double % Cycling transition saturation intensity, in mW/cm^2
-        CyclerCrossSection double % Cycling transition resonant cross section, in m^2
-        RepumperFrequency double % Repump transition frequency at zero field, in Hz
-        RepumperSaturationIntensity double % Repump transition saturation intensity, in W/m^2. Assume the repumper also has sigma+ polarization
-        RepumperSaturationIntensityLu double % Repump transition saturation intensity, in mW/cm^2
-        RepumperCrossSection double % Repump transition resonant cross section, in m^2
-        % ScalarPolarizabilityGroundFarDetuned %Alkali D line ground state scalar polarizability, in Hz/(V/m)^2
+        D1 TwoJManifold % Alkali D1 manifold: :math:`(L=0,J=1/2) \leftrightarrow (L=1,J=1/2)`.
+        D2 TwoJManifold % Alkali D2 manifold: :math:`(L=0,J=1/2) \leftrightarrow (L=1,J=3/2)`.
+        DGround OneJManifold % Alkali D line ground manifold: :math:`(L=0,J=1/2)`.
+        D1Excited OneJManifold % Alkali D1 excited manifold: :math:`(L=1,J=1/2)`.
+        D2Excited OneJManifold % Alkali D2 excited manifold: :math:`(L=1,J=3/2)`.
+        Spinor1 OneFManifold % Alkali first ground F manifold: :math:`L=0,J=1/2,F=min{|I-J|,|I+J|}`.
+        Spinor2 OneFManifold % Alkali second ground F manifold: :math:`L=0,J=1/2,F=max{|I-J|,|I+J|}`.
+        CyclerFrequency double % Cycling transition frequency at zero field, in Hz.
+        CyclerSaturationIntensity double % Cycling transition saturation intensity, in W/m^2.
+        CyclerSaturationIntensityLu double % Cycling transition saturation intensity, in mW/cm^2.
+        CyclerCrossSection double % Cycling transition resonant cross section, in m^2.
+        RepumperFrequency double % Repump transition frequency at zero field, in Hz.
+        RepumperSaturationIntensity double % Repump transition saturation intensity, in W/m^2. Assume the repumper also has sigma+ polarization.
+        RepumperSaturationIntensityLu double % Repump transition saturation intensity, in mW/cm^2.
+        RepumperCrossSection double % Repump transition resonant cross section, in m^2.
+        % ScalarPolarizabilityGroundFarDetuned %Alkali D line ground state scalar polarizability, in Hz/(V/m)^2.
     end
     
     methods
