@@ -6,7 +6,7 @@
 MuscleMuseum
 ==========================
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    intro/introduction
    intro/install

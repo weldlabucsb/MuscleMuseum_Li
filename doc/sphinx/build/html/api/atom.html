@@ -40,6 +40,7 @@
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/atom';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -334,10 +335,10 @@ document.write(`
 <dt class="sig sig-object mat" id="Alkali">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Alkali</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Alkali" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#Atom" title="Atom"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Atom</span></code></a></p>
-<p>ALKALI Alkali atom data.
-When constructed, several useful atomic manifolds are included,
-e.g. D1,D2. Cycling and repumping transition prameters are
-calculated.</p>
+<p><a class="reference internal" href="#Alkali" title="Alkali"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Alkali</span></code></a> deals with Alkali atoms’ data and calculations. When
+constructed, it calculates some <a class="reference internal" href="#AtomManifold" title="AtomManifold"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">AtomManifold</span></code></a> and transition
+properties, e.g. D1, D2 structures, Cycling and repumping transition
+prameters.</p>
 <div class="members docutils container">
 <dl>
 <dt>Constructor Summary</dt><dd><dl class="mat method">
@@ -356,7 +357,7 @@ calculated.</p>
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.CyclerFrequency">
 <span class="sig-name descname"><span class="pre">CyclerFrequency</span></span><em class="property"> <span class="pre">double</span></em><a class="headerlink" href="#Alkali.CyclerFrequency" title="Link to this definition">#</a></dt>
-<dd><p>Cycling transition frequency at zero field, in Hz</p>
+<dd><p>Cycling transition frequency at zero field, in <span class="math notranslate nohighlight">\(\mathrm{Hz}\)</span></p>
 </dd></dl>
 
 <dl class="mat attribute">
@@ -374,31 +375,31 @@ calculated.</p>
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.D1">
 <span class="sig-name descname"><span class="pre">D1</span></span><em class="property"> <span class="pre">TwoJManifold</span></em><a class="headerlink" href="#Alkali.D1" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D1 manifold. F=0,J=1/2 &lt;-&gt; L=1,J=1/2</p>
+<dd><p>Alkali D1 manifold: <span class="math notranslate nohighlight">\((L=0,J=1/2) \leftrightarrow (L=1,J=1/2)\)</span>.</p>
 </dd></dl>
 
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.D1Excited">
 <span class="sig-name descname"><span class="pre">D1Excited</span></span><em class="property"> <span class="pre">OneJManifold</span></em><a class="headerlink" href="#Alkali.D1Excited" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D1 excited manifold. L=1,J=1/2</p>
+<dd><p>Alkali D1 excited manifold: <span class="math notranslate nohighlight">\((L=1,J=1/2)\)</span>.</p>
 </dd></dl>
 
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.D2">
 <span class="sig-name descname"><span class="pre">D2</span></span><em class="property"> <span class="pre">TwoJManifold</span></em><a class="headerlink" href="#Alkali.D2" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D2 manifold. L=0,J=1/2 &lt;-&gt; L=1,J=3/2</p>
+<dd><p>Alkali D2 manifold: <span class="math notranslate nohighlight">\((L=0,J=1/2) \leftrightarrow (L=1,J=3/2)\)</span>.</p>
 </dd></dl>
 
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.D2Excited">
 <span class="sig-name descname"><span class="pre">D2Excited</span></span><em class="property"> <span class="pre">OneJManifold</span></em><a class="headerlink" href="#Alkali.D2Excited" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D2 excited manifold. L=1,J=3/2</p>
+<dd><p>Alkali D2 excited manifold: <span class="math notranslate nohighlight">\((L=1,J=3/2)\)</span>.</p>
 </dd></dl>
 
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.DGround">
 <span class="sig-name descname"><span class="pre">DGround</span></span><em class="property"> <span class="pre">OneJManifold</span></em><a class="headerlink" href="#Alkali.DGround" title="Link to this definition">#</a></dt>
-<dd><p>Alkali D line ground manifold. L=0,J=1/2</p>
+<dd><p>Alkali D line ground manifold: <span class="math notranslate nohighlight">\((L=0,J=1/2)\)</span>.</p>
 </dd></dl>
 
 <dl class="mat attribute">
@@ -428,13 +429,13 @@ calculated.</p>
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.Spinor1">
 <span class="sig-name descname"><span class="pre">Spinor1</span></span><em class="property"> <span class="pre">OneFManifold</span></em><a class="headerlink" href="#Alkali.Spinor1" title="Link to this definition">#</a></dt>
-<dd><p>Alkali first ground F manifold. L=0,J=1/2,F=min{abs(I-J),abs(I+J)}</p>
+<dd><p>Alkali first ground F manifold: <span class="math notranslate nohighlight">\(L=0,J=1/2,F=min{|I-J|,|I+J|}\)</span>.</p>
 </dd></dl>
 
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Alkali.Spinor2">
 <span class="sig-name descname"><span class="pre">Spinor2</span></span><em class="property"> <span class="pre">OneFManifold</span></em><a class="headerlink" href="#Alkali.Spinor2" title="Link to this definition">#</a></dt>
-<dd><p>Alkali second ground F manifold. L=0,J=1/2,F=max{abs(I-J),abs(I+J)}</p>
+<dd><p>Alkali second ground F manifold: <span class="math notranslate nohighlight">\(L=0,J=1/2,F=max{|I-J|,|I+J|}\)</span>.</p>
 </dd></dl>
 
 </dd>
@@ -464,47 +465,74 @@ Detailed explanation goes here</p>
 <dt class="sig sig-object mat" id="Atom">
 <em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref mat mat-class docutils literal notranslate"><span class="pre">dynamicprops</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">handle</span></code>, <code class="xref mat mat-class docutils literal notranslate"><span class="pre">matlab.mixin.Heterogeneous</span></code></p>
-<p>Atom The Atom class stores information about alkali/divalent atoms and calculates the atomic structure.
-This class is based on the well-known python package, ARC 
-(Alkali.ne Rydberg Calculator). Most (but not all) of the atomic
-data are inherited from the ARC package. Not all the ARC package
-functions are used, because of some defects in that package and
-some convention conflicts.</p>
-<p>When an Atom object is constructed, it reads data from the
-corresponding ARC atom object and saves them as its own properties.
-The ArcObj is also saved for later use.</p>
+<p><a class="reference internal" href="#Atom" title="Atom"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Atom</span></code></a> stores information about alkali/divalent atoms and
+calculates the atomic structure. This class is based on the
+well-established python package, <a class="reference external" href="https://arc-alkali-rydberg-calculator.readthedocs.io/en/latest/">ARC (Alkali.ne Rydberg Calculator)</a>.
+Most (but not all) of the atomic data are inherited from the ARC
+package. I have edited the ARC atomic data in <code class="docutils literal notranslate"><span class="pre">arcDataEdit.py</span></code> and
+<code class="docutils literal notranslate"><span class="pre">lithium7_literature_dme.csv</span></code> to include more up-to-date data. Some
+ARC functions have defects or convention conflicts so I have to
+rewrite.</p>
+<blockquote>
+<div><p>Note: I follow the conventions in Daniel Steck’s <a class="reference external" href="https://atomoptics.uoregon.edu/~dsteck/teaching/quantum-optics/">Quantum and Atom
+Optics</a>
+to define, e.g., the transition matrix elements.</p>
+</div></blockquote>
 <div class="members docutils container">
 <dl>
 <dt>Constructor Summary</dt><dd><dl class="mat method">
 <dt class="sig sig-object mat" id="Atom.Atom">
 <span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">atomName</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom.Atom" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>When an <a class="reference internal" href="#Atom" title="Atom"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is constructed, it first imports the
+corresponding ARC object using atomName. It then write the ARC
+objest’s properties into its own properties. The ArcObj (ARC
+atom object) is also saved as a property of an <a class="reference internal" href="#Atom" title="Atom"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Atom</span></code></a>
+object for its later uses. Finally, it creates a folder for
+saving the pre-calcualted atomic data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>atomName</strong> (<span><code class="xref mat mat-obj docutils literal notranslate"><span class="pre">string</span></code></span>) – the name of the atom, e.g., “Lithium7”.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd>
 <dt>Property Summary</dt><dd><dl class="mat attribute">
+<dt class="sig sig-object mat" id="Atom.ArcObj">
+<span class="sig-name descname"><span class="pre">ArcObj</span></span><a class="headerlink" href="#Atom.ArcObj" title="Link to this definition">#</a></dt>
+<dd><p>The ARC atom object.</p>
+</dd></dl>
+
+<dl class="mat attribute">
 <dt class="sig sig-object mat" id="Atom.DataPath">
 <span class="sig-name descname"><span class="pre">DataPath</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.DataPath" title="Link to this definition">#</a></dt>
-<dd><p>Where to save the pre-calcualted data, for example, the MI,MJ &lt;-&gt; F,MF correspondence</p>
+<dd><p>Where to save the pre-calcualted data, e.g., the <span class="math notranslate nohighlight">\(|M_I,M_J\rangle \leftrightarrow |F,M_F\rangle\)</span> mapping data. Distinguish this with the dataFolder property that pointing to the arc atomic data.</p>
 </dd></dl>
 
 <dl class="mat attribute">
 <dt class="sig sig-object mat" id="Atom.Name">
 <span class="sig-name descname"><span class="pre">Name</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.Name" title="Link to this definition">#</a></dt>
-<dd><p>“Lithium7”, for example. Check the ARC documents for available atoms.</p>
+<dd><p>e.g., “Lithium7”. Check the ARC documents for available atoms.</p>
+</dd></dl>
+
+<dl class="mat attribute">
+<dt class="sig sig-object mat" id="Atom.Type">
+<span class="sig-name descname"><span class="pre">Type</span></span><em class="property"> <span class="pre">string</span></em><a class="headerlink" href="#Atom.Type" title="Link to this definition">#</a></dt>
+<dd><p>Either “Alkali” or “Divalent”.</p>
 </dd></dl>
 
 </dd>
 <dt>Method Summary</dt><dd><dl class="mat staticmethod">
 <dt class="sig sig-object mat" id="Atom.loadobj">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">loadobj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Atom.loadobj" title="Link to this definition">#</a></dt>
-<dd><p>When the objected is loaded, reconstruct it using the name of
-the atom.</p>
+<dd><p>When the object is loaded, reconstruct it using
+<a class="reference internal" href="#Atom.Type" title="Atom.Type"><code class="xref mat mat-attr docutils literal notranslate"><span class="pre">Atom.Type</span></code></a> and <a class="reference internal" href="#Atom.Name" title="Atom.Name"><code class="xref mat mat-attr docutils literal notranslate"><span class="pre">Atom.Name</span></code></a></p>
 </dd></dl>
 
 <dl class="mat method">
 <dt class="sig sig-object mat" id="Atom.saveobj">
 <span class="sig-name descname"><span class="pre">saveobj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Atom.saveobj" title="Link to this definition">#</a></dt>
-<dd><p>Only save the Type and the Name of the object to files.</p>
+<dd><p>Only save <a class="reference internal" href="#Atom.Type" title="Atom.Type"><code class="xref mat mat-attr docutils literal notranslate"><span class="pre">Atom.Type</span></code></a> and <a class="reference internal" href="#Atom.Name" title="Atom.Name"><code class="xref mat mat-attr docutils literal notranslate"><span class="pre">Atom.Name</span></code></a> into files.</p>
 </dd></dl>
 
 </dd>

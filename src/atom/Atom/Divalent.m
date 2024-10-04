@@ -1,7 +1,4 @@
-classdef Divalent < Atom
-    %ARCALKALI Summary of this class goes here
-    %   Detailed explanation goes here
-    
+classdef Divalent < Atom    
     properties(Dependent)
         
     end
