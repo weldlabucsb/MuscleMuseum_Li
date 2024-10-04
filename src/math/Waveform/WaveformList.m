@@ -72,7 +72,7 @@ classdef WaveformList < handle
             end
 
             %% Initialization
-            sampleIdx = 0;
+            sampleIdx = 1;
             NRepeat = double.empty;
             Sample = cell(1,1);
             PlayMode = string.empty;
@@ -81,21 +81,25 @@ classdef WaveformList < handle
             switch obj.ConcatMethod
                 case "Sequential"
                     for ii = 1:nWave
-                        sampleIdx = sampleIdx + 1;
                         if isa(obj.WaveformOrigin{ii},"PeriodicWaveform")
                             if isa(obj.WaveformOrigin{ii},"ConstantWave")
                                 obj.WaveformOrigin{ii}.Frequency = obj.SamplingRate;
                             end
-                            Sample{sampleIdx} = obj.WaveformOrigin{ii}.SampleOneCycle;
-                            NRepeat(sampleIdx) = obj.WaveformOrigin{ii}.NRepeat;
-                            PlayMode(sampleIdx) = obj.RepeatMode;
+
+                            s = obj.WaveformOrigin{ii}.SampleOneCycle;
+                            if ~isempty(s)
+                                Sample{sampleIdx} = obj.WaveformOrigin{ii}.SampleOneCycle;
+                                NRepeat(sampleIdx) = obj.WaveformOrigin{ii}.NRepeat;
+                                PlayMode(sampleIdx) = obj.RepeatMode;
+                                sampleIdx = sampleIdx + 1;
+                            end
 
                             sExtra = obj.WaveformOrigin{ii}.SampleExtra;
                             if (~isempty(sExtra)) && (~obj.IsTriggerAdvance)
-                                sampleIdx = sampleIdx + 1;
                                 Sample{sampleIdx} = sExtra;
                                 NRepeat(sampleIdx) = 1;
                                 PlayMode(sampleIdx) = "Repeat";
+                                sampleIdx = sampleIdx + 1;
                             end
                         elseif isa(obj.WaveformOrigin{ii},"PartialPeriodicWaveform")
                             sBefore = obj.WaveformOrigin{ii}.SampleBefore;
@@ -105,22 +109,27 @@ classdef WaveformList < handle
                                 PlayMode(sampleIdx) = "Repeat";
                                 sampleIdx = sampleIdx + 1;
                             end
-
-                            Sample{sampleIdx} = obj.WaveformOrigin{ii}.SampleOneCycle;
-                            NRepeat(sampleIdx) = obj.WaveformOrigin{ii}.NRepeat;
-                            PlayMode(sampleIdx) = obj.RepeatMode;
+                            
+                            s = obj.WaveformOrigin{ii}.SampleOneCycle;
+                            if ~isempty(s)
+                                Sample{sampleIdx} = obj.WaveformOrigin{ii}.SampleOneCycle;
+                                NRepeat(sampleIdx) = obj.WaveformOrigin{ii}.NRepeat;
+                                PlayMode(sampleIdx) = obj.RepeatMode;
+                                sampleIdx = sampleIdx + 1;
+                            end
 
                             sAfter = obj.WaveformOrigin{ii}.SampleAfter;
                             if ~isempty(sAfter)
-                                sampleIdx = sampleIdx + 1;
                                 Sample{sampleIdx} = sAfter;
                                 NRepeat(sampleIdx) = 1;
                                 PlayMode(sampleIdx) = "Repeat";
+                                sampleIdx = sampleIdx + 1;
                             end
                         else
                             Sample{sampleIdx} = obj.WaveformOrigin{ii}.Sample;
                             NRepeat(sampleIdx) = 1;
                             PlayMode(sampleIdx) = obj.RepeatMode;
+                            sampleIdx = sampleIdx + 1;
                         end
                     end
                 case "Simultaneous"

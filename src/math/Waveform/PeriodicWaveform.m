@@ -54,13 +54,13 @@ classdef (Abstract) PeriodicWaveform < Waveform
         end
 
         function s = get.SampleOneCycle(obj)
-            if obj.NRepeat == 1
-                s = obj.Sample;
-            else
+            % if obj.NRepeat == 1
+                % s = obj.Sample;
+            % else
                 tFunc = obj.TimeFunc;
                 t = obj.StartTime : obj.TimeStep : (obj.StartTime + obj.DurationOneCycle - obj.TimeStep);
                 s = tFunc(t);
-            end
+            % end
         end
 
         function teC = get.EndTimeAllCycle(obj)
