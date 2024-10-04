@@ -71,6 +71,11 @@ classdef OneJManifold < AtomManifold
                     = repmat(gf(ii),1,mSize(ii));
             end
 
+            Label = cell(obj.NNState,1);
+            for ii = 1:obj.NNState
+                Label{ii} = "$F=" + num2str(F(ii)) + ",M_F = " + num2str(MF(ii)) + "$";
+            end
+            Label = string(Label);
             Index = Index(:);
             N = N(:);
             L = L(:);
@@ -81,7 +86,7 @@ classdef OneJManifold < AtomManifold
             gJ = gJ(:);
             gF = gF(:);
             Energy = Energy(:);
-            obj.StateList = table(Index,N,L,J,F,MF,gI,gJ,gF,Energy);
+            obj.StateList = table(Index,N,L,J,F,MF,gI,gJ,gF,Energy,Label);
 
             %% Operators
             F = arrayfun(@(j) spinMatrices(j),obj.F,'UniformOutput',false);

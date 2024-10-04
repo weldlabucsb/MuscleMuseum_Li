@@ -18,6 +18,7 @@ classdef OpticalLattice < OpticalPotential
         BlochStateFourier
         BlochStatePeriodic
         BerryConnection
+        AmpMod
         AmpModCoupling
     end
 
@@ -180,21 +181,22 @@ classdef OpticalLattice < OpticalPotential
 
         function [E,Fjn,phi,u] = computeBand1D(obj,q,n,x)
             % Calculate Bloch state for quasimomentum q and band index n.
-            % q: Sampling quasimomentum [p/hbar] in unit of 1/meter.
-            % n: Band index. Start from zero. So n = 0 means the s band.
-            % x: Optional. The sampling 1D spatial grids in unit of meter.
-            % E: Band energy given as a length(n) * length(q) matrix, where nmax
-            % is the band index cutoff = 2*(max(n)+1)+49. In Hz.
-            % Fjn: Bloch states in Fourier space. Fjn is a matrix of dimension
-            % nmax * length(n) * length(q). The first dimension denotes band indexes.
-            % phi: Bloch states in real space. If x is given, phi is a matrix of
-            % dimension length(x) * length(q) * length(n). If not, phi is a
-            % cell of function handles with dimension length(q) *
-            % length(n).
-            % u: the periodic part of phi.
+            % 
+            %   q Sampling quasimomentum [p/hbar] in unit of 1/meter.
+            %   n: Band index. Start from zero. So n = 0 means the s band.
+            %   x: Optional. The sampling 1D spatial grids in unit of meter.
+            %   E: Band energy given as a length(n) * length(q) matrix, where nmax
+            %   is the band index cutoff = 2*(max(n)+1)+49. In Hz.
+            %   Fjn: Bloch states in Fourier space. Fjn is a matrix of dimension
+            %   nmax * length(n) * length(q). The first dimension denotes band indexes.
+            %   phi: Bloch states in real space. If x is given, phi is a matrix of
+            %   dimension length(x) * length(q) * length(n). If not, phi is a
+            %   cell of function handles with dimension length(q) *
+            %   length(n).
+            %   u: the periodic part of phi.
             arguments
                 obj OpticalLattice
-                q double {mustBeVector}
+                q double {mustBeVector} % Sampling quasimomentum [p/hbar] in unit of 1/meter.
                 n double {mustBeVector,mustBeInteger,mustBeNonnegative}
                 x double = []
             end
@@ -351,8 +353,10 @@ classdef OpticalLattice < OpticalPotential
         end
 
         function A = computeAmpModCoupling1D(obj,q,n)
-            %COMPUTEMODCOUPLING1D Summary of this function goes here
-            %   Detailed explanation goes here
+            %computeAmpModCoupling1D Summary of this function goes here
+            %
+            %   :param q:
+            %   :returns: A
             arguments
                 obj OpticalLattice
                 q double = []
@@ -915,35 +919,56 @@ classdef OpticalLattice < OpticalPotential
 
         end
 
-        function H = HamiltonianAmpModFourier1D(obj,q,wf)
+        function H = HamiltonianAmpModFourier1D(obj,q,wf,nMax)
             %HAMILTONIANMOD Summary of this function goes here
             %   Detailed explanation goes here
             arguments
                 obj OpticalLattice
                 q double
                 wf Waveform
+                nMax double
             end
-            nMax = obj.BandIndexMaxFourier;
-            V0 = obj.Depth / obj.RecoilEnergy;
+            if isempty(nMax)
+                nMax = obj.BandIndexMaxFourier;
+            end
+            Er = obj.RecoilEnergy;
+            V0 = obj.Depth / Er;
             kL = obj.Laser.AngularWavenumber;
             jVec = 1-nMax:2:nMax-1;
             trigMat = -gallery('tridiag',nMax,1,2,1);
             modFunc = wf.TimeFunc;
-            Hp = diag((jVec + q / kL).^2);
-            HV0 = trigMat * V0 / 4;
-            H = @(t) HFunc(t);
+            Hp = Er * diag((jVec + q / kL).^2); % Here we must go back to SI units
+            HV0 = Er * trigMat * V0 / 4;
+            H = @HFunc;
             function Htotal = HFunc(t)
-                HV = HV0 * (1 + modFunc(t));
+                HV = HV0 .* (1 + modFunc(t));
                 Htotal = Hp + HV;
             end
         end
 
-        function computeFloquetAmpMod1D(obj,wf)
+        function [EF,vF] = computeFloquetAmpMod1D(obj,q,n,wf)
             %COMPUTEFLOQUETAMPMOD1D Summary of this function goes here
             %   Detailed explanation goes here
             arguments
                 obj OpticalLattice
+                q double {mustBeVector} % Sampling quasimomentum [p/hbar] in unit of 1/meter.
+                n double {mustBeVector,mustBeInteger,mustBeNonnegative}
                 wf Waveform
+            end
+            [~,Fjn] = obj.computeBand1D(q,n); % compute static Bloch states
+            nMax = size(Fjn,1);
+            T = wf.Period;
+            EF = zeros(length(n),length(q));
+            vF = zeros(nMax,length(n),length(q));
+            for qIdx = 1:length(q)
+                H = obj.HamiltonianAmpModFourier1D(q(qIdx),wf,nMax);
+                HF = computeFloquetHamiltonian(H,T);
+                [vFAll,EFAll]=eig(full(HF));
+                EFAll=real(diag(EFAll));
+                P = abs(vFAll' * Fjn(:,:,qIdx)).^2;
+                [~,idx] = max(P,[],1);
+                EF(:,qIdx) = EFAll(idx);
+                vF(:,:,qIdx) = vFAll(:,idx);
             end
         end
 
