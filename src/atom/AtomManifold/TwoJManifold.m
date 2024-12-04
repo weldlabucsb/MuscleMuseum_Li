@@ -348,7 +348,7 @@ classdef TwoJManifold < AtomManifold
             
             [sListG,~,brMapG] = maniG.BiasDressedStateList(B,samplingSize = samplingSize);
             [sListE,~,brMapE] = maniE.BiasDressedStateList(B,samplingSize = samplingSize);
-            brMap = {brMapG{1},[brMapG{2};brMapE{2}]};
+            brMap = {brMapG{1},[brMapE{2};brMapG{2}]};
 
             sListG.Index = sListG.Index + numel(obj.MFExcited);
             sListE.Energy = sListE.Energy + obj.Frequency;
