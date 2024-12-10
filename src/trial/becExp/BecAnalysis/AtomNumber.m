@@ -184,6 +184,22 @@ classdef AtomNumber < BecAnalysis
                 end
             end
 
+            % Turn on/off line connections
+            if becExp.AveragingMethod == "None"
+                if ~isempty(obj.RawLine)
+                    [obj.RawLine.LineStyle] = deal("none");
+                end
+                if ~isempty(obj.ThermalLine)
+                    [obj.ThermalLine.LineStyle] = deal("none");
+                end
+                if ~isempty(obj.CondensateLine)
+                    [obj.CondensateLine.LineStyle] = deal("none");
+                end
+                if ~isempty(obj.TotalLine)
+                    [obj.TotalLine.LineStyle] = deal("none");
+                end
+            end
+
         end
 
         function updateData(obj,runIdx)
@@ -235,9 +251,9 @@ classdef AtomNumber < BecAnalysis
             rawTotal = sum(obj.Raw,3);
             for ii = 1:nSub
                 if nSub > 1 && obj.IsShowNormalized
-                    [xRaw,yRaw,stdRaw] = computeStd(paraList,obj.Raw(1,:,ii) ./ rawTotal);
+                    [xRaw,yRaw,stdRaw] = computeStd(paraList,obj.Raw(1,:,ii) ./ rawTotal, becExp.AveragingMethod);
                 else
-                    [xRaw,yRaw,stdRaw] = computeStd(paraList,obj.Raw(1,:,ii) / obj.Unit);
+                    [xRaw,yRaw,stdRaw] = computeStd(paraList,obj.Raw(1,:,ii) / obj.Unit, becExp.AveragingMethod);
                 end
                 obj.RawLine(ii).XData = xRaw;
                 obj.RawLine(ii).YData = yRaw;
@@ -252,9 +268,9 @@ classdef AtomNumber < BecAnalysis
                         thermalTotal = sum(obj.Thermal,3);
                         for ii = 1:nSub
                             if nSub > 1 && obj.IsShowNormalized
-                                [xThermal,yThermal,stdThermal] = computeStd(paraList,obj.Thermal(1,:,ii) ./ thermalTotal);
+                                [xThermal,yThermal,stdThermal] = computeStd(paraList,obj.Thermal(1,:,ii) ./ thermalTotal, becExp.AveragingMethod);
                             else
-                                [xThermal,yThermal,stdThermal] = computeStd(paraList,obj.Thermal(1,:,ii) / obj.Unit);
+                                [xThermal,yThermal,stdThermal] = computeStd(paraList,obj.Thermal(1,:,ii) / obj.Unit, becExp.AveragingMethod);
                             end
                             obj.ThermalLine(ii).XData = xThermal;
                             obj.ThermalLine(ii).YData = yThermal;
