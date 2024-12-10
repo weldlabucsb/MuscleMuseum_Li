@@ -7,6 +7,7 @@ classdef BecExp < Trial
         Acquisition Acquisition
         AnalysisMethod string % List of analysis methods
         CloudCenter double % Cloud center [y_0,x_0] from previous measurement, in pixels
+        AveragingMethod string = "StdErr" %Averaging method
     end
 
     properties(Hidden)

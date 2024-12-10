@@ -39,7 +39,7 @@ for isLocal = [true,false]
     catch me
         warning(warningMessage + ...
             "Error message: " + me.message)
-        return
+        continue
     end
 
     %% Check/create databases and users
