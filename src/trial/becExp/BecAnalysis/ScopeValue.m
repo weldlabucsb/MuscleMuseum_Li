@@ -11,7 +11,7 @@ classdef ScopeValue < BecAnalysis
     end
 
     properties (Hidden,Transient)
- 
+        ScopeLine
     end
 
     methods
@@ -33,6 +33,9 @@ classdef ScopeValue < BecAnalysis
             if isempty(obj.FullValueName)
                 warning("No FullValueName given. Can not plot scope values.")
                 return
+            elseif ismissing(obj.FullValueName)
+                warning("No FullValueName given. Can not plot scope values.")
+                return
             end
 
             %% Initialize plots
@@ -47,81 +50,62 @@ classdef ScopeValue < BecAnalysis
             conum=size(co, 1);
             mOrder = markerOrder();
 
-            obj.RawLine = matlab.graphics.chart.primitive.ErrorBar.empty;
-            obj.ThermalLine = matlab.graphics.chart.primitive.ErrorBar.empty;
-            obj.CondensateLine = matlab.graphics.chart.primitive.ErrorBar.empty;
-            obj.TotalLine = matlab.graphics.chart.primitive.ErrorBar.empty;
+            obj.ScopeLine = matlab.graphics.chart.primitive.ErrorBar.empty;
 
             hold(ax,'on')
 
             % Initialize raw plots
-            for ii = 1:nSub
-                obj.RawLine(ii) = errorbar(ax,1,1,[]);
-                obj.RawLine(ii).Marker = mOrder(ii);
-                obj.RawLine(ii).MarkerFaceColor = co(ii,:);
-                obj.RawLine(ii).MarkerEdgeColor = co(ii,:)*.5;
-                obj.RawLine(ii).MarkerSize = 8;
-                obj.RawLine(ii).LineWidth = 2;
-                obj.RawLine(ii).Color = co(ii,:);
-                obj.RawLine(ii).CapSize = 0;
+            for ii = 1:numel(obj.FullValueName)
+                obj.ScopeLine(ii) = errorbar(ax,1,1,[]);
+                obj.ScopeLine(ii).Marker = mOrder(ii);
+                obj.ScopeLine(ii).MarkerFaceColor = co(ii,:);
+                obj.ScopeLine(ii).MarkerEdgeColor = co(ii,:)*.5;
+                obj.ScopeLine(ii).MarkerSize = 8;
+                obj.ScopeLine(ii).LineWidth = 2;
+                obj.ScopeLine(ii).Color = co(ii,:);
+                obj.ScopeLine(ii).CapSize = 0;
             end
-            legendStrRaw = arrayfun(@(x) "Raw " + x,1:nSub);
+
+            lg = legend(ax,obj.FullValueName(:));
+            lg.Location = "best";
+            lg.Interpreter = 'none';
+            if numel(lg.String) >= 8
+                lg.NumColumns = 2;
+                lg.FontSize = 8;
+                lg.Location = "best";
+            end
+
+            ax.Box = "on";
+            ax.XGrid = "on";
+            ax.YGrid = "on";
+            ax.XLabel.String = obj.BecExp.XLabel;
+            ax.XLabel.Interpreter = "latex";
+            ax.YLabel.String = "Scope Data";
+            ax.YLabel.Interpreter = "latex";
+            ax.FontSize = 12;
 
         end
 
         function updateData(obj,~)
-            becExp = obj.BecExp;
-            if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 2 ||...
-                    ~ismember("DensityFit",obj.BecExp.AnalysisMethod) ||...
-                    ~isempty(obj.BecExp.Roi.SubRoi)
-                return
-            end
-            obj.TofTime = becExp.ScannedParameterList * unit2SI(becExp.ScannedParameterUnit);
-            wt = obj.BecExp.DensityFit.ThermalCloudSize;
-            obj.FitDataThermal = [LinearFit1D([(obj.TofTime.^2).',(wt(1,:).^2).']);...
-                LinearFit1D([(obj.TofTime.^2).',(wt(2,:).^2).'])];
-            obj.FitDataThermal(1).do;
-            obj.FitDataThermal(2).do;
-
-            obj.Temperature = mean([obj.FitDataThermal(1).Coefficient(1),obj.FitDataThermal(2).Coefficient(1)]) / ...
-                2 / obj.kBoverM;
-            obj.TrappingFrequency = sqrt(1 ./ ([obj.FitDataThermal(1).Coefficient(2);obj.FitDataThermal(2).Coefficient(2)] / ...
-                2 / obj.kBoverM / obj.Temperature));
-            obj.ThermalCloudSizeInSitu = sqrt([obj.FitDataThermal(1).Coefficient(2);obj.FitDataThermal(2).Coefficient(2)]);
-            obj.ThermalCloudCentralDensityInSitu = max(becExp.AtomNumber.Thermal) / ...
-                pi / prod(obj.ThermalCloudSizeInSitu) / boseFunction(1,3) * boseFunction(1,2);
+            % becExp = obj.BecExp;
+            
         end
 
         function updateFigure(obj,~)
             becExp = obj.BecExp;
+            paraList = becExp.ScannedParameterList;
             fig = obj.Chart(1).Figure;
-            if becExp.ScannedParameter ~= "TOF" || becExp.NCompletedRun < 2 ...
-                    || (isempty(fig) || ~ishandle(fig)) || ~ismember("DensityFit",obj.BecExp.AnalysisMethod) ||...
-                    ~isempty(obj.BecExp.Roi.SubRoi)
+            if becExp.NCompletedRun < 1 ...
+                    || (isempty(fig) || ~ishandle(fig))
                 return
             end
             
-            switch obj.BecExp.DensityFit.FitMethod
-                case {"GaussianFit1D","BosonicGaussianFit1D"}
-                    rawXT = obj.FitDataThermal(1).RawData;
-                    fitXT = obj.FitDataThermal(1).FitPlotData;
-                    rawYT = obj.FitDataThermal(2).RawData;
-                    fitYT = obj.FitDataThermal(2).FitPlotData;
-                    obj.ThermalXLine.XData = rawXT(:,1) * 1e12;
-                    obj.ThermalXLine.YData = rawXT(:,2) * 1e12;
-                    obj.ThermalXFitLine.XData = fitXT(:,1) * 1e12;
-                    obj.ThermalXFitLine.YData = fitXT(:,2) * 1e12;
-                    obj.ThermalYLine.XData = rawYT(:,1) * 1e12;
-                    obj.ThermalYLine.YData = rawYT(:,2) * 1e12;
-                    obj.ThermalYFitLine.XData = fitYT(:,1) * 1e12;
-                    obj.ThermalYFitLine.YData = fitYT(:,2) * 1e12;
-
-                    obj.ParaTable.Data{1,2} = obj.Temperature * 1e6;
-                    obj.ParaTable.Data{2,2} = obj.ThermalCloudSizeInSitu(1) * 1e6;
-                    obj.ParaTable.Data{3,2} = obj.ThermalCloudSizeInSitu(2) * 1e6;
-                    obj.ParaTable.Data{4,2} = obj.ThermalCloudCentralDensityInSitu;
-                    obj.ParaTable.Data{5,2} = obj.TrappingFrequency(1);
-                    obj.ParaTable.Data{6,2} = obj.TrappingFrequency(2);
+            for ii = 1:numel(obj.FullValueName)
+                [x,y,std] = computeStd(paraList, becExp.ScopeData.(obj.FullValueName(ii)), becExp.AveragingMethod);
+                obj.ScopeLine(ii).XData = x;
+                obj.ScopeLine(ii).YData = y;
+                obj.ScopeLine(ii).YNegativeDelta = std;
+                obj.ScopeLine(ii).YPositiveDelta = std;
             end
             lg = findobj(fig,"Type","Legend");
             lg.Location = "best";

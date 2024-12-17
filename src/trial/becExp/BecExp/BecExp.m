@@ -47,7 +47,7 @@ classdef BecExp < Trial
 
     properties (Constant,Hidden)
         AnalysisOrder = {"Od";"Imaging";"Ad";...
-            "DensityFit";["AtomNumber";"Tof";"CenterFit";"KapitzaDirac"]}
+            "DensityFit";["AtomNumber";"Tof";"CenterFit";"KapitzaDirac"];"ScopeValue"}
     end
 
     methods
@@ -282,6 +282,8 @@ classdef BecExp < Trial
                         case "Ad"
                             obj.Ad.AdMethod = obj.ConfigParameter.AdMethod;
                             obj.Ad.CLim = [0,obj.ConfigParameter.AdCLim];
+                        case "ScopeValue"
+                            obj.ScopeValue.FullValueName = strsplit(string(obj.ConfigParameter.ScopeValueName),";");
                         case "DensityFit"
                             obj.DensityFit.FitMethod = obj.ConfigParameter.DensityFitMethod;
                         case "AtomNumber"
@@ -958,6 +960,7 @@ classdef BecExp < Trial
             if isempty(fullValueName)
                 return
             end
+            fullValueName = unique(fullValueName);
             currentRunNumber = obj.NCompletedRun;
             for kk = 1:numel(fullValueName)
                 C = strsplit(fullValueName(kk),"_");

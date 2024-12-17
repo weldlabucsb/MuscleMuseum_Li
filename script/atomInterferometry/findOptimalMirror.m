@@ -20,7 +20,7 @@ freqList = zeros(nq,nPower);
 for jj = 1:nq
     for ii = 1:nPower
         ol.Laser.Power = powerList(ii);
-        freqList(jj,ii) = ol.computeTransitionFrequency1D(qList(jj),0,2);
+        freqList(jj,ii) = ol.computeTransitionFrequency1D(qList(jj),0,1);
         depthList(ii) = ol.DepthLu;
     end
 end
