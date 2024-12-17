@@ -4,7 +4,7 @@ function HF = computeFloquetHamiltonian(H,T,nt)
 arguments
     H function_handle
     T double {mustBeScalarOrEmpty,mustBePositive}
-    nt double {mustBePositive,mustBeInteger} = 21
+    nt double {mustBePositive,mustBeInteger} = 20
 end
 % Check if H is a matrix valued function
 try

@@ -30,7 +30,9 @@ classdef MagneticPotential < Potential & matlab.mixin.Heterogeneous
                 obj.StateIndex = options.stateIndex;
             else
                 % By default, pick the lowest magnetic trappable state
-                obj.StateIndex = atom.(obj.Manifold).StateList.Index(end);
+                sL = atom.(obj.Manifold).StateList;
+                F = min(sL.F);
+                obj.StateIndex = sL(sL.F==F & sL.MF == F,:).Index;
             end
         end
 

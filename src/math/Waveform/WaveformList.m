@@ -196,8 +196,9 @@ classdef WaveformList < handle
             %% Construct waveform time function handle
             if obj.ConcatMethod == "Sequential"
                 ti = obj.WaveformOrigin{1}.StartTime;
+                dt = obj.TimeStep;
                 for ii = 2:nWave
-                    ti = ti + obj.WaveformOrigin{ii-1}.Duration;
+                    ti = ti + obj.WaveformOrigin{ii-1}.Duration + dt;
                     obj.WaveformOrigin{ii}.StartTime = ti;
                 end
             end

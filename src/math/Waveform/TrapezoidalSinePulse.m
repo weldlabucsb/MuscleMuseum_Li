@@ -46,8 +46,8 @@ classdef TrapezoidalSinePulse < PartialPeriodicWaveform
             func = @tFunc;
             function waveOut = tFunc(t)
                 waveOut = (t>=t0 & t<=(te)) .* ...
-                    (((t-t0)./(tr)-1) .* (t<=(t0+tr)) - (t-(te-tf))./(tf) .* (t>=(te-tf)) + 1) .*...
-                    (amp ./2 .* sin(2 * pi .* freq .* (t-t0) + phi) + offset);
+                    ((((t-t0)./(tr)-1) .* (t<=(t0+tr)) - (t-(te-tf))./(tf) .* (t>=(te-tf)) + 1) .*...
+                    (amp ./2 .* sin(2 * pi .* freq .* (t-t0) + phi)) + offset);
             end
         end
     end

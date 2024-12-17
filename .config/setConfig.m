@@ -18,9 +18,10 @@ BecExpDatabaseTableName = "main";
 CiceroComputerName = "GOB";
 CiceroLogOrigin = "\\169.254.203.255\RunLogs";
 HardwareLogOrigin = "B:\_Li\_LithiumData\HardwareLogs";
+TempPath = fullfile(getenv('USERPROFILE'),"Documents","MMTemp");
 ComputerConfig = table(BecExpControlComputerName,BecExpParentPath,...
     BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,...
-    CiceroLogOrigin,HardwareLogOrigin);
+    CiceroLogOrigin,HardwareLogOrigin,TempPath);
 save(configName,"ComputerConfig",'-mat')
 
 %% Set the database configuration

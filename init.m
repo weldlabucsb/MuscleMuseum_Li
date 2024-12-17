@@ -1,6 +1,9 @@
 %% Set Path
 disp(newline + "Setting path...")
 addpath(genpath_exclude(pwd,{'.git','testData','sampleData','.gitignore'}));
+tempPath = fullfile(getenv('USERPROFILE'),"Documents","MMTemp");
+createFolder(tempPath);
+addpath(tempPath)
 disp("Done.")
 
 %% Check MATLAB version

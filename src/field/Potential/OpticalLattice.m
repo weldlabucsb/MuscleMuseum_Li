@@ -23,7 +23,8 @@ classdef OpticalLattice < OpticalPotential
     end
 
     properties (Constant)
-        BandIndexMaxFourierDefault = 101
+        % BandIndexMaxFourierDefault = 101
+        BandIndexMaxFourierDefault = 51
     end
 
     properties (Dependent)
@@ -419,12 +420,12 @@ classdef OpticalLattice < OpticalPotential
             title("$V_0 = " + num2str(obj.Depth/Er) +"E_{\mathrm{R}}$",'Interpreter','latex')
 
             % draw band letters at the mean band position
-            letters={'S','P','D','F','G','H','I','J','K',...
-                'L','M','N','O','P','Q','R'};
+            letters={'s','p','d','f','g','h','i','j','k',...
+                'l','m','n','o','p','q','r'};
             co = colororder;
             for nn=1:numel(n)
                 yy=mean(E(nn,:))/Er;
-                tL=text(0.85,yy+1,['$' letters{mod(n(nn),7)+1} '$'],...
+                tL=text(1.05,yy+1,['$' letters{mod(n(nn),7)+1} '$'],...
                     'units','data','fontsize',15,...
                     'horizontalalignment','left',...
                     'color',co(mod(nn-1,7)+1,:),'interpreter','latex',...
@@ -434,6 +435,8 @@ classdef OpticalLattice < OpticalPotential
                 tL.Units='data';
             end
             render
+            ax = gca;
+            ax.Position(3) = ax.Position(3) * 0.9;
         end
 
         function plotBandTransition1D(obj,freq,n)
@@ -449,7 +452,7 @@ classdef OpticalLattice < OpticalPotential
             kL = obj.Laser.AngularWavenumber;
             Er = obj.RecoilEnergy;
             ax = gca;
-            ax.Title.String = ax.Title.String + ", $\omega=" + num2str(freq/1e3) + "~\mathrm{kHz}$";
+            ax.Title.String = ax.Title.String + ", $\omega=2\pi \times" + num2str(freq/1e3) + "~\mathrm{kHz}$";
             hold on
             for ii = n
                 for jj = n
@@ -463,19 +466,30 @@ classdef OpticalLattice < OpticalPotential
                             p1 = plot([1,1]*qRes(kk)/kL,...
                                 E/Er,...
                                 'k-','linewidth',1);
+                            p2 = plot(-[1,1]*qRes(kk)/kL,...
+                                E/Er,...
+                                'k-','linewidth',1);
                             switch kk
                                 case 1
                                     p1.LineStyle='-';
                                     p1.LineWidth=3;
+                                    p2.LineStyle='-';
+                                    p2.LineWidth=3;
                                 case 2
                                     p1.LineStyle='--';
                                     p1.LineWidth=2;
+                                    p2.LineStyle='--';
+                                    p2.LineWidth=2;
                                 case 3
                                     p1.LineStyle='-.';
                                     p1.LineWidth=1;
+                                    p2.LineStyle='-.';
+                                    p2.LineWidth=1;
                                 otherwise
                                     p1.LineStyle = ':';
                                     p1.LineWidth=.2;
+                                    p2.LineStyle = ':';
+                                    p2.LineWidth=.2;
                             end
                         end
                     end
@@ -520,8 +534,8 @@ classdef OpticalLattice < OpticalPotential
 
             % plot absolute value
             ll = 1;
-            letters={'S','P','D','F','G','H','I','J','K',...
-                'L','M','N','O','P','Q','R'};
+            letters={'s','p','d','f','g','h','i','j','k',...
+                'l','m','n','o','p','q','r'};
             close(figure(21542))
             figure(21542)
             hold on
@@ -609,8 +623,8 @@ classdef OpticalLattice < OpticalPotential
 
             % plot absolute value
             ll = 1;
-            letters={'S','P','D','F','G','H','I','J','K',...
-                'L','M','N','O','P','Q','R'};
+            letters={'s','p','d','f','g','h','i','j','k',...
+                'l','m','n','o','p','q','r'};
             close(figure(12325))
             figure(12325)
             hold on
@@ -668,7 +682,7 @@ classdef OpticalLattice < OpticalPotential
             % conjugate of psi. psicj is assumed to be a npsi * length(x)
             % matrix, where npsi the number of wavefunctions we want to
             % compute band population.
-            % n: Maximum band index. By default we calculate up to the d
+            % n: band index. By default we calculate the d
             % band.
             % x: The sampling 1D spatial grids in unit of meter. Must be
             % the same size as the wave function.
@@ -707,15 +721,15 @@ classdef OpticalLattice < OpticalPotential
                 [~,~,phi] = obj.computeBand1D(q,0:n,x);
             else
                 phi = obj.BlochStateList;
-                if n > max(obj.BandIndexMax)
+                if max(n) > max(obj.BandIndexMax)
                     error("n is too large. Change BandIndexMax or reset n.")
                 end
             end
 
             %% Compute population
-            pop = zeros(size(psicj,1),n+1);
-            for nIdx = 1:(n+1)
-                pop(:,nIdx) = sum(abs(psicj * phi(:,:,nIdx) * dx).^2,2);
+            pop = zeros(size(psicj,1),numel(n));
+            for nIdx = 1:numel(n)
+                pop(:,nIdx) = sum(abs(psicj * phi(:,:,n(nIdx)+1) * dx).^2,2);
             end
 
         end
@@ -727,7 +741,7 @@ classdef OpticalLattice < OpticalPotential
             % matrix, where nu the number of wavefunctions we want to
             % compute band population.
             % q: The sampling quasi-momentum in unit of 1/meter.
-            % n: Maximum band index. By default we calculate up to the d
+            % n: band index. By default we calculate the d
             % band.
             % pop: Output band population as a nu * (n+1) * nq matrix.
             arguments
@@ -759,15 +773,15 @@ classdef OpticalLattice < OpticalPotential
             ucj = ucj * sqrt(2 / lambda);
 
             %% Compute population
-            pop = zeros(size(ucj,1),n+1);
+            pop = zeros(size(ucj,1),numel(n));
             if numel(q) == 1
-                for nIdx = 1:(n+1)
-                    pop(:,nIdx) = abs(ucj * Fjn(:,nIdx)).^2;
+                for nIdx = 1:numel(n)
+                    pop(:,nIdx) = abs(ucj * Fjn(:,n(nIdx)+1)).^2;
                 end
             else
-                for nIdx = 1:(n+1)
+                for nIdx = 1:numel(n)
                     for qIdx = 1:numel(q)
-                        pop(qIdx,nIdx) = abs(ucj(qIdx,:) * Fjn(:,nIdx,qIdx)).^2;
+                        pop(qIdx,nIdx) = abs(ucj(qIdx,:) * Fjn(:,n(nIdx)+1,qIdx)).^2;
                     end
                 end
             end
@@ -960,15 +974,31 @@ classdef OpticalLattice < OpticalPotential
             T = wf.Period;
             EF = zeros(length(n),length(q));
             vF = zeros(nMax,length(n),length(q));
-            for qIdx = 1:length(q)
-                H = obj.HamiltonianAmpModFourier1D(q(qIdx),wf,nMax);
-                HF = computeFloquetHamiltonian(H,T);
-                [vFAll,EFAll]=eig(full(HF));
-                EFAll=real(diag(EFAll));
-                P = abs(vFAll' * Fjn(:,:,qIdx)).^2;
-                [~,idx] = max(P,[],1);
-                EF(:,qIdx) = EFAll(idx);
-                vF(:,:,qIdx) = vFAll(:,idx);
+            HList = arrayfun(@(qq) obj.HamiltonianAmpModFourier1D(qq,wf,nMax),...
+                q,'UniformOutput',false);
+            p = gcp('nocreate');
+            if ~isempty(p)
+                parfor qIdx = 1:length(q)
+                    % H = obj.HamiltonianAmpModFourier1D(q(qIdx),wf,nMax);
+                    HF = computeFloquetHamiltonian(HList{qIdx},T);
+                    [vFAll,EFAll]=eig(full(HF));
+                    EFAll=real(diag(EFAll));
+                    P = abs(vFAll' * Fjn(:,:,qIdx)).^2;
+                    [~,idx] = max(P,[],1);
+                    EF(:,qIdx) = EFAll(idx);
+                    vF(:,:,qIdx) = vFAll(:,idx);
+                end
+            else
+                for qIdx = 1:length(q)
+                    % H = obj.HamiltonianAmpModFourier1D(q(qIdx),wf,nMax);
+                    HF = computeFloquetHamiltonian(HList{qIdx},T);
+                    [vFAll,EFAll]=eig(full(HF));
+                    EFAll=real(diag(EFAll));
+                    P = abs(vFAll' * Fjn(:,:,qIdx)).^2;
+                    [~,idx] = max(P,[],1);
+                    EF(:,qIdx) = EFAll(idx);
+                    vF(:,:,qIdx) = vFAll(:,idx);
+                end
             end
         end
 

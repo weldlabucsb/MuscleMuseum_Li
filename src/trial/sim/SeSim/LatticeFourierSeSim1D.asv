@@ -113,15 +113,12 @@ classdef LatticeFourierSeSim1D < TimeSim
 
         function data = readBand(obj,bandNumber)
             nRun = obj.NRun;
-            data = zeros(numel(bandNumber),nRun);
-            for ii = 1:nRun
-                ol = obj.SimRun(ii).OpticalLattice;
-                q = obj.SimRun(ii).InitialCondition.QuasiMomentum;
-                fOverHbar = obj.SimRun(ii).FOverHbar;
-                t = obj.SimRun(ii).TimeList(end);
-                qt = q + fOverHbar * t; 
-                data(:,ii) = ol.computeBandPopulationFourier1D(obj.SimRun(ii).readRun("FinalWaveFunction"),qt,bandNumber);
+            dim = numel(obj.SimRun(1).InitialCondition.WaveFunction);
+            ucj = zeros(nRun,dim);
+            parfor ii = 1:nRun
+                ucj(ii,:) = obj.SimRun(ii).readRun("FinalWaveFunction");
             end
+            data = obj.OpticalLattice
         end
         
         % function plotBand(obj,runIdx,bandNumber)

@@ -182,7 +182,7 @@ elseif ~isShowLabel(1)
     bottom = bottom + 0.02; 
 end
 ax_width = ax_width-0.02;
-left = left + 0.02;
+% left = left + 0.02;
 ax_height = ax_height - 0.01;
 bottom = bottom + 0.01;
 ax.Position = [left bottom ax_width ax_height];

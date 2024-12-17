@@ -68,7 +68,7 @@ classdef LatticeFourierSeSim1DRun < TimeSimRun
                         end
                     end
                     gradProj2 = gradField * laserDir;
-                    obj.FOverHbar = 2 * pi * obj.MagneticPotential.EnergyFactor * (gradProj2.' * biasDir);
+                    obj.FOverHbar = - 2 * pi * obj.MagneticPotential.EnergyFactor * (gradProj2.' * biasDir);
                 end
             end
         end
@@ -201,6 +201,8 @@ classdef LatticeFourierSeSim1DRun < TimeSimRun
             qt = q + fOverHbar * t;
             pop = ol.computeBandPopulationFourier1D(ucj,qt,bandNumber);
             plot(t * 1e3,pop)
+            xlabel("Time [ms]")
+            ylabel("Band Population")
         end
 
         % function showSpaceTime(obj)

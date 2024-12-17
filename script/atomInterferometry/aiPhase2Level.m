@@ -17,8 +17,8 @@ kL = laser.AngularWavenumber;
 lambda = laser.Wavelength;
 a = lambda / 2;
 Er = ol.RecoilEnergy;
-% ol.DepthKd = 8.8458 * Er;
-ol.DepthKd = 5.9637 * Er;
+ol.DepthKd = 8.8458 * Er;
+% ol.DepthKd = 5.9637 * Er;
 ol.updateIntensity;
 V0 = h * ol.DepthKd;
 
@@ -36,15 +36,15 @@ Ep = E(2,:);
 Ed = E(3,:);
 
 %% Set up AI parameters
-% omegaDrive = 143.2231e3 * 2 * pi;
-omegaDrive = 75.2639e3 * 2 * pi;
-% alpha = 0.035;
-alpha = 0.0679;
+omegaDrive = 143.2231e3 * 2 * pi;
+% omegaDrive = 75.2639e3 * 2 * pi;
+alpha = 0.035;
+% alpha = 0.0679;
 Omega = alpha * V0 * Apd / hbar;
 Omegapp = alpha * V0 * App / hbar;
 Omegadd = alpha * V0 * Add / hbar;
 
-q0 = 0.2 * kL;
+q0 = 0.7 * kL;
 tTotal = 3.33e-3;
 % tTotal = 8e-3;
 
@@ -141,8 +141,10 @@ parfor ff = 1:numel(FList0)
     pop(ff) = abs(psi(1))^2;
 end
 
-% plot(FList0 / M / g,pop,FList0 / M /g,bandPop(:,3))
-% xlabel("$F/Mg$",'Interpreter','latex')
-% ylabel("$d$ band population",'Interpreter','latex')
-% legend("2-level w/o RWA","TDSE")
+%%
+plot(FList0*a / hbar /2 /pi,pop,FList0*a / hbar /2 /pi,bandPop(:,3))
+xlabel("$f_{\mathrm{B}}$",'Interpreter','latex')
+ylabel("$d$ band population",'Interpreter','latex')
+legend("2-level w/o RWA","Fourier-space TDSE")
+render
 
