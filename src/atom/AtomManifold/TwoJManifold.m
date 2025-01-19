@@ -29,7 +29,8 @@ classdef TwoJManifold < AtomManifold
         LifetimeExcited double
         ReducedDipoleMatrixElement double %Following steck's convention as <Jg||d||Je>, in SI unit.
         ReducedSaturationIntensity double %In SI unit
-        ReducedSaturationIntensityLu double %In lab unit. mW/cm^2 
+        ReducedSaturationIntensityLu double %In lab unit. mW/cm^2
+        DopplerTemperature double
     end
     
     methods
@@ -169,6 +170,7 @@ classdef TwoJManifold < AtomManifold
                 Constants.SI("Z0") /...
                 (obj.ReducedDipoleMatrixElement)^2;
             obj.ReducedSaturationIntensityLu = obj.ReducedSaturationIntensity / 10;
+            obj.DopplerTemperature = Constants.SI("hbar") * obj.NaturalLinewidth * 2 * pi / 2 / Constants.SI("kB");
         end
         
         function DME = DipoleMatrixElement(obj,fG,mfG,fE,mfE,q,U)
