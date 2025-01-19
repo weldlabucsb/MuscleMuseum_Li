@@ -1,6 +1,9 @@
 %% Set Path
 disp(newline + "Setting path...")
 addpath(genpath_exclude(pwd,{'.git','testData','sampleData','.gitignore'}));
+tempPath = fullfile(getenv('USERPROFILE'),"Documents","MMTemp");
+createFolder(tempPath);
+addpath(tempPath)
 disp("Done.")
 
 %% Check MATLAB version
@@ -16,7 +19,12 @@ end
 %% Check MATLAB packages
 disp(newline + "Checking MATLAB packages...")
 packageList = getPackageList;
-requiredPackageList = ["Data Acquisition Toolbox","Curve Fitting Toolbox","Parallel Computing Toolbox"];
+requiredPackageList = [
+    "Data Acquisition Toolbox",...
+    "Curve Fitting Toolbox",...
+    "Parallel Computing Toolbox",...
+    "Instrument Control Toolbox"
+    ];
 missedPackageList = requiredPackageList(~ismember(requiredPackageList,packageList));
 if ~isempty(missedPackageList)
     warning("Packages " + strjoin("["+ missedPackageList + "]",", ") + " are missing. Please " + ...

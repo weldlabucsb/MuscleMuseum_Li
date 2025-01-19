@@ -1,5 +1,5 @@
 atom = Alkali("Lithium7");
-bField = MagneticField(bias = [0,0,560e-4]);
+bField = MagneticField(bias = [0,0,1200e-4]);
 [sg,~,brg] = atom.DGround.BiasDressedStateList(bField);
 
 gIndx1 = 6;
@@ -12,7 +12,7 @@ eg2 = brg{2}(gIndx2,:);
 
 % eeint = interp1(be,ee,bg);
 plot(bg * 1e4,(eg2 - eg1)/1e6)
-xlim([520,560])
+xlim([0,1200])
 xlabel("Magnetic Field [Gauss]",'Interpreter','latex')
 ylabel("$f - f_{\mathrm{c}}$ [MHz]",'Interpreter','latex')
 render
