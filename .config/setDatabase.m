@@ -21,7 +21,7 @@ for isLocal = [true,false]
         newDatabaseList = DatabaseConfig.Name;
         warningMessage = ...
             "Can not connect to the remote PostgreSQL server. " + ...
-            "Please check the internet/ethernet connection to the remote PostgreSQL server: " + newline +  ...
+            "Please check the internet/ethernet connection to the remote PostgreSQL server. " + newline +  ...
             "Please also check if the remote PSQL server username/password are set correctly in setConfig.m." + newline;
     end
 
@@ -39,7 +39,7 @@ for isLocal = [true,false]
     catch me
         warning(warningMessage + ...
             "Error message: " + me.message)
-        return
+        continue
     end
 
     %% Check/create databases and users

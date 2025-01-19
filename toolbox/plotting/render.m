@@ -86,15 +86,17 @@ end
 %% Set linespecs.
 co=get(gca,'colororder');
 nCo = size(co,1);
+p = flip(p);
 for ii = 1:numel(p)
     if p(ii).LineStyle == "none"
         p(ii).Marker = markers{ii};
         p(ii).MarkerSize = msz;
-        p(ii).Color = colors{numel(p)-ii+1};
+        % p(ii).Color = colors{numel(p)-ii+1};
+        p(ii).Color = co(mod(ii-1,nCo)+1,:);
     elseif p(ii).Marker == "none"
-        if numel(p)<=4
-            p(ii).Color = colors{numel(p)-ii+1};
-        elseif numel(p)<=nCo
+        % if numel(p)<=4
+            % p(ii).Color = colors{numel(p)-ii+1};
+        if numel(p)<=nCo
             co=get(gca,'colororder');
             p(ii).Color = co(ii,:);
 %             p(ii).LineStyle = linestyles{ii};
@@ -106,7 +108,8 @@ for ii = 1:numel(p)
         end
     else
         p(ii).Marker = markers{ii};
-        p(ii).Color = colors{numel(p)-ii+1};
+        % p(ii).Color = colors{numel(p)-ii+1};
+        p(ii).Color = co(mod(ii-1,nCo)+1,:);
         p(ii).MarkerSize = msz;
     end
 end
@@ -179,7 +182,7 @@ elseif ~isShowLabel(1)
     bottom = bottom + 0.02; 
 end
 ax_width = ax_width-0.02;
-left = left + 0.02;
+% left = left + 0.02;
 ax_height = ax_height - 0.01;
 bottom = bottom + 0.01;
 ax.Position = [left bottom ax_width ax_height];

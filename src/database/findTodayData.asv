@@ -1,6 +1,0 @@
-function data = findTodayData(databaseName)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-data = findTimeRangeData(databaseName,datetime("today"),datetime("tomorrow"));
-end
-

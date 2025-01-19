@@ -45,8 +45,7 @@ classdef MagneticField
             fieldZero = -obj.Bias./diag(obj.Gradient);
         end
 
-        function func = spaceFunc(obj)
-            
+        function func = spaceFunc(obj)  
             bias = obj.Bias;
             grad = obj.Gradient;
             % quad = obj.Quadratic;

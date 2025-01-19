@@ -17,8 +17,11 @@ BecExpDatabaseName = "lithium_experiment";
 BecExpDatabaseTableName = "main";
 CiceroComputerName = "GOB";
 CiceroLogOrigin = "\\169.254.203.255\RunLogs";
+HardwareLogOrigin = "B:\_Li\_LithiumData\HardwareLogs";
+TempPath = fullfile(getenv('USERPROFILE'),"Documents","MMTemp");
 ComputerConfig = table(BecExpControlComputerName,BecExpParentPath,...
-    BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,CiceroLogOrigin);
+    BecExpDatabaseName,BecExpDatabaseTableName,CiceroComputerName,...
+    CiceroLogOrigin,HardwareLogOrigin,TempPath);
 save(configName,"ComputerConfig",'-mat')
 
 %% Set the database configuration
@@ -32,14 +35,15 @@ Table = {
     "gross_pitaevskii_equation_simulation",...
     "schrodinger_equation_simulation",...
     "fokker_planck_equation_simulation",...
-    "lattice_schrodinger_equation_simulation_1d"]...
+    "lattice_schrodinger_equation_simulation_1d",...
+    "lattice_fourier_simulation_1d"]...
     };
 DatabaseConfig = table(Name,Table);
 
 Name = ["localhost";"128.111.8.45"];
 Port = [5432;5432];
 Username = ["postgres";"postgres";];
-Password = ["Ultr@c0ld";"Ultr@c0ld"];
+Password = ["SupermassiveBlackHole";"SupermassiveBlackHole"];
 DatabaseServerConfig = table(Name,Port,Username,Password);
 save(configName,"DatabaseConfig","DatabaseServerConfig",'-mat','-append')
 
@@ -78,7 +82,7 @@ ImageSize = int32([ ...
     1080,1920; ...
     1080,1920; ...
     1080,1920]);
-Magnification = [500/200;100/250;500/300;1;100/250]; % need to double check
+Magnification = [3.337676782237963;100/250;500/300;1;100/250]; % need to double check
 ImageGroupSize = [3;3;3;1;3]; %How many frames are grouped as a data set. In BEC experiments we take three images.
 ConfigFun = {
     @setPcoConfig;
@@ -106,6 +110,46 @@ AcquisitionConfig = table(Name,CameraType,AdaptorName,DeviceID,...
     SerialNumber,ExposureTime,IsExternalTriggered,PixelSize,...
     ImageSize,BadRow,Magnification,ImageGroupSize,ConfigFun,QuantumEfficiencyData,BitsPerSample);
 save(configName,"AcquisitionConfig",'-mat','-append')
+
+%% Set the waveform generator configuration
+Name = [
+    "LatticeMod";...
+    "XvWingMod";...
+    % "GreenWallMod"
+    ];
+DeviceModel = [
+"Keysight33600A";...
+"Keysight33500B";...
+% "SpectrumAWG"
+];
+ResourceName = [
+"USB0::0x0957::0x5607::MY59000681::0::INSTR";...
+"USB0::0x0957::0x2807::MY59003843::0::INSTR";...
+% "TCPIP::172.16.0.0::inst0"
+];
+WaveformGeneratorConfig = table(Name,DeviceModel,ResourceName);
+save(configName,"WaveformGeneratorConfig",'-mat','-append')
+
+%% Set the scope configuration
+Name = [
+    "LatticeScope"
+    ];
+DeviceModel = [
+"TekTronix1104"
+];
+ResourceName = [
+"USB0::0x0699::0x03B4::C011351::0::INSTR"
+];
+ScopeConfig = table(Name,DeviceModel,ResourceName);
+save(configName,"ScopeConfig",'-mat','-append')
+
+%% Set the hardware list
+Name = [WaveformGeneratorConfig.Name;ScopeConfig.Name];
+Type = [repmat("WaveformGenerator",numel(WaveformGeneratorConfig.Name),1);...
+    repmat("Scope",numel(ScopeConfig.Name),1)];
+DataPath = fullfile(ComputerConfig.HardwareLogOrigin,Name);
+HardwareList = table(Name,Type,DataPath);
+save(configName,"HardwareList",'-mat','-append')
 
 %% Set the ROI configuration
 RoiConfig = readtable("roi.csv.xlsx",'TextType','string');
@@ -157,7 +201,7 @@ save(configName,"BecExpConfig","BecExpParameterUnit",'-mat','-append')
 %% Set the BEC experiment local test configuration
 BecExpLocalTestConfig = BecExpConfig;
 BecExpLocalTestConfig.DatabaseName(:) = "lithium_experiment_local";
-BecExpLocalTestConfig.ParentPath(:) = fullfile("C:\data","becExp");
+BecExpLocalTestConfig.ParentPath(:) = fullfile(mainPath,"becExp");
 BecExpLocalTestConfig.CiceroLogOrigin(:) = fullfile(repoPath,"test","testData","testLogFiles");
 BecExpLocalTestConfig.IsAutoAcquire(:) = false;
 BecExpLocalTestConfig.IsAutoDelete(:) = false;
@@ -165,7 +209,7 @@ BecExpLocalTestConfig.IsAutoDelete(:) = false;
 save(configName,"BecExpLocalTestConfig",'-mat','-append')
 
 %% Set the master equation simulation configuration
-MeSimConfig.ParentPath = fullfile("C:\data","meSim");
+MeSimConfig.ParentPath = fullfile(mainPath,"meSim");
 MeSimConfig.DataPrefix = "run";
 MeSimConfig.DataFormat = ".mat";
 MeSimConfig.IsAutoDelete = false;
@@ -180,7 +224,7 @@ MeSimOutput = readtable("meSimOutput.csv.xlsx",'TextType','string');
 save(configName,"MeSimConfig","MeSimOutput",'-mat','-append')
 
 %% Set the lattice schrodinger equation simulation configuration
-% LatticeSeSim1DConfig.ParentPath = fullfile("C:\data","latticeSeSim1D");
+% LatticeSeSim1DConfig.ParentPath = fullfile(mainPath,"latticeSeSim1D");
 % LatticeSeSim1DConfig.DatabaseName = "simulation";
 LatticeSeSim1DConfig.ParentPath = fullfile("B:\__Lab Member Folders\Xiao\SimulationData","latticeSeSim1D");
 LatticeSeSim1DConfig.DatabaseName = "simulation";
@@ -195,6 +239,24 @@ LatticeSeSim1DConfig = [LatticeSeSim1DType,repmat(struct2table(LatticeSeSim1DCon
 
 LatticeSeSim1DOutput = readtable("latticeSeSim1DOutput.csv.xlsx",'TextType','string');
 save(configName,"LatticeSeSim1DConfig","LatticeSeSim1DOutput",'-mat','-append')
+
+%% Set the lattice Fourier schrodinger equation simulation configuration
+% LatticeFourierSeSim1DConfig.ParentPath = fullfile(mainPath,"latticeFourierSeSim1D");
+% LatticeFourierSeSim1DConfig.DatabaseName = "simulation_local";
+LatticeFourierSeSim1DConfig.ParentPath = fullfile("B:\__Lab Member Folders\Xiao\SimulationData","latticeFourierSeSim1D");
+LatticeFourierSeSim1DConfig.DatabaseName = "simulation";
+LatticeFourierSeSim1DConfig.DataPrefix = "run";
+LatticeFourierSeSim1DConfig.DataFormat = ".mat";
+LatticeFourierSeSim1DConfig.IsAutoDelete = false;
+LatticeFourierSeSim1DConfig.DatabaseTableName = "lattice_fourier_simulation_1d";
+LatticeFourierSeSim1DConfig.DataGroupSize = 1;
+
+LatticeFourierSeSim1DType = readtable("latticeFourierSeSim1DType.csv.xlsx",'TextType','string');
+LatticeFourierSeSim1DConfig = [LatticeFourierSeSim1DType,repmat(struct2table(LatticeFourierSeSim1DConfig),size(LatticeFourierSeSim1DConfig,1),1)];
+
+LatticeFourierSeSim1DOutput = readtable("latticeFourierSeSim1DOutput.csv.xlsx",'TextType','string');
+save(configName,"LatticeFourierSeSim1DConfig","LatticeFourierSeSim1DOutput",'-mat','-append')
+
 
 disp("Done.")
 end
