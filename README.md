@@ -33,9 +33,10 @@ Known issues
 
 To use this package:
 1. Install MATLAB. I only tested my code with MATLAB 2023a. MATLAB 2023b is not compatible. Required MATLAB packages:
-    * Data Acquisition Toolbox
     * Curve Fitting Toolbox
     * Parallel Computing Toolbox
+    * Data Acquisition Toolbox (optional, only for onsite experiments)
+    * Instrument Control Toolbox (optional, only for onsite experiments)
 2. Install [Python](https://www.python.org/downloads/) that is [compatible with your MATLAB version](https://www.mathworks.com/support/requirements/python-compatibility.html). Make sure the Python path is in your environment variable. Check if you can invoke Python in command line.  
 3. Install [ARC](https://arc-alkali-rydberg-calculator.readthedocs.io/en/latest/installation.html)
 4. Install [PostgreSQL](https://www.postgresql.org/). Set up passwords
