@@ -19,11 +19,12 @@ Right now, I have implemented:
 - A 1D Time-dependent Schrodinger equation (TDSE) simulation tool (the SeSim1D class)
 - A 1D lattice dynamics simulation tool (the LatticeSeSim1D class)
 - Some lattice band structure calculations (the OpticalLattice class)
+- Keysight function generator control
 
 Still under construction:
 
 - Gross-Pitaevskii equation simulation
-- Keysight function generator control
+- Spectrum function generator control
 
 Known issues
 
