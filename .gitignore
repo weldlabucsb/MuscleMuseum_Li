@@ -1,4 +1,5 @@
 *.pyc
+*.asv
 Thumbs.db
 /.config/Config.mat
 /toolbox/py/__pycache/
