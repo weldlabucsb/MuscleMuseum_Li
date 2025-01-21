@@ -65,7 +65,7 @@ classdef (Abstract) Atom < dynamicprops & handle & matlab.mixin.Heterogeneous
 
             %Set data path. Distinguish this with the dataFolder property
             %that pointing to the arc atomic data.
-            obj.DataPath = fullfile(getenv('USERPROFILE'),"Documents","AtomData");
+            obj.DataPath = fullfile(getHome,"Documents","MMUser","atomData");
             createFolder(obj.DataPath);
         end
 

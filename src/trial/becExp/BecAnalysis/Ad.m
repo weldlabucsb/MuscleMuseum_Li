@@ -55,8 +55,11 @@ classdef Ad < BecAnalysis
 
             % Load cross section data
             load("CrossSectionData.mat","CrossSectionData")
-            obj.CrossSectionData = CrossSectionData(CrossSectionData.ImagingStage...
-                == becExp.Imaging.ImagingStage,:).CrossSection{1};
+            t = CrossSectionData(CrossSectionData.ImagingStage...
+                == becExp.Imaging.ImagingStage,:);
+            if ~isempty(t)
+                obj.CrossSectionData = t.CrossSection{1};
+            end
         end
     end
 
@@ -87,10 +90,16 @@ classdef Ad < BecAnalysis
                 case "RandomPolarization"
                     obj.AdData(:,:,runIdx) = becExp.Od.OdData(:,:,runIdx) / sigma0 * 3;
                 case "UniformStrongLight"
+                    if isempty(sigmaData)
+                        error("No cross section data. Can not do Ad with [UniformStrongLight] method.")
+                    end
                     s = mean(becExp.Imaging.SaturationParameterPropagation,"all");
                     sigma = crossSec(s);
                     obj.AdData(:,:,runIdx) = becExp.Od.OdData(:,:,runIdx) / sigma;
                 case "StrongLight"
+                    if isempty(sigmaData)
+                        error("No cross section data. Can not do Ad with [StrongLight] method.")
+                    end
                     s = becExp.Imaging.SaturationParameterPropagation(:,:,runIdx);
                     s(s<0) = 0;
                     s(s>10) = 10;

@@ -1,4 +1,4 @@
-classdef TekTronix1104 < TektronixScope
+classdef Tektronix1104 < TektronixScope
     %TEKTRONIX1104 Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -7,7 +7,7 @@ classdef TekTronix1104 < TektronixScope
     end
     
     methods
-        function obj = TekTronix1104(resourceName,name)
+        function obj = Tektronix1104(resourceName,name)
             arguments
                 resourceName string
                 name string = string.empty
