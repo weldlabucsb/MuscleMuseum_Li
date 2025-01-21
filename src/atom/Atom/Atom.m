@@ -21,7 +21,7 @@ classdef (Abstract) Atom < dynamicprops & handle & matlab.mixin.Heterogeneous
 
     properties (SetAccess = private)
         ArcObj %The ARC atom object.
-        Type string %Either "Alkali" or "Divalent".
+        Type string {mustBeMember(Type,{'Alkali','Divalent'})} %Either "Alkali" or "Divalent".
     end
     
     methods

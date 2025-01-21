@@ -1,4 +1,5 @@
 from arc import *
+from arc.divalent_atom_functions import DivalentAtom
 from scipy.constants import physical_constants
 from scipy.constants import Rydberg as C_Rydberg
 from scipy.constants import m_e as C_m_e
@@ -189,3 +190,130 @@ class Lithium7(AlkaliAtom):  # Li
             )
             return 0
 Lithium7.getTransitionFrequency = getTransitionFrequencyLithium7        
+
+class Strontium84(DivalentAtom):
+    """
+    Properties of Strontium 84 atoms
+    """
+
+    alphaC = 15
+
+    ionisationEnergy = 1377012721e6 * C_h / C_e  #: (eV)  Ref. [#c10]_
+
+    Z = 38
+    I = 0.0
+
+    #: Ref. [#c10]_
+    scaledRydbergConstant = (
+        109736.631
+        * 1.0e2
+        * physical_constants["inverse meter-electron volt relationship"][0]
+    )
+
+    quantumDefect = [
+        [
+            [3.269123, -0.177769, 3.4619, 0.0, 0.0, 0.0],
+            [2.72415, -3.390, -220.0, 0.0, 0.0, 0.0],
+            [2.384667, -42.03053, -619.0, 0.0, 0.0, 0.0],
+            [0.090886, -2.4425, 61.896, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ],
+        [
+            [3.3707725, 0.41979, -0.421377, 0.0, 0.0, 0.0],
+            [2.88673, 0.433745, -1.800, 0.0, 0.0, 0.0],
+            [2.675236, -13.23217, -4418.0, 0.0, 0.0, 0.0],
+            [0.120588, -2.1847, 102.98, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ],
+        [
+            [3.3707725, 0.41979, -0.421377, 0.0, 0.0, 0.0],
+            [2.88265, 0.39398, -1.1199, 0.0, 0.0, 0.0],
+            [2.661488, -16.8524, -6629.26, 0.0, 0.0, 0.0],
+            [0.11899, -2.0446, 103.26, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ],
+        [
+            [3.3707725, 0.41979, -0.421377, 0.0, 0.0, 0.0],
+            [2.88163, -2.462, 145.18, 0.0, 0.0, 0.0],
+            [2.655, -65.317, -13576.7, 0.0, 0.0, 0.0],
+            [0.12000, -2.37716, 118.97, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        ],
+    ]
+    """ Contains list of modified Rydberg-Ritz coefficients for calculating
+        quantum defects for
+        [[ :math:`^1S_{0},^1P_{1},^1D_{2},^1F_{3}`],
+        [ :math:`^3S_{1},^3P_{0},^3D_{1},^3F_{2}`],
+        [ :math:`^3S_{1},^3P_{1},^3D_{2},^3F_{3}`],
+        [ :math:`^3S_{1},^3P_{2},^3D_{3},^3F_{4}`]]."""
+
+    groundStateN = 5
+
+    # levels that are for smaller n than ground level, but are above in energy
+    # due to angular part
+    extraLevels = [
+        (4, 2, 3, 1),
+        (4, 2, 1, 1),
+        (4, 3, 3, 0),
+        (4, 3, 4, 1),
+        (4, 3, 3, 1),
+        (4, 3, 2, 1),
+        (4, 2, 2, 0),
+    ]
+
+    #: Sources Refs. [#c1]_, [#c2]_, [#c3]_, [#c4]_, [#c5]_, [#c6]_, [#c7]_,
+    #: [#c8]_ , [#c10]_
+    levelDataFromNIST = "sr_level_data.csv"
+
+    precalculatedDB = "sr88_precalculated.db"
+    dipoleMatrixElementFile = "sr_dipole_matrix_elements.npy"
+    quadrupoleMatrixElementFile = "sr_quadrupole_matrix_elements.npy"
+
+    literatureDMEfilename = "strontium_literature_dme.csv"
+
+    elementName = "Sr84"
+    meltingPoint = 777 + 273.15  #: in K
+
+    #: Ref. [#nist]_
+    mass = 83.913425 * physical_constants["atomic mass constant"][0]
+
+    #: Quantum defect principal quantum number fitting ranges for different
+    #: series
+    defectFittingRange = {
+        "1S0": [14, 34],
+        "3S1": [15, 50],
+        "1P1": [10, 29],
+        "3P2": [19, 41],
+        "3P1": [8, 21],
+        "3P0": [8, 15],
+        "1D2": [20, 50],
+        "3D3": [20, 37],
+        "3D2": [28, 50],
+        "3D1": [28, 50],
+        "1F3": [10, 28],
+        "3F4": [10, 28],
+        "3F3": [10, 24],
+        "3F2": [10, 24],
+    }
+
+    def getPressure(self, temperature):
+        """
+        Pressure of atomic vapour at given temperature.
+
+        Calculates pressure based on Ref. [#pr]_ (accuracy +- 5%).
+        """
+        if temperature < 298:
+            print("WARNING: Sr vapour pressure below 298 K is unknown (small)")
+            return 0
+        if temperature < self.meltingPoint:
+            return 10 ** (
+                5.006
+                + 9.226
+                - 8572 / temperature
+                - 1.1926 * log(temperature) / log(10.0)
+            )
+        else:
+            raise ValueError(
+                "ERROR: Sr vapour pressure above %.0f C is unknown"
+                % self.meltingPoint
+            )
