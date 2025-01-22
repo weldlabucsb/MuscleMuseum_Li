@@ -43,8 +43,9 @@ classdef (Abstract) Atom < dynamicprops & handle & matlab.mixin.Heterogeneous
             pyType = py.importlib.import_module('getTypeNature'); %Import this python module for resolving type name/attributes etc.
             try
                 obj.ArcObj = arc.(atomName)(preferQuantumDefects=false); %Load the ARC atom object
-            catch
-                error(atomName + " is not a valid isotope name in the python ARC package.")
+            catch ME
+                error(atomName + " may not be a valid isotope name in the python ARC package. Error message: " ...
+                    + ME.message)
             end
 
             %Wrtie python object properties into matlab object properties

@@ -43,6 +43,8 @@ else
     % Copy ARC data file with updated numbers
     copyfile(fullfile(repoPath,"src","atom","func","lithium7_literature_dme.csv"),...
         fullfile(py2Mat(atom.dataFolder),"lithium7_literature_dme.csv"))
+    copyfile(fullfile(repoPath,"src","atom","func","strontium_literature_dme.csv"),...
+        fullfile(py2Mat(atom.dataFolder),"strontium_literature_dme.csv"))
     disp("Done.")
 end
 end

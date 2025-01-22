@@ -1,10 +1,21 @@
+from __future__ import division, print_function, absolute_import
 from arc import *
 from arc.divalent_atom_functions import DivalentAtom
+from arc.wigner import Wigner3j, Wigner6j
 from scipy.constants import physical_constants
 from scipy.constants import Rydberg as C_Rydberg
 from scipy.constants import m_e as C_m_e
 from scipy.constants import c as C_c
 from math import log
+
+from typing import List, Tuple
+
+import os
+import numpy as np
+import csv
+from math import sqrt
+
+from arc._database import sqlite3, UsedModulesARC
 
 def getTransitionFrequencyLithium7(self, n1, l1, j1, n2, l2, j2, s=0.5, s2=None):
     if s2 is None:
@@ -317,3 +328,149 @@ class Strontium84(DivalentAtom):
                 "ERROR: Sr vapour pressure above %.0f C is unknown"
                 % self.meltingPoint
             )
+
+def readLiteratureValuesEdit(self):
+    # clear previously saved results, since literature file
+    # might have been updated in the meantime
+    c = self.conn.cursor()
+    c.execute("""DROP TABLE IF EXISTS literatureDME""")
+    c.execute(
+        """SELECT COUNT(*) FROM sqlite_master
+                    WHERE type='table' AND name='literatureDME';"""
+    )
+    if c.fetchone()[0] == 0:
+        # create table
+        c.execute(
+            """CREATE TABLE IF NOT EXISTS literatureDME
+         (n1 TINYINT UNSIGNED, l1 TINYINT UNSIGNED, j1 TINYINT UNSIGNED,
+         n2 TINYINT UNSIGNED, l2 TINYINT UNSIGNED, j2 TINYINT UNSIGNED,
+         s TINYINT UNSIGNED,
+         dme DOUBLE,
+         typeOfSource TINYINT,
+         errorEstimate DOUBLE,
+         comment TINYTEXT,
+         ref TINYTEXT,
+         refdoi TINYTEXT
+        );"""
+        )
+        c.execute(
+            """CREATE INDEX compositeIndex
+        ON literatureDME (n1,l1,j1,n2,l2,j2,s); """
+        )
+    self.conn.commit()
+
+    if self.literatureDMEfilename == "":
+        return 0  # no file specified for literature values
+
+    try:
+        fn = open(
+            os.path.join(self.dataFolder, self.literatureDMEfilename), "r"
+        )
+        dialect = csv.Sniffer().sniff(fn.read(2024), delimiters=";,\t")
+        fn.seek(0)
+        data = csv.reader(fn, dialect, quotechar='"')
+
+        literatureDME = []
+
+        # i=0 is header
+        i = 0
+        for row in data:
+            if i != 0:
+                n1 = int(row[0])
+                l1 = int(row[1])
+                j1 = int(row[2])
+                s1 = int(row[3])
+
+                n2 = int(row[4])
+                l2 = int(row[5])
+                j2 = int(row[6])
+                s2 = int(row[7])
+                if s1 != s2:
+                    raise ValueError(
+                        "Error reading litearture: database "
+                        "cannot accept spin changing "
+                        "transitions"
+                    )
+                s = s1
+                if self.getEnergy(n1, l1, j1, s=s) > self.getEnergy(
+                    n2, l2, j2, s=s
+                ):
+                    temp = n1
+                    n1 = n2
+                    n2 = temp
+                    temp = l1
+                    l1 = l2
+                    l2 = temp
+                    temp = j1
+                    j1 = j2
+                    j2 = temp
+
+                # convered from reduced DME in J basis (symmetric notation)
+                # to radial part of dme as it is saved for calculated
+                # values
+
+                # To-DO : see in what notation are Strontium literature elements saved
+                #print(
+                #    "To-do (_readLiteratureValues): see in what notation are Sr literature saved (angular part)"
+                #)
+                dme = float(row[8]) / (
+                    (-1) ** (round(l1 + s + j2 + 1.0))
+                    * sqrt((2.0 * j1 + 1.0) * (2.0 * j2 + 1.0))
+                    * Wigner6j(j1, 1.0, j2, l2, s, l1)
+                    * (-1) ** l1
+                    * sqrt((2.0 * l1 + 1.0) * (2.0 * l2 + 1.0))
+                    * Wigner3j(l1, 1, l2, 0, 0, 0)
+                )
+
+                comment = row[9]
+                typeOfSource = int(row[10])  # 0 = experiment; 1 = theory
+                errorEstimate = float(row[11])
+                ref = row[12]
+                refdoi = row[13]
+
+                literatureDME.append(
+                    [
+                        n1,
+                        l1,
+                        j1,
+                        n2,
+                        l2,
+                        j2,
+                        s,
+                        dme,
+                        typeOfSource,
+                        errorEstimate,
+                        comment,
+                        ref,
+                        refdoi,
+                    ]
+                )
+            i += 1
+        fn.close()
+
+        try:
+            if i > 1:
+                c.executemany(
+                    """INSERT INTO literatureDME
+                                    VALUES (?,?,?,?,?,?,?,
+                                            ?,?,?,?,?,?)""",
+                    literatureDME,
+                )
+                self.conn.commit()
+
+        except sqlite3.Error as e:
+            print(
+                "Error while loading precalculated values "
+                "into the database"
+            )
+            print(e)
+            print(literatureDME)
+            exit()
+
+    except IOError as e:
+        print(
+            "Error reading literature values File "
+            + self.literatureDMEfilename
+        )
+        print(e)
+DivalentAtom._readLiteratureValues = readLiteratureValuesEdit
