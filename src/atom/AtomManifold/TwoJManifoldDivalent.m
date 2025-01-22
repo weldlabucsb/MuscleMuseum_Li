@@ -6,25 +6,27 @@ classdef TwoJManifoldDivalent < AtomManifold
         NGround int32
         LGround int32
         JGround double
-        FGround double
+        % FGround double
         MJGround double
-        HFSCoefficientGround %[A,B]
+        SGround double
+        % HFSCoefficientGround %[A,B]
         EnergyGround double
         LandegJGround double
         LandegFGround double
         NExcited int32
         LExcited int32
         JExcited double
-        FExcited double
+        % FExcited double
         MJExcited double
-        HFSCoefficientExcited %[A,B]
+        SExcited
+        % HFSCoefficientExcited %[A,B]
         EnergyExcited double
         LandegJExcited double
         LandegFExcited double
         StateList table
         JOperator cell
         IOperator cell
-        FOperator cell
+        % FOperator cell
         NaturalLinewidth double %One should keep in mind that there is no 2pi for consistency. e.g. for Lithium7 it is 5.8724e6 Hz
         LifetimeExcited double
         ReducedDipoleMatrixElement double %Following steck's convention as <Jg||d||Je>, in SI unit.
@@ -34,28 +36,30 @@ classdef TwoJManifoldDivalent < AtomManifold
     end
     
     methods
-        function obj = TwoJManifoldDivalent(atom,nG,lG,jG,nE,lE,jE)
+        function obj = TwoJManifoldDivalent(atom,nG,lG,jG,sG,nE,lE,jE,sE)
             %TWOJ Construct an instance of this class
             %   Detailed explanation goes here
 
-            %% Set quantum numbers N,L,J
+            %% Set quantum numbers N,L,J,S
             obj@AtomManifold(atom)
             obj.NGround = nG;
             obj.LGround = lG;
             obj.JGround = jG;
+            obj.SGround = sG;
             obj.NExcited = nE;
             obj.LExcited = lE;
             obj.JExcited = jE;
+            obj.SExcited = sE;
             
             %% Ground and excited manifold
-            maniG = OneJManifold(atom,nG,lG,jG);
-            maniE = OneJManifold(atom,nE,lE,jE);
+            % maniG = OneJManifold(atom,nG,lG,jG);
+            % maniE = OneJManifold(atom,nE,lE,jE);
 
             %% Set quantum numbers F,MF
-            obj.FGround = maniG.F;
-            obj.FExcited = maniE.F;
-            obj.MJGround = maniG.MF;
-            obj.MJExcited = maniE.MF;
+            % obj.FGround = maniG.F;
+            % obj.FExcited = maniE.F;
+            % obj.MJGround = maniG.MF;
+            % obj.MJExcited = maniE.MF;
 
             %% Set energies and frequencies, in Hz
             obj.Frequency = ...
@@ -65,90 +69,95 @@ classdef TwoJManifoldDivalent < AtomManifold
                 obj.JGround,...
                 obj.NExcited,...
                 obj.LExcited,...
-                obj.JExcited);
-            obj.HFSCoefficientGround = maniG.HFSCoefficient;
-            obj.HFSCoefficientExcited = maniE.HFSCoefficient;
-            obj.EnergyGround = maniG.Energy;
-            obj.EnergyExcited = maniE.Energy + obj.Frequency;
+                obj.JExcited,...
+                obj.SGround,...
+                obj.SExcited);
+            % obj.HFSCoefficientGround = maniG.HFSCoefficient;
+            % obj.HFSCoefficientExcited = maniE.HFSCoefficient;
+            % obj.EnergyGround = maniG.Energy;
+            % obj.EnergyExcited = maniE.Energy + obj.Frequency;
             
             %% Set magnetic properties
-            obj.LandegJGround = maniG.LandegJ;
-            obj.LandegJExcited = maniE.LandegJ;
-            obj.LandegFGround = maniG.LandegF;
-            obj.LandegFExcited = maniE.LandegF;
+            % obj.LandegJGround = maniG.LandegJ;
+            % obj.LandegJExcited = maniE.LandegJ;
+            % obj.LandegFGround = maniG.LandegF;
+            % obj.LandegFExcited = maniE.LandegF;
 
             %% Set operators
-            JG = maniG.JOperator;
-            IG = maniG.IOperator;
-            FG = maniG.FOperator;
-            JE = maniE.JOperator;
-            IE = maniE.IOperator;
-            FE = maniE.FOperator; 
-
-            obj.JOperator = arrayfun(@(r) blkdiag(JE{r,:},JG{r,:}),(1:3)',UniformOutput=false);
-            obj.IOperator = arrayfun(@(r) blkdiag(IE{r,:},IG{r,:}),(1:3)',UniformOutput=false);
-            obj.FOperator = arrayfun(@(r) blkdiag(FE{r,:},FG{r,:}),(1:3)',UniformOutput=false);
-            
+            % JG = maniG.JOperator;
+            % IG = maniG.IOperator;
+            % FG = maniG.FOperator;
+            % JE = maniE.JOperator;
+            % IE = maniE.IOperator;
+            % FE = maniE.FOperator; 
+            % 
+            % obj.JOperator = arrayfun(@(r) blkdiag(JE{r,:},JG{r,:}),(1:3)',UniformOutput=false);
+            % obj.IOperator = arrayfun(@(r) blkdiag(IE{r,:},IG{r,:}),(1:3)',UniformOutput=false);
+            % obj.FOperator = arrayfun(@(r) blkdiag(FE{r,:},FG{r,:}),(1:3)',UniformOutput=false);
+            % 
 
             %% Set state list
-            obj.NNState = numel(obj.MJGround) + numel(obj.MJExcited);
-            Index = 1:obj.NNState;
-            N = [repmat(obj.NExcited,1,numel(obj.MJExcited)),repmat(obj.NGround,1,numel(obj.MJGround))];
-            L = [repmat(obj.LExcited,1,numel(obj.MJExcited)),repmat(obj.LGround,1,numel(obj.MJGround))];
-            J = [repmat(obj.JExcited,1,numel(obj.MJExcited)),repmat(obj.JGround,1,numel(obj.MJGround))];
-            F = angularMomentumList([obj.FExcited,obj.FGround]);
-            MF = [obj.MJExcited,obj.MJGround];
-            gI = repmat(obj.Atom.gI,1,obj.NNState);
-            gJ = [repmat(obj.LandegJExcited,1,numel(obj.MJExcited)),repmat(obj.LandegJGround,1,numel(obj.MJGround))];
-            
-            
-
-            IsExcited = zeros(1,obj.NNState);
-            IsExcited(1:numel(obj.MJExcited)) = 1;
-            IsExcited = logical(IsExcited);
-
-            f = [obj.FExcited,obj.FGround];
-            energy = [obj.EnergyExcited,obj.EnergyGround];
-            gf = [obj.LandegFExcited,obj.LandegFGround];
-            mSize = 2*f + 1;
-            Energy = zeros(1,obj.NNState);
-            gF = zeros(1,obj.NNState);
-            for ii = 1:numel(energy)
-                Energy((sum(mSize(1:(ii-1)))+1):sum(mSize(1:ii)))...
-                    = repmat(energy(ii),1,mSize(ii));
-                gF((sum(mSize(1:(ii-1)))+1):sum(mSize(1:ii)))...
-                    = repmat(gf(ii),1,mSize(ii));
-            end
-
-            Label = cell(obj.NNState,1);
-            for ii = 1:obj.NNState
-                if IsExcited(ii)
-                    Label{ii} = "$F'=" + num2str(F(ii)) + ",M'_F = " + num2str(MF(ii)) + "$";
-                else
-                    Label{ii} = "$F=" + num2str(F(ii)) + ",M_F = " + num2str(MF(ii)) + "$";
-                end
-            end
-            Label = string(Label);
-            Index = Index(:);
-            N = N(:);
-            L = L(:);
-            J = J(:);
-            F = F(:);
-            MF = MF(:);
-            gI = gI(:);
-            gJ = gJ(:);
-            gF = gF(:);
-            Energy = Energy(:);
-            IsExcited = IsExcited(:);
-            MI = [maniE.StateList.MI;maniG.StateList.MI];
-            MJ = [maniE.StateList.MJ;maniG.StateList.MJ];
-            obj.StateList = table(Index,N,L,J,F,MF,MI,MJ,gI,gJ,gF,Energy,IsExcited,Label);
+            % obj.NNState = numel(obj.MJGround) + numel(obj.MJExcited);
+            % Index = 1:obj.NNState;
+            % N = [repmat(obj.NExcited,1,numel(obj.MJExcited)),repmat(obj.NGround,1,numel(obj.MJGround))];
+            % L = [repmat(obj.LExcited,1,numel(obj.MJExcited)),repmat(obj.LGround,1,numel(obj.MJGround))];
+            % J = [repmat(obj.JExcited,1,numel(obj.MJExcited)),repmat(obj.JGround,1,numel(obj.MJGround))];
+            % F = angularMomentumList([obj.FExcited,obj.FGround]);
+            % MF = [obj.MJExcited,obj.MJGround];
+            % gI = repmat(obj.Atom.gI,1,obj.NNState);
+            % gJ = [repmat(obj.LandegJExcited,1,numel(obj.MJExcited)),repmat(obj.LandegJGround,1,numel(obj.MJGround))];
+            % 
+            % 
+            % 
+            % IsExcited = zeros(1,obj.NNState);
+            % IsExcited(1:numel(obj.MJExcited)) = 1;
+            % IsExcited = logical(IsExcited);
+            % 
+            % f = [obj.FExcited,obj.FGround];
+            % energy = [obj.EnergyExcited,obj.EnergyGround];
+            % gf = [obj.LandegFExcited,obj.LandegFGround];
+            % mSize = 2*f + 1;
+            % Energy = zeros(1,obj.NNState);
+            % gF = zeros(1,obj.NNState);
+            % for ii = 1:numel(energy)
+            %     Energy((sum(mSize(1:(ii-1)))+1):sum(mSize(1:ii)))...
+            %         = repmat(energy(ii),1,mSize(ii));
+            %     gF((sum(mSize(1:(ii-1)))+1):sum(mSize(1:ii)))...
+            %         = repmat(gf(ii),1,mSize(ii));
+            % end
+            % 
+            % Label = cell(obj.NNState,1);
+            % for ii = 1:obj.NNState
+            %     if IsExcited(ii)
+            %         Label{ii} = "$F'=" + num2str(F(ii)) + ",M'_F = " + num2str(MF(ii)) + "$";
+            %     else
+            %         Label{ii} = "$F=" + num2str(F(ii)) + ",M_F = " + num2str(MF(ii)) + "$";
+            %     end
+            % end
+            % Label = string(Label);
+            % Index = Index(:);
+            % N = N(:);
+            % L = L(:);
+            % J = J(:);
+            % F = F(:);
+            % MF = MF(:);
+            % gI = gI(:);
+            % gJ = gJ(:);
+            % gF = gF(:);
+            % Energy = Energy(:);
+            % IsExcited = IsExcited(:);
+            % MI = [maniE.StateList.MI;maniG.StateList.MI];
+            % MJ = [maniE.StateList.MJ;maniG.StateList.MJ];
+            % obj.StateList = table(Index,N,L,J,F,MF,MI,MJ,gI,gJ,gF,Energy,IsExcited,Label);
 
             %% Set dipole transition properties
             obj.LifetimeExcited = obj.Atom.ArcObj.getStateLifetime(...
                 obj.NExcited,...
                 obj.LExcited,...
-                obj.JExcited...
+                obj.JExcited,...
+                0,...
+                int32(0),...
+                obj.SExcited...
                 );
             obj.NaturalLinewidth = obj.Atom.ArcObj.getTransitionRate(...
                 obj.NExcited,...
@@ -156,14 +165,17 @@ classdef TwoJManifoldDivalent < AtomManifold
                 obj.JExcited,...
                 obj.NGround,...
                 obj.LGround,...
-                obj.JGround)/2/pi;
+                obj.JGround,...
+                0,...
+                obj.SGround)/2/pi;
             obj.ReducedDipoleMatrixElement = obj.Atom.ArcObj.getReducedMatrixElementJ_asymmetric(...
                 obj.NGround,...
                 obj.LGround,...
                 obj.JGround,...
                 obj.NExcited,...
                 obj.LExcited,...
-                obj.JExcited) * obj.DipoleUnit;
+                obj.JExcited,...
+                obj.SGround) * obj.DipoleUnit;
             obj.ReducedSaturationIntensity = ...
                 Constants.SI("hbar")^2 * ...
                 (2 * pi * obj.NaturalLinewidth)^2 / 4 /...
