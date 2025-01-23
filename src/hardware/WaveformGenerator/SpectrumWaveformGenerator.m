@@ -45,7 +45,7 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
 
             for ii = 1:obj.NChannel
                 if obj.IsOutput(ii)
-                    [~,obj.Device] = spcMSetupAnalogOutputChannel (obj.Device, ii-1, 2000, 0, 0, obj.RegMap('SPCM_STOPLVL_ZERO'), 0, 0);
+                    [~,obj.Device] = spcMSetupAnalogOutputChannel(obj.Device, ii-1, 2000, 0, 0, obj.RegMap('SPCM_STOPLVL_ZERO'), 0, 0);
                 end
 
 
@@ -100,6 +100,21 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             obj.check;
             d = obj.Device;
 
+            %% Get the minimum segment size
+            switch sum(obj.IsOutput)
+                case 0
+                    return
+                case 1
+                    segmentSizeMinimum = 384;
+                case 2
+                    segmentSizeMinimum = 192;
+                case 3
+                    segmentSizeMinimum = 192;
+                otherwise
+                    segmentSizeMinimum = 96;
+            end
+
+
             %% Upload to channels
             for ii = 1:obj.NChannel
                 %% Check waveform and output
@@ -108,7 +123,24 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
                 elseif obj.IsOutput(ii) == false
                     continue
                 end
-
+                
+                wo = obj.WaveformList{ii}.WaveformOrigin;
+                nWave = numel(wo);
+                for jj = 1:nWave
+                    %% Prepare the waveform
+                    sample = wo{jj}.Sample;
+                    remainder=mod(numel(sample), 32);
+                    segsize=ceil(numel(sample)/32)*32;
+                    if remainder
+                        sample(end+1:segsize) = 0;
+                    end
+                    spcMSetupModeRepSequence (obj.Device, 0, 1, numsegcount, 0);
+                    spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_WRITESEGMENT'),jj-1);
+                    spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_SEGMENTSIZE'), segsize);
+                    spcm_dwSetData(obj.Device.hDrv, 0, segsize, 1, 0, sample);
+                end
+                %% Set
+                [~, obj.Device] = spcMSetupModeRepSequence (obj.Device, 0, 1, numsegcount, 0);
                 %% Add begining and ending zero waveforms for triggering
                 obj.WaveformList{ii}.SamplingRate = obj.SamplingRate;
                 t = obj.WaveformList{ii}.WaveformPrepared;
