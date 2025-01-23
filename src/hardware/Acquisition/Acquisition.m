@@ -2,7 +2,7 @@ classdef Acquisition < handle & matlab.mixin.SetGetExactNames
     %Acquisition Acquisition class.
     %   Detailed explanation goes here
 
-    properties (SetAccess = private)
+    properties (SetAccess = protected)
         Name string %Nickname/label of the acquisition
         CameraType string %Producer of the camera
         AdaptorName string %MATLAB camera adaptor
