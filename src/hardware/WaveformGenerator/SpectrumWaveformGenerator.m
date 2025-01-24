@@ -1,6 +1,7 @@
 classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
-    %KEYSIGHT Summary of this class goes here
-    %   Detailed explanation goes here
+    %SpectrumWaveformGenerator Summary of this class goes here
+    %   Please download the Spectrum AWG MATLAB driver:
+    %   https://spectrum-instrumentation.com/products/drivers_examples/matlab_support.php
     
     properties (SetAccess = protected,Transient)
         Device
@@ -96,12 +97,34 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
         end
 
         function upload(obj)
+            % Different from Keysight, Spectrum AWG insists that all
+            % channels have the same number of segments and behave in the
+            % same way. The samples must be uploaded segment by segment,
+            % and each (physical) segment stores samples of all channels.
+            % See the manual, chapter <data management>.
             %% Check connection to the device
             obj.check;
             d = obj.Device;
 
             %% Get the minimum segment size
-            switch sum(obj.IsOutput)
+            enabledChannel = [];
+            for ii = 1:obj.NChannel
+                if isempty(obj.WaveformList{ii})
+                    continue
+                elseif obj.IsOutput(ii) == false
+                    continue
+                else
+                    enabledChannel = [enabledChannel,ii];
+                end
+            end
+
+            if isempty(enabledChannel)
+                return
+            else
+                nEnabledChannel = numel(enabledChannel);
+            end
+
+            switch nEnabledChannel
                 case 0
                     return
                 case 1
@@ -114,110 +137,72 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
                     segmentSizeMinimum = 96;
             end
 
+            %% Check numbers of waveforms of each channel
+            nWaveList = zero(1,nEnabledChannel);
+            for ii = 1:nEnabledChannel
+                nWaveList(ii) = numel(obj.WaveformList{enabledChannel(ii)}.WaveformOrigin);
+            end
+            if all(nWaveList == nWaveList(1))
+                nWave = nWaveList(1) + 1;
+            else
+                error("The numbers of waveforms of each channel have to be the same.")
+            end
+            [~,d] = spcMSetupModeRepSequence(d, 0, 1, nWave, 0); % need to verify
 
-            %% Upload to channels
-            for ii = 1:obj.NChannel
-                %% Check waveform and output
-                if isempty(obj.WaveformList{ii})
-                    continue
-                elseif obj.IsOutput(ii) == false
-                    continue
-                end
-                
-                wo = obj.WaveformList{ii}.WaveformOrigin;
-                nWave = numel(wo) + 1;
-                [~,obj.Device] = spcMSetupModeRepSequence(obj.Device, 0, 1, nWave, 0);
-                for jj = 1:nWave
-                    %% Prepare the waveform
-                    if jj == 1
-                        sample = zeros(0,1,segmentSizeMinimum);
+            %% Prepare the waveforms
+            sample = cell(nWave,nEnabledChannel);
+            for jj = 1:nWave
+                segSize = 0;
+                for ii = 1:nEnabledChannel
+                    if jj == nWave
+                        sample{jj,ii} = zeros(0,1,segmentSizeMinimum);
                     else
-                        sample = wo{jj}.Sample;
+                        sample{jj,ii} = obj.WaveformList{enabledChannel(ii)}.WaveformOrigin{jj}.Sample;
                     end
-                    if numel(sample) < segmentSizeMinimum
-                        sample = [sample,interp1(sample,(numel(sample)+1):segmentSizeMinimum,'linear','extrap')];
+                    if numel(sample{jj,ii}) < segmentSizeMinimum
+                        sample{jj,ii} = [sample{jj,ii},interp1(sample{jj,ii},(numel(sample{jj,ii})+1):segmentSizeMinimum,'linear','extrap')];
                     end
-                    remainder=32-mod(numel(sample), 32);
-                    segSize=ceil(numel(sample)/32)*32;
+                    remainder=32-mod(numel(sample{jj,ii}), 32);
+                    segSize = segSize + ceil(numel(sample{jj,ii})/32)*32;
                     if remainder
-                        sample = [sample,interp1(sample(end-9:end),11:(remainder+10),'linear','extrap')];
+                        sample{jj,ii} = [sample{jj,ii},interp1(sample{jj,ii}(end-9:end),11:(remainder+10),'linear','extrap')];
                     end
-                    spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_WRITESEGMENT'),jj-1);
-                    spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_SEGMENTSIZE'), segSize);
-                    spcm_dwSetData(obj.Device.hDrv, 0, segSize, 1, 0, sample);
                 end
-                %% Set
-                [~, obj.Device] = spcMSetupModeRepSequence (obj.Device, 0, 1, numsegcount, 0);
-                %% Add begining and ending zero waveforms for triggering
-                obj.WaveformList{ii}.SamplingRate = obj.SamplingRate;
-                t = obj.WaveformList{ii}.WaveformPrepared;
-                Sample = {zeros(1,35)};
-                PlayMode = "OnceWaitTrigger";
-                NRepeat = 0;
-                t0 = table(Sample,PlayMode,NRepeat);
-                PlayMode = "Repeat";
-                te = table(Sample,PlayMode,NRepeat);
-                t = [t0;t;te];
+                spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_WRITESEGMENT'),jj-1);
+                spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_SEGMENTSIZE'), segSize);
+                spcm_dwSetData(obj.Device.hDrv, 0, segSize, nEnabledChannel, 0, sample{jj,:});
+            end
 
-                %% Initialize parameters
-                nWave = size(t,1);
-                arbSegName = "MMARB_ch" + string(ii) + "_" + string(1:nWave)';
-                arbFileName = "MMARB_ch" + string(ii);
-                arbToSeq = cell(1,nWave);
-                markerModeList=repmat({'lowAtStart'}, 1, nWave);
-                markerLocList=linspace(10,10,nWave);
-                sourceStr = "SOURce" + string(ii);
-                outputStr = "OUTPut" + string(ii);
-
-                %% Set PTP value
-                scaleFactor = max(cellfun(@(x) max(abs(x)),t.Sample));
-                ptp = 2 * scaleFactor;
-                writeline(d, sprintf(sourceStr + ':FUNCtion:ARBitrary:PTPeak %g', ptp)); % Set arbitray waveform p2p
-
-                %% Upload
-                for jj = 1:nWave
-                    dataBlock = t.Sample{jj} ./ scaleFactor;
-                    dataBlock = dataBlock(:).'; % data block has to be a row vector
-                    dataBlock = single(dataBlock); % reduce memory use
-
-                    %% Map play mode string
-                    switch t.PlayMode(jj)
-                        case "Once"
-                            playMode = "once";
-                        case "OnceWaitTrigger"
-                            playMode = "onceWaitTrig";
-                        case "Repeat"
-                            playMode = "repeat";
-                        case "RepeatInf"
-                            playMode = "repeatInf";
-                        case "RepeatTilTrigger"
-                            playMode = "repeatTilTrig";
-                    end
-
-                    %% Write arb segment data into the device
-                    header = char(sprintf(sourceStr+":DATA:ARBitrary" + " %s,",arbSegName(jj)));
-                    writebinblock2(d,dataBlock,obj.DataType,header) % Write data into arb segment
-                    arbToSeq{jj}=sprintf('%s,%d,%s,%s,%d',arbSegName(jj),t.NRepeat(jj),playMode,markerModeList{jj},markerLocList(jj));
-                end
-
-                %% Concatenate arb segments into an arb sequence
-                allArbsToSeq=sprintf(strcat(arbFileName,',%s'),sprintf('%s,',arbToSeq{1:end}));
-                allArbsToSeq=allArbsToSeq{1}(1:end-1); %remove final comma
-                header2 = char(sourceStr + pad(":DATA:SEQuence "));
-                writebinblock2(d,allArbsToSeq,obj.DataType,header2)
-
-                %% Tell the device to output the arb sequence
-                writeline(d,sprintf(sourceStr + ':FUNCtion:ARBitrary "%s"', arbFileName)) % Change ARB source file
-                writeline(d,sourceStr + ":FUNCtion ARB") % Change output mode to ARB
-                writeline(d,outputStr + " 1") % Start to output
-
-                %% Check if upload is successful
-                s = obj.check;
-                if s
-                    disp(obj.Name + " channel" + num2str(ii) + " uploaded successfully.")
+            %% Determine the order
+            for ii = 1:nWave
+                if ii ~= nWave
+                    spcMSetupSequenceStep(d,ii-1,ii,ii-1,1,0);
                 else
-                    obj.set
+                    spcMSetupSequenceStep(d,ii-1,0,ii-1,1,1); %loop the zero output until trigger
                 end
+            end
+
+            %% Activate Card
+            commandMask = bitor(obj.RegMap('M2CMD_CARD_START'), obj.RegMap('M2CMD_CARD_ENABLETRIGGER'));
+            errorCode = spcm_dwSetParam_i32(d.hDrv, obj.RegMap('SPC_M2CMD'), commandMask);
+
+            if (errorCode ~= 0)
+                [~, d] = spcMCheckSetError (errorCode, d);
+                if errorCode == obj.ErrorMap('ERR_TIMEOUT')
+                    errorCode = spcm_dwSetParam_i32 (d.hDrv, obj.RegMap('SPC_M2CMD'), obj.RegMap('M2CMD_CARD_STOP'));
+                    fprintf (' OK\n ................... replay stopped\n');
+                else
+                    spcMErrorMessageStdOut (d, 'Error: spcm_dwSetParam_i32:\n\t', true);
+                    return;
+                end
+            end
+
+            %% Check if upload is successful
+            s = obj.check;
+            if s
+                disp(obj.Name + " channel" + num2str(ii) + " uploaded successfully.")
+            else
+                obj.set
             end
 
             obj.saveObject;
@@ -225,24 +210,15 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
 
         function close(obj)
             if isempty(obj.Device)
-                warning("VISA device is not connected.")
+                warning("Device is not connected.")
                 return
             elseif ~isvalid(obj.Device)
-                warning("VISA device was deleted.")
+                warning("Device was deleted.")
                 return
             else
-                em = query(obj.Device, ':SYSTem:ERRor?');
-                if em(1:2)~="+0"
-                    disp("Hardware error. Message: "+ newline + em)
-                    obj.set
-                end
+                spcMCloseCard(obj.Device);
+                toc;
             end
-            v = obj.Device;
-            write(v, '*WAI');
-            write(v, ':ABORt');
-            delete(v);
-            clear v;
-            clear instrument
         end
     
         function status = check(obj)

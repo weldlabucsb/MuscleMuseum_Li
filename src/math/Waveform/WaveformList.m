@@ -15,7 +15,7 @@ classdef WaveformList < handle
         Sample
         TimeStep
         RepeatMode string
-        WaveformPrepared Table 
+        WaveformPrepared Table
     end
 
     properties (SetAccess = protected)
