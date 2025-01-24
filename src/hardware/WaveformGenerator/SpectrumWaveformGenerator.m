@@ -63,12 +63,6 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
                 % writeline(d, sprintf(sourceStr + ':FUNCtion:ARBitrary:PTPeak %g', 1)); % Set arbitray waveform p2p
                 % 
                 % % Trigger source
-                % switch obj.TriggerSource
-                %     case "External"
-                %         writeline(d, triggerStr + ":SOURce EXT");
-                %     case "Internal"
-                %         writeline(d, triggerStr + ":SOURce BUS");
-                % end
                 % 
                 % % Trigger slope
                 % switch obj.TriggerSlope

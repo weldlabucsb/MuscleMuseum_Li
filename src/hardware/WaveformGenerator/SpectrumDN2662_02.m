@@ -15,12 +15,13 @@ classdef SpectrumDN2662_02 < SpectrumWaveformGenerator
                 name string = string.empty
             end
             obj@SpectrumWaveformGenerator(resourceName,name);
-            obj.Model = "DN2.663-02";
+            obj.Model = "DN2662_02";
             obj.NChannel = 2;
             obj.IsOutput = [true,true];
             obj.Memory = 2e9;
             obj.SamplingRate = 1.25e9;
             obj.WaveformList = cell(1,obj.NChannel);
+            obj.DisabledProperty = ["TriggerSlope","OutputMode","OutputLoad"];
         end
             
     end
