@@ -125,19 +125,26 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
                 end
                 
                 wo = obj.WaveformList{ii}.WaveformOrigin;
-                nWave = numel(wo);
+                nWave = numel(wo) + 1;
+                [~,obj.Device] = spcMSetupModeRepSequence(obj.Device, 0, 1, nWave, 0);
                 for jj = 1:nWave
                     %% Prepare the waveform
-                    sample = wo{jj}.Sample;
-                    remainder=mod(numel(sample), 32);
-                    segsize=ceil(numel(sample)/32)*32;
-                    if remainder
-                        sample(end+1:segsize) = 0;
+                    if jj == 1
+                        sample = zeros(0,1,segmentSizeMinimum);
+                    else
+                        sample = wo{jj}.Sample;
                     end
-                    spcMSetupModeRepSequence (obj.Device, 0, 1, numsegcount, 0);
+                    if numel(sample) < segmentSizeMinimum
+                        sample = [sample,interp1(sample,(numel(sample)+1):segmentSizeMinimum,'linear','extrap')];
+                    end
+                    remainder=32-mod(numel(sample), 32);
+                    segSize=ceil(numel(sample)/32)*32;
+                    if remainder
+                        sample = [sample,interp1(sample(end-9:end),11:(remainder+10),'linear','extrap')];
+                    end
                     spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_WRITESEGMENT'),jj-1);
-                    spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_SEGMENTSIZE'), segsize);
-                    spcm_dwSetData(obj.Device.hDrv, 0, segsize, 1, 0, sample);
+                    spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_SEGMENTSIZE'), segSize);
+                    spcm_dwSetData(obj.Device.hDrv, 0, segSize, 1, 0, sample);
                 end
                 %% Set
                 [~, obj.Device] = spcMSetupModeRepSequence (obj.Device, 0, 1, numsegcount, 0);
