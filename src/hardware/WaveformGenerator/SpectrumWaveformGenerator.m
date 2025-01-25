@@ -29,7 +29,7 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
                 error("The Spectrum MATLAB library is not found. Please download it from Spectrum AWG websites and install it." + ...
                 " Make sure the library is in MATLAB's search path.")
             end
-            [isOpened,obj.Device] = spcMInitDevice(obj.ResourceName);
+            [isOpened,obj.Device] = spcMInitDevice(char(obj.ResourceName));
             if ~isOpened
                 spcMErrorMessageStdOut(obj.Device, 'Error: Could not open card\n', true)
             end
@@ -206,12 +206,8 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             if isempty(obj.Device)
                 warning("Device is not connected.")
                 return
-            elseif ~isvalid(obj.Device)
-                warning("Device was deleted.")
-                return
             else
                 spcMCloseCard(obj.Device);
-                toc;
             end
         end
     
@@ -219,13 +215,11 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             status = false;
             if isempty(obj.Device)
                 error("Device is not connected.")
-            elseif ~isvalid(obj.Device)
-                error("Device was deleted.")
             elseif obj.Device.cardFunction ~= obj.RegMap('SPCM_TYPE_AO')
                 spcMErrorMessageStdOut(obj.Device, 'Error: Card function not supported by this example\n', false);
             elseif bitand(obj.Device.featureMap, obj.RegMap('SPCM_FEAT_SEQUENCE')) == 0
                 spcMErrorMessageStdOut(obj.Device, 'Error: Sequence Mode Option not installed. Example was done especially for this option!\n', false);
-            elseif obj.Device.setError
+            elseif string(obj.Device.errorText) ~= "No Error"
                 error(obj.Device.errorText)
             else
                 [success, obj.Device] = spcMSetupClockPLL(obj.Device, obj.SamplingRate, 0);
