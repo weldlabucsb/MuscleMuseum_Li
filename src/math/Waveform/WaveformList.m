@@ -1,14 +1,17 @@
 classdef WaveformList < handle
     %WAVEFORMLIST Summary of this class goes here
     %   Detailed explanation goes here
-    
+
     properties
-        SamplingRate double % In Hz
         ConcatMethod string {mustBeMember(ConcatMethod,{'Sequential','Simultaneous'})} = "Sequential"
         PatchMethod string {mustBeMember(PatchMethod,{'Continue','Constant'})} = "Continue"
         PatchConstant double = 0
         IsTriggerAdvance logical = false
         WaveformOrigin cell
+    end
+
+    properties (SetObservable)
+        SamplingRate double % In Hz
     end
 
     properties (Dependent)
@@ -22,7 +25,7 @@ classdef WaveformList < handle
         Name string
         NSample double
     end
-    
+
     methods
         function obj = WaveformList(name,options)
             arguments
@@ -41,6 +44,7 @@ classdef WaveformList < handle
                     obj.(capitalizeFirst(field(ii))) = options.(field(ii));
                 end
             end
+            addlistener(obj,'SamplingRate','PostSet',@obj.handlePropEvents);
         end
 
         function dt = get.TimeStep(obj)
@@ -76,7 +80,7 @@ classdef WaveformList < handle
             NRepeat = double.empty;
             Sample = cell(1,1);
             PlayMode = string.empty;
-            
+
             %% Construct waveform sequence from segments
             switch obj.ConcatMethod
                 case "Sequential"
@@ -109,7 +113,7 @@ classdef WaveformList < handle
                                 PlayMode(sampleIdx) = "Repeat";
                                 sampleIdx = sampleIdx + 1;
                             end
-                            
+
                             s = obj.WaveformOrigin{ii}.SampleOneCycle;
                             if ~isempty(s)
                                 Sample{sampleIdx} = obj.WaveformOrigin{ii}.SampleOneCycle;
@@ -226,7 +230,20 @@ classdef WaveformList < handle
             ylabel("Waveform Sample",'Interpreter','latex')
             render
         end
-        
+
+    end
+
+    methods (Static)
+        function handlePropEvents(src,evnt)
+            switch src.Name
+                case 'SamplingRate'
+                    obj = evnt.AffectedObject;
+                    nWave = numel(obj.WaveformOrigin);
+                    for ii = 1:nWave
+                        obj.WaveformOrigin{ii}.SamplingRate = obj.SamplingRate;
+                    end
+            end
+        end
     end
 end
 

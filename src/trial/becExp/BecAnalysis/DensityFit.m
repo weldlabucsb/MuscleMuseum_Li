@@ -248,8 +248,8 @@ classdef DensityFit < BecAnalysis
             switch obj.FitMethod
                 case {"GaussianFit1D","BosonicGaussianFit1D"}
                     for ii = 1:nSub
-                        [xThermalX,yThermalX,stdThermalX] = computeStd(paraList,obj.ThermalCloudSize(1,:,ii) * 1e6);
-                        [xThermalY,yThermalY,stdThermalY] = computeStd(paraList,obj.ThermalCloudSize(2,:,ii) * 1e6);
+                        [xThermalX,yThermalX,stdThermalX] = computeStd(paraList,obj.ThermalCloudSize(1,:,ii) * 1e6, becExp.AveragingMethod);
+                        [xThermalY,yThermalY,stdThermalY] = computeStd(paraList,obj.ThermalCloudSize(2,:,ii) * 1e6, becExp.AveragingMethod);
                         obj.ThermalXLine(ii).XData = xThermalX;
                         obj.ThermalXLine(ii).YData = yThermalX;
                         obj.ThermalXLine(ii).YNegativeDelta = stdThermalX;
