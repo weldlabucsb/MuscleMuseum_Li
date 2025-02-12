@@ -37,6 +37,15 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
 
         function set(obj)
             obj.check;
+
+            %% Set sampling rate
+            [success,obj.Device] = spcMSetupClockPLL(obj.Device, obj.SamplingRate, 0);
+            if (success == false)
+                spcMErrorMessageStdOut(obj.Device, 'Error: spcMSetupClockPLL:\n\t', true);
+                return;
+            end
+
+            %% Set triggering
             switch obj.TriggerSource
                 case "External"
                     [~,obj.Device] = spcMSetupTrigExternal(obj.Device, obj.RegMap('SPC_TM_POS'), 0, 0, 1, 0); 
@@ -44,6 +53,7 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
                     [~,obj.Device] = spcMSetupTrigSoftware(obj.Device, 0);
             end
 
+            %% Set output
             for ii = 1:obj.NChannel
                 if obj.IsOutput(ii)
                     [~,obj.Device] = spcMSetupAnalogOutputChannel(obj.Device, ii-1, 2000, 0, 0, obj.RegMap('SPCM_STOPLVL_ZERO'), 0, 0);
@@ -97,7 +107,7 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             % and each (physical) segment stores samples of all channels.
             % See the manual, chapter <data management>.
             %% Check connection to the device
-            obj.check;
+            obj.set;
             d = obj.Device;
 
             %% Get the minimum segment size
@@ -132,7 +142,7 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             end
 
             %% Check numbers of waveforms of each channel
-            nWaveList = zero(1,nEnabledChannel);
+            nWaveList = zeros(1,nEnabledChannel);
             for ii = 1:nEnabledChannel
                 nWaveList(ii) = numel(obj.WaveformList{enabledChannel(ii)}.WaveformOrigin);
             end
@@ -141,10 +151,16 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             else
                 error("The numbers of waveforms of each channel have to be the same.")
             end
-            [~,d] = spcMSetupModeRepSequence(d, 0, 1, nWave, 0); % need to verify
+            [~,obj.Device] = spcMSetupModeRepSequence(obj.Device, 0, 1, nWave, 0); % need to verify
 
             %% Prepare the waveforms
             sample = cell(nWave,nEnabledChannel);
+            scale=32767/2;
+            
+            for ii = 1:nEnabledChannel
+                obj.WaveformList{enabledChannel(ii)}.SamplingRate = obj.SamplingRate;
+            end
+
             for jj = 1:nWave
                 segSize = 0;
                 for ii = 1:nEnabledChannel
@@ -161,6 +177,7 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
                     if remainder
                         sample{jj,ii} = [sample{jj,ii},interp1(sample{jj,ii}(end-9:end),11:(remainder+10),'linear','extrap')];
                     end
+                    sample{jj,ii} = sample{jj,ii} * scale;
                 end
                 spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_WRITESEGMENT'),jj-1);
                 spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_SEQMODE_SEGMENTSIZE'), segSize);
@@ -170,23 +187,23 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             %% Determine the order
             for ii = 1:nWave
                 if ii ~= nWave
-                    spcMSetupSequenceStep(d,ii-1,ii,ii-1,1,0);
+                    [~,obj.Device] = spcMSetupSequenceStep(obj.Device,ii-1,ii,ii-1,1,0);
                 else
-                    spcMSetupSequenceStep(d,ii-1,0,ii-1,1,1); %loop the zero output until trigger
+                    [~,obj.Device] = spcMSetupSequenceStep(obj.Device,ii-1,0,ii-1,1,1); %loop the zero output until trigger
                 end
             end
 
             %% Activate Card
             commandMask = bitor(obj.RegMap('M2CMD_CARD_START'), obj.RegMap('M2CMD_CARD_ENABLETRIGGER'));
-            errorCode = spcm_dwSetParam_i32(d.hDrv, obj.RegMap('SPC_M2CMD'), commandMask);
+            errorCode = spcm_dwSetParam_i32(obj.Device.hDrv, obj.RegMap('SPC_M2CMD'), commandMask);
 
             if (errorCode ~= 0)
-                [~, d] = spcMCheckSetError (errorCode, d);
+                [~, obj.Device] = spcMCheckSetError (errorCode, obj.Device);
                 if errorCode == obj.ErrorMap('ERR_TIMEOUT')
-                    errorCode = spcm_dwSetParam_i32 (d.hDrv, obj.RegMap('SPC_M2CMD'), obj.RegMap('M2CMD_CARD_STOP'));
+                    errorCode = spcm_dwSetParam_i32 (obj.Device.hDrv, obj.RegMap('SPC_M2CMD'), obj.RegMap('M2CMD_CARD_STOP'));
                     fprintf (' OK\n ................... replay stopped\n');
                 else
-                    spcMErrorMessageStdOut (d, 'Error: spcm_dwSetParam_i32:\n\t', true);
+                    spcMErrorMessageStdOut (obj.Device, 'Error: spcm_dwSetParam_i32:\n\t', true);
                     return;
                 end
             end
@@ -222,12 +239,7 @@ classdef (Abstract) SpectrumWaveformGenerator < WaveformGenerator
             elseif string(obj.Device.errorText) ~= "No Error"
                 error(obj.Device.errorText)
             else
-                [success, obj.Device] = spcMSetupClockPLL(obj.Device, obj.SamplingRate, 0);
-                if ~success
-                    spcMErrorMessageStdOut(obj.Device, 'Error: spcMSetupClockPLL:\n\t', true);
-                else
-                    status = true;
-                end
+                status = true;
             end
         end
     
